@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# sourced at boot by ~/.xinitrc and most display managers
+
+XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CONFIG_HOME
+
+[ "$PATH" == *"$HOME/bin"* ] || PATH="$HOME/bin:$PATH"

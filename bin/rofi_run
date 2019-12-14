@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+NAME="${0##*/}"
+VER="0.7"
+
+usage()
+{
+	cat <<EOF
+
+ USAGE:  $NAME [OPTIONS]
+
+ OPTIONS:
+
+     -h,--help          Display this message
+
+     -v,--version       Display script version
+
+     -r,--run           Application launcher
+
+     -w,--window        Switch between windows
+
+     -l,--logout        System logout dialog
+
+     -b,--browser       Browser search by keyword (requires surfraw)
+
+     -q,--qalculate     Persistant calculator dialog (requires libqalculate)
+
+     -t,--tungsten	Tungsten - A Wolfram Alpha CLI
+
+     -c,--clipboard     Select previous clipboard entries (requires greenclip)
+
+
+  Without any options the run dialog will be opened.
+
+EOF
+}
+
+if (( $# == 0 )); then
+	rofi -modi run,drun -show drun
+else
+	for arg in "$@"; do
+		case $arg in
+			-h|--help)
+				usage
+				exit 0
+				;;
+			-v|--version)
+				echo -e "$NAME -- Version $VER"
+				exit 0
+				;;
+			-r|--run)
+				rofi -modi run,drun -show drun
+				;;
+			-w|--window)
+				rofi -modi window -show window
+				;;
+			-q|--qalculate)
+				hash qalc >/dev/null 2>&1 || { echo "Requires 'libqalculate' installed"; exit 1; }
+				rofi -modi "calc:qalc +u8 -nocurrencies" -show "calc:qalc +u8 -nocurrencies" 
+				;;
+			-t|--tungsten)
+				hash tungsten >/dev/null 2>&1 || { echo "Requires 'tungsten' installed"; exit 1; }
+				rofi -modi "tungsten:tungsten" -show "tungsten:tungsten"
+				;;
+			-c|--clipboard)
+				hash greenclip >/dev/null 2>&1 || { echo "Requires 'greenclip' installed"; exit 1; }
+				rofi -modi "clipboard:greenclip print" -show "clipboard:greenclip print" 
+				;;
+			-b|--browser)
+				hash surfraw >/dev/null 2>&1 || { echo "Requires 'surfraw' installed"; exit 1; }
+				surfraw -browser="$BROWSER" "$(sr -elvi | awk -F'-' '{print $1}' | sed '/:/d' | awk '{$1=$1};1' |
+					rofi -hide-scrollbar -kb-row-select 'Tab' -kb-row-tab 'Control+space' -dmenu -mesg 'Tab for Autocomplete' -i -p 'Web Search')"
+				;;
+			-l|--logout)
+				if grep -q 'startx' $HOME/.*profile; then
+					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -lines 3 <<< " Lock| Reboot| Shutdown")"
+				else
+					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -lines 4 <<< " Lock| Logout| Reboot| Shutdown")"
+				fi
+				case "$ANS" in
+					*Lock) i3lock-fancy ;;
+					*Reboot) systemctl reboot ;;
+					*Shutdown) systemctl -i poweroff ;;
+					*Logout) session-logout >/dev/null 2>&1 || pkill -15 -t tty"$XDG_VTNR" Xorg ;;
+				esac
+				;;
+			*)
+				printf "\nOption does not exist: %s\n\n" "$arg"
+				exit 2
+		esac
+	done
+fi
+
+exit 0
+
