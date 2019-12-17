@@ -99,7 +99,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias find="fd -H"
-alias ls="exa -a"
+alias ls="exa -al"
 alias cat="bat"
 
 export FZF_DEFAULT_COMMAND="fd -H"
@@ -107,3 +107,9 @@ export EDITOR=vim
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+PATH="/opt/dotnet:$PATH"
+export DOTNET_ROOT=/opt/dotnet
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+export FLUX_FORWARD_NAMESPACE=flux
