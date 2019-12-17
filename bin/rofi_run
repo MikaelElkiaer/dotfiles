@@ -78,7 +78,7 @@ else
 					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -lines 4 <<< " Lock| Logout| Reboot| Shutdown")"
 				fi
 				case "$ANS" in
-					*Lock) i3lock-fancy ;;
+					*Lock) loginctl lock-session $XDG_SESSION_ID ;;
 					*Reboot) systemctl reboot ;;
 					*Shutdown) systemctl -i poweroff ;;
 					*Logout) session-logout >/dev/null 2>&1 || pkill -15 -t tty"$XDG_VTNR" Xorg ;;
