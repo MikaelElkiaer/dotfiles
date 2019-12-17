@@ -19,14 +19,13 @@ warning = #ebcb8b
 success = #a3be8c
 uncommon = #b48ead
 
-powerline1 = ${self.dark2}
-powerline2 = ${self.dark1}
-
 [bar/top]
 enable-ipc = true
 #monitor = eDP-1
 width = 100%
 height = 20
+#border-size = 5
+#border-color = #00ffffff
 
 background = ${color.dark1}
 foreground = ${color.light3}
@@ -42,26 +41,31 @@ font-2 = DejaVuSansMonoNerdFontMono:style=Regular:pixelsize=16;3
 
 modules-left = i3
 modules-center = clock
-modules-right = backlight wired-network wireless-network updates fs-root cpu memory battery space
+modules-right = pulseaudio wired-network wireless-network backlight fs-root cpu memory battery
 
 wm-restack = i3
 
 tray-position = right
+tray-padding = 2
 
-[module/space]
-type = custom/text
-content = " "
+[module/pulseaudio]
+type = internal/pulseaudio
+use-ui-max = true
+interval = 5
 
 [module/backlight]
 type = internal/xbacklight
+label =  %percentage%%
 
 [module/wired-network]
 type = internal/network
+interval = 5
 interface = enp0s31f6
 label-connected = 
 
 [module/wireless-network]
 type = internal/network
+interval = 5
 interface = wlan0
 format-connected = <ramp-signal> <label-connected>
 label-connected =  %essid%
@@ -76,7 +80,7 @@ ramp-signal-2-foreground = ${color.warning}
 ramp-signal-3 = 直
 ramp-signal-3-foreground = ${color.warning}
 ramp-signal-4 = 直
-ramp-signal-4-foreground = ${color.warning}
+ramp-signal-4-foreground = ${color.success}
 ramp-signal-5 = 直
 ramp-signal-5-foreground = ${color.success}
 
@@ -217,8 +221,3 @@ label-full = 
 [module/xwindow]
 type = internal/xwindow
 label-maxlen = 75
-
-[module/updates]
-type = custom/script
-exec = echo " $(pacman -Qu | wc -l)"
-interval = 60
