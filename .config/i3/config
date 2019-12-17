@@ -245,7 +245,6 @@ client.placeholder      #000000 #b48ead #ffffff #000000   #0c0c0c
 
 client.background       #ffffff
 
-#exec_always --no-startup-id $HOME/.screenlayout/ultrawide+laptop.sh
+exec --no-startup-id compton -f --config $HOME/.config/compton.conf
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id feh --bg-scale $HOME/Wallpapers
-#exec_always --no-startup-id compton -f --config $HOME/.config/compton.conf
