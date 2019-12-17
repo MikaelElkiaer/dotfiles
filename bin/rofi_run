@@ -73,12 +73,13 @@ else
 				;;
 			-l|--logout)
 				if grep -q 'startx' $HOME/.*profile; then
-					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -lines 3 <<< " Lock| Reboot| Shutdown")"
+					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -lines 4 <<< " Lock| Suspend| Reboot| Shutdown")"
 				else
-					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -lines 4 <<< " Lock| Logout| Reboot| Shutdown")"
+					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -lines 5 <<< " Lock| Logout| Suspend| Reboot| Shutdown")"
 				fi
 				case "$ANS" in
 					*Lock) loginctl lock-session $XDG_SESSION_ID ;;
+					*Suspend) systemctl suspend ;;
 					*Reboot) systemctl reboot ;;
 					*Shutdown) systemctl -i poweroff ;;
 					*Logout) session-logout >/dev/null 2>&1 || pkill -15 -t tty"$XDG_VTNR" Xorg ;;

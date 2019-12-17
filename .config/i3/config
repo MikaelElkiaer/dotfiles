@@ -79,6 +79,7 @@ bindsym Mod4+d exec --no-startup-id rofi_run -r
 # bindsym Mod4+d exec --no-startup-id i3-dmenu-desktop
 
 bindsym Mod4+x exec --no-startup-id rofi_run -l
+bindsym Mod4+Shift+x exec --no-startup-id loginctl lock-session $XDG_SESSION_ID
 bindsym Mod4+Tab exec --no-startup-id rofi_run -w
 bindsym Mod4+t exec --no-startup-id rofi_run -t
 
