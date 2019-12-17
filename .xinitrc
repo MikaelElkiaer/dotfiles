@@ -56,4 +56,6 @@ fi
 
 [ -r ~/.xprofile ] && . ~/.xprofile
 
+exec pulseaudio &
+
 exec i3
