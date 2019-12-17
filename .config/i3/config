@@ -35,6 +35,26 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
+set $dark1 #2e3440
+set $dark2 #3b4252
+set $dark3 #434c5e
+set $dark4 #4c566a
+
+set $light1 #d8dee9
+set $light2 #e5e9f0
+set $light3 #eceff4
+
+set $highlight #8fbcbb
+set $primary #88c0d0
+set $secondary #81a1c1
+set $tertiary #5e81ac
+
+set $alert #bf616a
+set $danger #d08770
+set $warning #ebcb8b
+set $success #a3be8c
+set $uncommon #b48ead
+
 # use these keys for focus, movement, and resize directions when reaching for
 # the arrows is not convenient
 set $up l
