@@ -9,4 +9,5 @@ rofi.separator-style:       none
 rofi.hide-scrollbar:        true
 rofi.line-margin:           0
 rofi.font:                  DejaVu Sans Book 10
-rofi.theme: ~/.config/rofi/custom-nord.rasi
+rofi.theme:                 ~/.config/rofi/custom-nord.rasi
+rofi.dpi:                   144
