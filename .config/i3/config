@@ -216,7 +216,7 @@ bindsym Mod4+r mode "resize"
 new_window pixel 0
 
 for_window [class=".*"] border pixel 3
-gaps inner 0
+gaps inner 10
 smart_gaps on
 smart_borders on
 
@@ -240,14 +240,14 @@ smart_borders on
 
 # Nordic colors - kinda
 # class                 border  backgr. text    indicator child_border
-client.focused          #88c0d0 #434c5e #ffffff #2e9ef4   #88c0d0
-client.focused_inactive #81a1c1 #81a1c1 #ffffff #484e50   #81a1c1
-client.unfocused        #4c566a #4c566a #888888 #292d2e   #4c566a
-client.urgent           #2f343a #d08770 #ffffff #900000   #900000
-client.placeholder      #000000 #b48ead #ffffff #000000   #0c0c0c
+client.focused          $dark2  $dark2  #ffffff $uncommon $highlight
+client.focused_inactive $dark2  $dark2  #ffffff $uncommon $dark1
+client.unfocused        $dark2  $dark2  #888888 $uncommon $dark1
+client.urgent           $dark2  $dark2  $danger $uncommon $danger
+client.placeholder      $dark2  $uncommon #ffffff $uncommon $dark1
 
 client.background       #ffffff
 
-exec --no-startup-id compton -f --config $HOME/.config/compton.conf
+exec_always --no-startup-id compton -f --config $HOME/.config/compton.conf
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id feh --bg-scale $HOME/Wallpapers

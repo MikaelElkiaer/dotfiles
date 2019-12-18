@@ -25,12 +25,12 @@ monitor = eDP1
 #monitor = DP2
 width = 100%
 height = 30
-#border-size = 5
-#border-color = #00ffffff
+border-size = 5
+border-color = #00ffffff
 
 dpi = 144
 
-background = ${color.dark1}
+background = #dd2e3440
 foreground = ${color.light3}
 
 padding-left = 0
@@ -38,10 +38,9 @@ padding-right = 0
 module-margin-left = 1
 module-margin-right = 1
 
-font-0 = DejaVuSansMono:size=10;3
+font-0 = DejaVuSansMono:size=10;5
 font-1 = Siji
-font-2 = DejaVuSansMonoNerdFontMono:style=Regular:pixelsize=16;5
-
+font-2 = DejaVuSansMonoNerdFontMono:style=Regular:size=16;6
 modules-left = i3
 modules-center = clock
 modules-right = pulseaudio wired-network wireless-network backlight fs-root cpu memory battery
