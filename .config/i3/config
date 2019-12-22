@@ -248,6 +248,7 @@ client.placeholder      $dark2  $uncommon #ffffff $uncommon $dark1
 
 client.background       #ffffff
 
-exec_always --no-startup-id compton -f --config $HOME/.config/compton.conf
+exec --no-startup-id dunst
+exec_always --no-startup-id autorandr --change
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id feh --bg-scale $HOME/Wallpapers
