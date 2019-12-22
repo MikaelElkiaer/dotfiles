@@ -1,6 +1,6 @@
 rofi.show-icons:            true
 rofi.modi:                  drun,run,window,ssh
-rofi.lines:                 7
+rofi.lines:                 10
 rofi.line-padding:          10
 rofi.matching:              fuzzy
 rofi.bw:                    0
@@ -8,5 +8,5 @@ rofi.padding:               0
 rofi.separator-style:       none
 rofi.hide-scrollbar:        true
 rofi.line-margin:           0
-rofi.font:                  DejaVu Sans Book 10
-rofi.theme:                 ~/.config/rofi/custom-nord.rasi
+rofi.font:                  DejaVu Sans Book 11
+rofi.theme:                 ~/.config/rofi/custom-dracula.rasi
