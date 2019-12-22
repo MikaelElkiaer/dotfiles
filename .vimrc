@@ -52,8 +52,12 @@ Plug 'mhinz/vim-signify'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'dracula/vim', { 'as': 'dracula' }
 call plug#end()
 
-
 let g:airline_powerline_fonts = 1
-let g:airline_theme='base16_nord'
+let g:airline_theme='dracula'
+
+let g:dracula_colorterm=0
+
+colorscheme dracula

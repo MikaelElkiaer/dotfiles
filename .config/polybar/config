@@ -1,23 +1,16 @@
 [color]
-dark1 = #2e3440
-dark2 = #3b4252
-dark3 = #434c5e
-dark4 = #4c566a
-
-light1 = #d8dee9
-light2 = #e5e9f0
-light3 = #eceff4
-
-highlight = #8fbcbb
-primary = #88c0d0
-secondary = #81a1c1
-tertiary = #5e81ac
-
-alert = #bf616a
-danger = #d08770
-warning = #ebcb8b
-success = #a3be8c
-uncommon = #b48ead
+background =	#282a36
+currentline = 	#44475a
+selection =	#44475a
+foreground =	#f8f8f2
+comment =	#6272a4
+cyan =		#8be9fd
+green =		#50fa7b
+orange =	#ffb86c
+pink =		#ff79c6
+purple =	#bd93f9
+red =		#ff5555
+yellow =	#f1fa8c
 
 [bar/top]
 enable-ipc = true
@@ -26,8 +19,8 @@ monitor = eDP1
 width = 100%
 height = 20
 
-background = #dd2e3440
-foreground = ${color.light3}
+background = ${color.background}
+foreground = ${color.foreground}
 
 padding-left = 0
 padding-right = 0
@@ -80,17 +73,17 @@ label-connected =  %essid%
 label-disconnected = 睊
 
 ramp-signal-0 = 睊
-ramp-signal-0-foregorund = ${color.alert}
+ramp-signal-0-foregorund = ${color.red}
 ramp-signal-1 = 直
-ramp-signal-1-foreground = ${color.danger}
+ramp-signal-1-foreground = ${color.orange}
 ramp-signal-2 = 直
-ramp-signal-2-foreground = ${color.warning}
+ramp-signal-2-foreground = ${color.yellow}
 ramp-signal-3 = 直
-ramp-signal-3-foreground = ${color.warning}
+ramp-signal-3-foreground = ${color.yellow}
 ramp-signal-4 = 直
-ramp-signal-4-foreground = ${color.success}
+ramp-signal-4-foreground = ${color.green}
 ramp-signal-5 = 直
-ramp-signal-5-foreground = ${color.success}
+ramp-signal-5-foreground = ${color.green}
 
 [module/fs-root]
 type = internal/fs
@@ -98,29 +91,29 @@ mount-0 = /
 format-mounted =  <ramp-capacity>
 
 ramp-capacity-7 = ▁
-ramp-capacity-7-foreground = ${color.success}
-ramp-capacity-7-background = ${color.dark2}
+ramp-capacity-7-foreground = ${color.green}
+ramp-capacity-7-background = ${color.currentline}
 ramp-capacity-6 = ▂
-ramp-capacity-6-foreground = ${color.success}
-ramp-capacity-6-background = ${color.dark2}
+ramp-capacity-6-foreground = ${color.green}
+ramp-capacity-6-background = ${color.currentline}
 ramp-capacity-5 = ▃
-ramp-capacity-5-foreground = ${color.success}
-ramp-capacity-5-background = ${color.dark2}
+ramp-capacity-5-foreground = ${color.green}
+ramp-capacity-5-background = ${color.currentline}
 ramp-capacity-4 = ▄
-ramp-capacity-4-foreground = ${color.success}
-ramp-capacity-4-background = ${color.dark2}
+ramp-capacity-4-foreground = ${color.green}
+ramp-capacity-4-background = ${color.currentline}
 ramp-capacity-3 = ▅
-ramp-capacity-3-foreground = ${color.warning}
-ramp-capacity-3-background = ${color.dark2}
+ramp-capacity-3-foreground = ${color.yellow}
+ramp-capacity-3-background = ${color.currentline}
 ramp-capacity-2 = ▆
-ramp-capacity-2-foreground = ${color.warning}
-ramp-capacity-2-background = ${color.dark2}
+ramp-capacity-2-foreground = ${color.yellow}
+ramp-capacity-2-background = ${color.currentline}
 ramp-capacity-1 = ▇
-ramp-capacity-1-foreground = ${color.danger}
-ramp-capacity-1-background = ${color.dark2}
+ramp-capacity-1-foreground = ${color.orange}
+ramp-capacity-1-background = ${color.currentline}
 ramp-capacity-0 = █
-ramp-capacity-0-foreground = ${color.alert}
-ramp-capacity-0-background = ${color.dark2}
+ramp-capacity-0-foreground = ${color.red}
+ramp-capacity-0-background = ${color.currentline}
 
 [module/i3]
 type = internal/i3
@@ -130,16 +123,16 @@ pin-workspaces = true
 label-dimmed-underline = ${root.background}
 
 label-focused = %name%
-label-focused-foreground = ${color.dark1}
-label-focused-background = ${color.highlight}
+label-focused-foreground = ${color.background}
+label-focused-background = ${color.purple}
 label-focused-padding = 2
 
 label-unfocused = %name%
 label-unfocused-padding = 2
 
 label-urgent = %name%
-label-urgent-foreground = ${color.light3}
-label-urgent-background = ${color.danger}
+label-urgent-foreground = ${color.background}
+label-urgent-background = ${color.orange}
 label-urgent-padding = 2
 
 label-visible = %name%
@@ -155,29 +148,29 @@ format = <label> <ramp-coreload>
 label = 
 
 ramp-coreload-0 = ▁
-ramp-coreload-0-foreground = ${color.success}
-ramp-coreload-0-background = ${color.dark2}
+ramp-coreload-0-foreground = ${color.green}
+ramp-coreload-0-background = ${color.currentline}
 ramp-coreload-1 = ▂
-ramp-coreload-1-foreground = ${color.success}
-ramp-coreload-1-background = ${color.dark2}
+ramp-coreload-1-foreground = ${color.green}
+ramp-coreload-1-background = ${color.currentline}
 ramp-coreload-2 = ▃
-ramp-coreload-2-foreground = ${color.success}
-ramp-coreload-2-background = ${color.dark2}
+ramp-coreload-2-foreground = ${color.green}
+ramp-coreload-2-background = ${color.currentline}
 ramp-coreload-3 = ▄
-ramp-coreload-3-foreground = ${color.success}
-ramp-coreload-3-background = ${color.dark2}
+ramp-coreload-3-foreground = ${color.green}
+ramp-coreload-3-background = ${color.currentline}
 ramp-coreload-4 = ▅
-ramp-coreload-4-foreground = ${color.warning}
-ramp-coreload-4-background = ${color.dark2}
+ramp-coreload-4-foreground = ${color.yellow}
+ramp-coreload-4-background = ${color.currentline}
 ramp-coreload-5 = ▆
-ramp-coreload-5-foreground = ${color.warning}
-ramp-coreload-5-background = ${color.dark2}
+ramp-coreload-5-foreground = ${color.yellow}
+ramp-coreload-5-background = ${color.currentline}
 ramp-coreload-6 = ▇
-ramp-coreload-6-foreground = ${color.danger}
-ramp-coreload-6-background = ${color.dark2}
+ramp-coreload-6-foreground = ${color.orange}
+ramp-coreload-6-background = ${color.currentline}
 ramp-coreload-7 = █
-ramp-coreload-7-foreground = ${color.alert}
-ramp-coreload-7-background = ${color.dark2}
+ramp-coreload-7-foreground = ${color.red}
+ramp-coreload-7-background = ${color.currentline}
 
 [module/memory]
 type = internal/memory
@@ -187,29 +180,29 @@ format = <label> <ramp-used>
 label = 
 
 ramp-used-0 = ▁
-ramp-used-0-foreground = ${color.success}
-ramp-used-0-background = ${color.dark2}
+ramp-used-0-foreground = ${color.green}
+ramp-used-0-background = ${color.currentline}
 ramp-used-1 = ▂
-ramp-used-1-foreground = ${color.success}
-ramp-used-1-background = ${color.dark2}
+ramp-used-1-foreground = ${color.green}
+ramp-used-1-background = ${color.currentline}
 ramp-used-2 = ▃
-ramp-used-2-foreground = ${color.success}
-ramp-used-2-background = ${color.dark2}
+ramp-used-2-foreground = ${color.green}
+ramp-used-2-background = ${color.currentline}
 ramp-used-3 = ▄
-ramp-used-3-foreground = ${color.success}
-ramp-used-3-background = ${color.dark2}
+ramp-used-3-foreground = ${color.green}
+ramp-used-3-background = ${color.currentline}
 ramp-used-4 = ▅
-ramp-used-4-foreground = ${color.warning}
-ramp-used-4-background = ${color.dark2}
+ramp-used-4-foreground = ${color.yellow}
+ramp-used-4-background = ${color.currentline}
 ramp-used-5 = ▆
-ramp-used-5-foreground = ${color.warning}
-ramp-used-5-background = ${color.dark2}
+ramp-used-5-foreground = ${color.yellow}
+ramp-used-5-background = ${color.currentline}
 ramp-used-6 = ▇
-ramp-used-6-foreground = ${color.danger}
-ramp-used-6-background = ${color.dark2}
+ramp-used-6-foreground = ${color.orange}
+ramp-used-6-background = ${color.currentline}
 ramp-used-7 = █
-ramp-used-7-foreground = ${color.alert}
-ramp-used-7-background = ${color.dark2}
+ramp-used-7-foreground = ${color.red}
+ramp-used-7-background = ${color.currentline}
 
 [module/clock]
 type = internal/date
