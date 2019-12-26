@@ -72,8 +72,8 @@ format-connected = <ramp-signal> <label-connected>
 label-connected =  %essid%
 label-disconnected = 睊
 
-ramp-signal-0 = 睊
-ramp-signal-0-foregorund = ${color.red}
+ramp-signal-0 = 直
+ramp-signal-0-foreground = ${color.red}
 ramp-signal-1 = 直
 ramp-signal-1-foreground = ${color.orange}
 ramp-signal-2 = 直
