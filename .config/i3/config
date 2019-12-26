@@ -22,7 +22,7 @@ font pango:DejaVu Sans Book 10
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -c "#2e3440" --nofork
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -c "#282a36" --nofork
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
@@ -235,7 +235,7 @@ smart_borders on
 
 # class                 	border  	backgr. 	text		indicator 	child_border
 client.focused			$background    	$selection	$cyan		$cyan 		$purple
-client.focused_inactive		$background    	$background	$foreground	$cyan 		$background
+client.focused_inactive		$background    	$background	$foreground	$cyan 		$comment
 client.unfocused		$background    	$background	$selection 	$cyan 		$background
 client.urgent			$background    	$background	$red		$cyan 		$red
 client.placeholder		$background    	$purple		$foreground	$cyan 		$background
