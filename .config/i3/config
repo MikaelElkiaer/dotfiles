@@ -244,5 +244,4 @@ client.background		$background
 
 exec_always --no-startup-id xsetroot -solid "$background"
 exec --no-startup-id dunst
-exec_always --no-startup-id autorandr --change
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
