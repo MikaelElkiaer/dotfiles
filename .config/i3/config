@@ -35,8 +35,8 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ to
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 # Brightness control
-bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -dec 10 -steps 1
-bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 10 -steps 1
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
 
 # Dracula colors
 set $background 	#282a36
@@ -242,6 +242,8 @@ client.placeholder		$background    	$purple		$foreground	$cyan 		$background
 
 client.background		$background
 
-exec_always --no-startup-id xsetroot -solid "$background"
+exec_always --no-startup-id hsetroot -solid "$background"
+exec --no-startup-id autorandr --change
+exec --no-startup-id picom
 exec --no-startup-id dunst
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh

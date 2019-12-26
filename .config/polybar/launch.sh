@@ -8,9 +8,9 @@ while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
 # Determine monitor
 if [[ $(autorandr | awk '/(current)/ {print $1}') == "work" ]]; then
-	CURRENT_POLYBAR_MONITOR=DP2
+	CURRENT_POLYBAR_MONITOR=DP-2
 #elif [[ $(autorandr | awk '/(current)/ {print $1}') == "home" ]]; then
-#	CURRENT_POLYBAR_MONITOR=HDMI2
+#	CURRENT_POLYBAR_MONITOR=HDMI-2
 fi
 
 # Launch top bar
