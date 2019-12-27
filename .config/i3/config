@@ -241,7 +241,7 @@ client.placeholder		$background    	$purple		$foreground	$cyan 		$background
 
 client.background		$background
 
-exec_always --no-startup-id feh --bg-scale --randomize $HOME/Wallpapers/dracula/1559703.jpg
+exec_always --no-startup-id feh --bg-scale --randomize $HOME/Wallpapers/dracula/45412.jpg
 exec --no-startup-id autorandr --change
 exec --no-startup-id picom --config $HOME/.config/picom.conf
 exec --no-startup-id dunst
