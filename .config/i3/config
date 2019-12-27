@@ -211,10 +211,9 @@ bindsym Mod4+r mode "resize"
 new_window pixel 0
 
 for_window [class=".*"] border pixel 3
-gaps inner 0
+gaps inner 10
 smart_gaps on
 smart_borders on
-
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
@@ -235,14 +234,14 @@ smart_borders on
 
 # class                 	border  	backgr. 	text		indicator 	child_border
 client.focused			$background    	$selection	$cyan		$cyan 		$purple
-client.focused_inactive		$background    	$background	$foreground	$cyan 		$comment
+client.focused_inactive		$background    	$background	$foreground	$cyan 		$background
 client.unfocused		$background    	$background	$selection 	$cyan 		$background
 client.urgent			$background    	$background	$red		$cyan 		$red
 client.placeholder		$background    	$purple		$foreground	$cyan 		$background
 
 client.background		$background
 
-exec_always --no-startup-id hsetroot -solid "$background"
+exec_always --no-startup-id feh --bg-scale --randomize $HOME/Wallpapers/dracula/1559703.jpg
 exec --no-startup-id autorandr --change
 exec --no-startup-id picom
 exec --no-startup-id dunst
