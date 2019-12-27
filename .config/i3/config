@@ -243,6 +243,6 @@ client.background		$background
 
 exec_always --no-startup-id feh --bg-scale --randomize $HOME/Wallpapers/dracula/1559703.jpg
 exec --no-startup-id autorandr --change
-exec --no-startup-id picom
+exec --no-startup-id picom --config $HOME/.config/picom.conf
 exec --no-startup-id dunst
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
