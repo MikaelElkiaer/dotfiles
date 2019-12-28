@@ -16,31 +16,24 @@ yellow =	#f1fa8c
 enable-ipc = true
 monitor = ${env:POLYBAR_MONITOR:eDP-1}
 monitor-exact = false
+wm-restack = i3
+tray-position = right
+tray-padding = 2
+
 width = 100%
 height = 20
-
 background = ${color.background}
 foreground = ${color.foreground}
-
-padding-left = 0
-padding-right = 0
 module-margin-left = 1
 module-margin-right = 1
 
 font-0 = DejaVuSansMono:size=10;3
 font-1 = Siji
 font-2 = DejaVuSansMonoNerdFontMono:style=Regular:size=16;3
+
 modules-left = i3
 modules-center = xwindow
 modules-right = vpn-openvpn-isrunning wired-network wireless-network cpu memory pulseaudio backlight battery clock
-
-wm-restack = i3
-
-tray-position = right
-tray-padding = 2
-
-[module/title]
-type = internal/xwindow
 
 [module/vpn-openvpn-isrunning]
 type = custom/script
@@ -51,8 +44,8 @@ interval = 5
 type = internal/pulseaudio
 use-ui-max = true
 interval = 5
-label-muted = ﱝ
 format-volume = 墳 <label-volume>
+label-muted = ﱝ
 
 [module/backlight]
 type = internal/backlight
@@ -72,7 +65,6 @@ interface = wlan0
 format-connected = <ramp-signal> <label-connected>
 label-connected =  %essid%
 label-disconnected = 睊
-
 ramp-signal-0 = 直
 ramp-signal-0-foreground = ${color.red}
 ramp-signal-1 = 直
@@ -86,56 +78,21 @@ ramp-signal-4-foreground = ${color.green}
 ramp-signal-5 = 直
 ramp-signal-5-foreground = ${color.green}
 
-[module/fs-root]
-type = internal/fs
-mount-0 = /
-format-mounted =  <ramp-capacity>
-
-ramp-capacity-7 = ▁
-ramp-capacity-7-foreground = ${color.green}
-ramp-capacity-7-background = ${color.currentline}
-ramp-capacity-6 = ▂
-ramp-capacity-6-foreground = ${color.green}
-ramp-capacity-6-background = ${color.currentline}
-ramp-capacity-5 = ▃
-ramp-capacity-5-foreground = ${color.green}
-ramp-capacity-5-background = ${color.currentline}
-ramp-capacity-4 = ▄
-ramp-capacity-4-foreground = ${color.green}
-ramp-capacity-4-background = ${color.currentline}
-ramp-capacity-3 = ▅
-ramp-capacity-3-foreground = ${color.yellow}
-ramp-capacity-3-background = ${color.currentline}
-ramp-capacity-2 = ▆
-ramp-capacity-2-foreground = ${color.yellow}
-ramp-capacity-2-background = ${color.currentline}
-ramp-capacity-1 = ▇
-ramp-capacity-1-foreground = ${color.orange}
-ramp-capacity-1-background = ${color.currentline}
-ramp-capacity-0 = █
-ramp-capacity-0-foreground = ${color.red}
-ramp-capacity-0-background = ${color.currentline}
-
 [module/i3]
 type = internal/i3
-format = <label-state> <label-mode>
 pin-workspaces = true
-
+format = <label-state> <label-mode>
 label-dimmed-underline = ${root.background}
-
 label-focused = %name%
 label-focused-foreground = ${color.background}
 label-focused-background = ${color.purple}
 label-focused-padding = 2
-
 label-unfocused = %name%
 label-unfocused-padding = 2
-
 label-urgent = %name%
 label-urgent-foreground = ${color.background}
 label-urgent-background = ${color.orange}
 label-urgent-padding = 2
-
 label-visible = %name%
 label-visible-foreground = #55ffffff
 label-visible-padding = 2
@@ -143,67 +100,48 @@ label-visible-padding = 2
 [module/cpu]
 type = internal/cpu
 interval = 1
-
 format = <label> <ramp-coreload>
-
 label = 
-
+ramp-coreload-background = ${color.currentline}
 ramp-coreload-0 = ▁
 ramp-coreload-0-foreground = ${color.green}
-ramp-coreload-0-background = ${color.currentline}
 ramp-coreload-1 = ▂
 ramp-coreload-1-foreground = ${color.green}
-ramp-coreload-1-background = ${color.currentline}
 ramp-coreload-2 = ▃
 ramp-coreload-2-foreground = ${color.green}
-ramp-coreload-2-background = ${color.currentline}
 ramp-coreload-3 = ▄
 ramp-coreload-3-foreground = ${color.green}
-ramp-coreload-3-background = ${color.currentline}
 ramp-coreload-4 = ▅
 ramp-coreload-4-foreground = ${color.yellow}
-ramp-coreload-4-background = ${color.currentline}
 ramp-coreload-5 = ▆
 ramp-coreload-5-foreground = ${color.yellow}
-ramp-coreload-5-background = ${color.currentline}
 ramp-coreload-6 = ▇
 ramp-coreload-6-foreground = ${color.orange}
-ramp-coreload-6-background = ${color.currentline}
 ramp-coreload-7 = █
 ramp-coreload-7-foreground = ${color.red}
-ramp-coreload-7-background = ${color.currentline}
 
 [module/memory]
 type = internal/memory
 interval = 1
 format = <label> <ramp-used>
-
 label = 
-
+ramp-used-background = ${color.currentline}
 ramp-used-0 = ▁
 ramp-used-0-foreground = ${color.green}
-ramp-used-0-background = ${color.currentline}
 ramp-used-1 = ▂
 ramp-used-1-foreground = ${color.green}
-ramp-used-1-background = ${color.currentline}
 ramp-used-2 = ▃
 ramp-used-2-foreground = ${color.green}
-ramp-used-2-background = ${color.currentline}
 ramp-used-3 = ▄
 ramp-used-3-foreground = ${color.green}
-ramp-used-3-background = ${color.currentline}
 ramp-used-4 = ▅
 ramp-used-4-foreground = ${color.yellow}
-ramp-used-4-background = ${color.currentline}
 ramp-used-5 = ▆
 ramp-used-5-foreground = ${color.yellow}
-ramp-used-5-background = ${color.currentline}
 ramp-used-6 = ▇
 ramp-used-6-foreground = ${color.orange}
-ramp-used-6-background = ${color.currentline}
 ramp-used-7 = █
 ramp-used-7-foreground = ${color.red}
-ramp-used-7-background = ${color.currentline}
 
 [module/clock]
 type = internal/date
@@ -217,20 +155,21 @@ battery = BAT0
 adapter = AC
 full-at = 99
 format-charging = <animation-charging> <label-charging> %{T-}
+format-discharging = <ramp-capacity> <label-discharging> %{T-}
+label-full = 
 animation-charging-0 = 
 animation-charging-1 = 
 animation-charging-2 = 
 animation-charging-3 = 
 animation-charging-4 = 
 animation-charging-framerate = 1000
-format-discharging = <ramp-capacity> <label-discharging> %{T-}
 ramp-capacity-0 = 
 ramp-capacity-1 = 
 ramp-capacity-2 = 
 ramp-capacity-3 = 
 ramp-capacity-4 = 
-label-full = 
 
 [module/xwindow]
 type = internal/xwindow
 label-maxlen = 75
+format-foreground = ${color.purple}
