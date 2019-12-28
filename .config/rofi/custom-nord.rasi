@@ -1,3 +1,5 @@
+// Source: https://github.com/devdevdevdevdeo/dotfiles/blob/master/custom-nord.rasi
+
 * {
     backgroundcolor: #2e3440;
     bg1: #3b4252;
