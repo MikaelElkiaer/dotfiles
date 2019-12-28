@@ -73,9 +73,9 @@ else
 				;;
 			-l|--logout)
 				if grep -q 'startx' $HOME/.*profile; then
-					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -lines 4 <<< " Lock| Suspend| Reboot| Shutdown")"
+					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -no-show-icons -lines 4 <<< " Lock| Suspend| Reboot| Shutdown")"
 				else
-					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -lines 5 <<< " Lock| Logout| Suspend| Reboot| Shutdown")"
+					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -no-show-icons -lines 5 <<< " Lock| Logout| Suspend| Reboot| Shutdown")"
 				fi
 				case "$ANS" in
 					*Lock) loginctl lock-session $XDG_SESSION_ID ;;
