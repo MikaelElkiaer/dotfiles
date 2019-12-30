@@ -21,15 +21,15 @@ tray-position = right
 tray-padding = 2
 
 width = 100%
-height = 20
+height = 25
 background = ${color.background}
 foreground = ${color.foreground}
 module-margin-left = 1
 module-margin-right = 1
 
-font-0 = DejaVuSansMono:size=10;3
+font-0 = DejaVuSansMono:size=11;2
 font-1 = Siji
-font-2 = DejaVuSansMonoNerdFontMono:style=Regular:size=16;3
+font-2 = DejaVuSansMonoNerdFontMono:style=Regular:size=18;3
 
 modules-left = i3
 modules-center = xwindow
@@ -102,7 +102,6 @@ type = internal/cpu
 interval = 1
 format = <label> <ramp-coreload>
 label = 
-ramp-coreload-background = ${color.currentline}
 ramp-coreload-0 = ▁
 ramp-coreload-0-foreground = ${color.green}
 ramp-coreload-1 = ▂
@@ -125,7 +124,6 @@ type = internal/memory
 interval = 1
 format = <label> <ramp-used>
 label = 
-ramp-used-background = ${color.currentline}
 ramp-used-0 = ▁
 ramp-used-0-foreground = ${color.green}
 ramp-used-1 = ▂
