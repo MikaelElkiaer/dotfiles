@@ -26,7 +26,7 @@ font pango:DejaVu Sans Mono 10
 
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -c "$background" --nofork
 
-bindsym Print exec gnome-screenshot 
+bindsym Print exec scrot
 
 # Use pactl to adjust volume in PulseAudio.
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
