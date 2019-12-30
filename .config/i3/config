@@ -201,9 +201,9 @@ client.urgent			$background    	$background	$red		$cyan 		$red
 client.placeholder		$background    	$purple		$foreground	$cyan 		$background
 client.background		$background
 
-exec_always --no-startup-id feh --bg-scale --randomize $HOME/Wallpapers/dracula/45412.jpg
-exec_always --no-startup-id pgrep -f "autoname_workspaces.py" | xargs -r kill -2 && $HOME/Repositories/i3scripts/autoname_workspaces.py &
-exec --no-startup-id autorandr --change
-exec --no-startup-id picom --config $HOME/.config/picom.conf
-exec --no-startup-id dunst
+exec_always --no-startup-id pgrep -f "autoname_workspaces.py" | xargs -r kill -2 && $HOME/Repositories/i3scripts/autoname_workspaces.py
+exec_always --no-startup-id autorandr --change
+exec_always --no-startup-id pkill dunst && dunst
+exec_always --no-startup-id picom --config $HOME/.config/picom.conf
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id feh --bg-scale --randomize $HOME/Wallpapers/dracula/45412.jpg
