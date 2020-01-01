@@ -33,7 +33,7 @@ font-2 = DejaVuSansMonoNerdFontMono:style=Regular:size=18;3
 
 modules-left = i3
 modules-center = xwindow
-modules-right = vpn-openvpn-isrunning wired-network wireless-network cpu memory pulseaudio backlight battery clock
+modules-right = vpn-openvpn-isrunning wired-network wireless-network pulseaudio cpu memory backlight battery clock
 
 [module/vpn-openvpn-isrunning]
 type = custom/script
@@ -152,17 +152,14 @@ type = internal/battery
 battery = BAT0
 adapter = AC
 full-at = 99
-format-charging = <animation-charging> <label-charging> %{T-}
-format-discharging = <ramp-capacity> <label-discharging> %{T-}
+format-charging = <ramp-capacity> <label-charging>
+format-discharging = <ramp-capacity> <label-discharging>
+label-charging = +%percentage%%
 label-full = 
-animation-charging-0 = 
-animation-charging-1 = 
-animation-charging-2 = 
-animation-charging-3 = 
-animation-charging-4 = 
-animation-charging-framerate = 1000
 ramp-capacity-0 = 
+ramp-capacity-0-foreground = ${color.red}
 ramp-capacity-1 = 
+ramp-capacity-1-foreground = ${color.yellow}
 ramp-capacity-2 = 
 ramp-capacity-3 = 
 ramp-capacity-4 = 
