@@ -119,3 +119,6 @@ export DOTNET_ROOT=/opt/dotnet
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 export FLUX_FORWARD_NAMESPACE=flux
+
+bindkey "^[[7~" beginning-of-line
+bindkey "^[[8~" end-of-line
