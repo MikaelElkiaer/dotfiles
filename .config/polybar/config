@@ -32,8 +32,13 @@ font-1 = Siji
 font-2 = DejaVuSansMonoNerdFontMono:style=Regular:size=18;3
 
 modules-left = i3
-modules-center = xwindow
+modules-center = player-mpris-simple
 modules-right = vpn-openvpn-isrunning wired-network wireless-network pulseaudio cpu memory backlight battery clock
+
+[module/player-mpris-simple]
+type = custom/script
+exec = ~/.config/polybar/scripts/player-mpris-simple.sh
+interval = 2
 
 [module/vpn-openvpn-isrunning]
 type = custom/script
@@ -163,8 +168,3 @@ ramp-capacity-1-foreground = ${color.yellow}
 ramp-capacity-2 = 
 ramp-capacity-3 = 
 ramp-capacity-4 = 
-
-[module/xwindow]
-type = internal/xwindow
-label-maxlen = 75
-format-foreground = ${color.purple}
