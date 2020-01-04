@@ -28,6 +28,7 @@ background = ${color.background}
 foreground = ${color.foreground}
 module-margin-left = 1
 module-margin-right = 1
+underline-size = 3
 
 font-0 = DejaVuSansMono:size=11;5
 font-1 = Siji
@@ -89,11 +90,10 @@ ramp-signal-5-foreground = ${color.green}
 type = internal/i3
 pin-workspaces = true
 format = <label-state> <label-mode>
-label-dimmed-underline = ${root.background}
 label-focused = %name%
-label-focused-foreground = ${color.background}
-label-focused-background = ${color.purple}
+label-focused-foreground = ${color.purple}
 label-focused-padding = 2
+label-focused-underline = ${color.purple}
 label-unfocused = %name%
 label-unfocused-padding = 2
 label-urgent = %name%
