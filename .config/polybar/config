@@ -92,17 +92,17 @@ pin-workspaces = true
 format = <label-state> <label-mode>
 label-focused = %name%
 label-focused-foreground = ${color.purple}
-label-focused-padding = 2
+label-focused-padding = 1
 label-focused-underline = ${color.purple}
 label-unfocused = %name%
-label-unfocused-padding = 2
+label-unfocused-padding = 1
 label-urgent = %name%
 label-urgent-foreground = ${color.background}
 label-urgent-background = ${color.orange}
-label-urgent-padding = 2
+label-urgent-padding = 1
 label-visible = %name%
 label-visible-foreground = #55ffffff
-label-visible-padding = 2
+label-visible-padding = 1
 
 [module/cpu]
 type = internal/cpu
