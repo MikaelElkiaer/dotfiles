@@ -21,15 +21,16 @@ tray-position = right
 tray-padding = 2
 
 width = 100%
-height = 25
+height = 30
+dpi = ${xrdb:Xft.dpi:96}
 background = ${color.background}
 foreground = ${color.foreground}
 module-margin-left = 1
 module-margin-right = 1
 
-font-0 = DejaVuSansMono:size=11;2
+font-0 = DejaVuSansMono:size=11;5
 font-1 = Siji
-font-2 = DejaVuSansMonoNerdFontMono:style=Regular:size=18;3
+font-2 = DejaVuSansMonoNerdFontMono:style=Regular:size=18;7
 
 modules-left = i3
 modules-center = player-mpris-simple

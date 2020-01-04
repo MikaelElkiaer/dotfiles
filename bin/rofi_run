@@ -35,6 +35,8 @@ usage()
 EOF
 }
 
+ROFI_DPI=$(xrdb -query| awk '/Xft\.dpi:/ {print $2}')
+
 if (( $# == 0 )); then
 	rofi -modi run,drun -show drun
 else
@@ -49,10 +51,10 @@ else
 				exit 0
 				;;
 			-r|--run)
-				rofi -modi run,drun -show drun -width 30
+				rofi -modi run,drun -show drun -width 30 -dpi $ROFI_DPI
 				;;
 			-w|--window)
-				rofi -modi window -show window
+				rofi -modi window -show window -dpi $ROFI_DPI
 				;;
 			-q|--qalculate)
 				hash qalc >/dev/null 2>&1 || { echo "Requires 'libqalculate' installed"; exit 1; }
@@ -60,7 +62,7 @@ else
 				;;
 			-t|--tungsten)
 				hash tungsten >/dev/null 2>&1 || { echo "Requires 'tungsten' installed"; exit 1; }
-				rofi -modi "tungsten:tungsten" -show "tungsten:tungsten"
+				rofi -modi "tungsten:tungsten" -show "tungsten:tungsten" -dpi $ROFI_DPI
 				;;
 			-c|--clipboard)
 				hash greenclip >/dev/null 2>&1 || { echo "Requires 'greenclip' installed"; exit 1; }
@@ -73,9 +75,9 @@ else
 				;;
 			-l|--logout)
 				if grep -q 'startx' $HOME/.*profile; then
-					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -no-show-icons -lines 4 <<< " Lock| Suspend| Reboot| Shutdown")"
+					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -dpi $ROFI_DPI -no-show-icons -lines 4 <<< " Lock| Suspend| Reboot| Shutdown")"
 				else
-					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -no-show-icons -lines 5 <<< " Lock| Logout| Suspend| Reboot| Shutdown")"
+					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -dpi $ROFI_DPI -no-show-icons -lines 5 <<< " Lock| Logout| Suspend| Reboot| Shutdown")"
 				fi
 				case "$ANS" in
 					*Lock) loginctl lock-session $XDG_SESSION_ID ;;
