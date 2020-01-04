@@ -52,6 +52,8 @@ Plug 'mhinz/vim-signify'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 call plug#end()
 
