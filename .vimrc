@@ -54,6 +54,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
+Plug 'chrisbra/colorizer'
 Plug 'dracula/vim', { 'as': 'dracula' }
 call plug#end()
 
