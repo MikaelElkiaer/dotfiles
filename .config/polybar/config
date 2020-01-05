@@ -77,17 +77,18 @@ type = internal/i3
 pin-workspaces = true
 format = <label-state> <label-mode>
 label-focused = %name%
-label-focused-foreground = ${xrdb:color4}
+label-focused-foreground = ${xrdb:foreground}
 label-focused-padding = 1
 label-focused-underline = ${xrdb:color4}
 label-unfocused = %name%
+label-unfocused-foreground = ${xrdb:color7}
 label-unfocused-padding = 1
 label-urgent = %name%
 label-urgent-foreground = ${xrdb:background}
 label-urgent-background = ${xrdb:color1}
 label-urgent-padding = 1
 label-visible = %name%
-label-visible-foreground = ${xrdb:foreground}
+label-visible-foreground = ${xrdb:color7}
 label-visible-padding = 1
 
 [module/cpu]
