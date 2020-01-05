@@ -1,6 +1,9 @@
-rofi.show-icons:            true
-rofi.modi:                  drun,run,window,ssh
-rofi.lines:                 10
-rofi.matching:              fuzzy
-rofi.font:                  DejaVu Sans Book 11
-rofi.theme:                 ~/.config/rofi/custom-dracula.rasi
+rofi.show-icons:		true
+rofi.modi:			drun,run,window,ssh
+rofi.lines:			10
+rofi.matching:			fuzzy
+rofi.font:			DejaVu Sans Book 11
+rofi.terminal:			urxvt
+rofi.ssh-client:		ssh
+rofi.ssh-command:		{terminal} -e {ssh-client} {host}
+rofi.theme:			~/.config/rofi/custom-dracula.rasi
