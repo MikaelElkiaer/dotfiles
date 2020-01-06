@@ -54,7 +54,7 @@ else
 				rofi -modi drun,ssh -show drun -width 30 -dpi $ROFI_DPI
 				;;
 			-w|--window)
-				rofi -modi window -show window -dpi $ROFI_DPI
+				rofi -modi window -show window -dpi $ROFI_DPI -no-show-icons
 				;;
 			-q|--qalculate)
 				hash qalc >/dev/null 2>&1 || { echo "Requires 'libqalculate' installed"; exit 1; }
