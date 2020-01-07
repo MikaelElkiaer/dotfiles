@@ -105,7 +105,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias find="fd -H"
+alias find="fd -H -I"
 alias ls="exa -al"
 alias cat="bat"
 
