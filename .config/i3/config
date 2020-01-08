@@ -210,4 +210,4 @@ client.background		$background
 exec_always --no-startup-id pgrep -f "autoname_workspaces.py" | xargs -r kill -2; $HOME/Repositories/i3scripts/autoname_workspaces.py --norenumber_workspaces --icon_list_format mathematician
 exec_always --no-startup-id killall -qw dunst; dunst
 exec_always --no-startup-id killall -qw picom; picom
-exec_always --no-startup-id autorandr --change; $HOME/.config/polybar/launch.sh;feh --bg-scale --randomize $HOME/Wallpapers/dracula/45412.jpg
+exec_always --no-startup-id autorandr --change; $HOME/.config/polybar/launch.sh;feh --bg-scale $HOME/Wallpapers/dracula/45412.jpg
