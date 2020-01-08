@@ -24,8 +24,6 @@ set $yellow 		#f1fa8c
 
 font pango:DejaVu Sans Mono 10
 
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -c "$background" --nofork
-
 bindsym Print exec scrot
 
 # Use pactl to adjust volume in PulseAudio.
