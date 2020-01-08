@@ -11,6 +11,8 @@ nmap <silent> <c-Down> :wincmd j<CR>
 nmap <silent> <c-Left> :wincmd h<CR>
 nmap <silent> <c-Right> :wincmd l<CR>
 
+nmap <silent> <c-k> <c-o> :Files<CR>
+
 command	Md 	:m +1
 command Mu 	:m -2
 command C 	:s/^./\=submatch(0)=="#"?"":"#".submatch(0)/
