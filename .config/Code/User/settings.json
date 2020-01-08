@@ -1,0 +1,25 @@
+{
+    "workbench.colorTheme": "Dracula",
+    "go.formatTool": "goimports",
+    "go.useLanguageServer": true,
+    "gitlens.codeLens.scopes": [
+        "document",
+        "containers",
+        "blocks"
+    ],
+    "editor.wordWrap": "on",
+    "editor.wrappingIndent": "deepIndent",
+    "terminal.integrated.rendererType": "dom",
+    "window.zoomLevel": 0,
+    "editor.fontSize": 11,
+    "editor.fontFamily": "'DejaVuSansMono Nerd Font Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "omnisharp.disableMSBuildDiagnosticWarning": true,
+    "debug.console.fontSize": 11,
+    "debug.console.fontFamily": "DejaVuSansMono Nerd Font Mono",
+    "terminal.integrated.fontSize": 11,
+    "terminal.integrated.fontFamily": "DejaVuSansMono Nerd Font Mono",
+    "markdown.preview.fontSize": 11,
+    "vim.easymotionMarkerFontSize": "11",
+    "vim.easymotionMarkerFontFamily": "DejaVuSansMono Nerd Font Mono",
+    "files.autoSave": "off"
+}
