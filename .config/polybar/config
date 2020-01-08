@@ -8,17 +8,17 @@ tray-padding = 2
 
 bottom = true
 width = 100%
-height = 40
-dpi = ${xrdb:Xft.dpi:144}
+height = 20
+dpi = ${xrdb:Xft.dpi:72}
 background = ${xrdb:background}
 foreground = ${xrdb:foreground}
 module-margin-left = 1
 module-margin-right = 1
-underline-size = 3
+underline-size = 2
 
-font-0 = DejaVuSansMono:size=11;5
-font-1 = DejaVuSansMonoNerdFontMono:size=18;7
-font-2 = DejaVuSans:size=11;5
+font-0 = DejaVuSansMono:size=11;3
+font-1 = DejaVuSansMonoNerdFontMono:size=18;4
+font-2 = DejaVuSans:size=11;3
 
 modules-left = i3
 modules-center = player-mpris-simple

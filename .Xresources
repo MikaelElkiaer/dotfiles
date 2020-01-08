@@ -24,4 +24,4 @@ URxvt*scrollBar_right: false
 URxvt*scrollBar_floating: false
 URxvt.font: xft:DejaVuSansMono Nerd Font Mono:size=11
 
-Xft.dpi: 144
+Xft.dpi: 72
