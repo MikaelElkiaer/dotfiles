@@ -22,7 +22,7 @@ set $purple 		#bd93f9
 set $red 		#ff5555
 set $yellow 		#f1fa8c
 
-font pango:DejaVu Sans Mono 10
+font pango:DejaVu Sans Mono 11
 
 bindsym Print exec scrot
 
@@ -200,7 +200,7 @@ smart_gaps on
 smart_borders on
 
 # class                 	border  	backgr. 	text		indicator 	child_border
-client.focused			$background    	$selection	$foreground	$cyan 		$purple
+client.focused			$background    	$selection	$foreground	$cyan 		$pink
 client.focused_inactive		$background    	$background	$foreground	$cyan 		$background
 client.unfocused		$background    	$background	$selection 	$cyan 		$background
 client.urgent			$background    	$background	$red		$cyan 		$red
