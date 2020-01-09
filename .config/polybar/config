@@ -1,10 +1,7 @@
-[bar/top]
+[bar/shared]
 enable-ipc = true
-monitor = ${env:POLYBAR_MONITOR:eDP-1}
 monitor-exact = false
 wm-restack = i3
-tray-position = right
-tray-padding = 2
 
 bottom = true
 width = 100%
@@ -20,9 +17,20 @@ font-0 = DejaVuSansMono:size=11;3
 font-1 = DejaVuSansMonoNerdFontMono:size=18;4
 font-2 = DejaVuSans:size=11;3
 
-modules-left = i3
-modules-center = player-mpris-simple
+
+[bar/primary]
+inherit = bar/shared
+monitor = ${env:POLYBAR_MONITOR:eDP-1}
+tray-position = right
+tray-padding = 2
+modules-left = player-mpris-simple
+modules-center = i3
 modules-right = vpn-openvpn-isrunning wired-network wireless-network pulseaudio cpu memory backlight battery clock
+
+[bar/secondary]
+inherit = bar/shared
+monitor = ${env:POLYBAR_MONITOR}
+modules-center = i3
 
 [module/player-mpris-simple]
 type = custom/script
