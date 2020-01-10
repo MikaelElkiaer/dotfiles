@@ -6,5 +6,6 @@ XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CONFIG_HOME
 
 [ "$PATH" == *"$HOME/bin"* ] || PATH="$HOME/bin:$PATH"
+[ "$PATH" == *"/opt/dotnet"* ] || PATH="/opt/dotnet:$PATH"
 
 exec light-locker &
