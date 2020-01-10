@@ -57,6 +57,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'chrisbra/colorizer'
+Plug 'yggdroot/indentline'
 Plug 'dracula/vim', { 'as': 'dracula' }
 call plug#end()
 
@@ -64,5 +65,7 @@ let g:airline_powerline_fonts = 1
 let g:airline_theme='dracula'
 
 let g:dracula_colorterm=0
+
+let g:indentLine_char = '┆'
 
 colorscheme dracula
