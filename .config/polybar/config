@@ -23,9 +23,9 @@ inherit = bar/shared
 monitor = ${env:POLYBAR_MONITOR:eDP-1}
 tray-position = right
 tray-padding = 2
-modules-left = player-mpris-simple
+modules-left = pulseaudio player-mpris-simple
 modules-center = i3
-modules-right = vpn-openvpn-isrunning wired-network wireless-network pulseaudio cpu memory backlight battery clock
+modules-right = vpn-openvpn-isrunning wired-network wireless-network backlight battery cpu memory clock
 
 [bar/secondary]
 inherit = bar/shared
@@ -46,7 +46,9 @@ interval = 5
 type = internal/pulseaudio
 use-ui-max = true
 interval = 5
+format-volume-margin = 1
 format-volume = 墳 <label-volume>
+format-muted-padding = 1
 label-muted = ﱝ
 
 [module/backlight]
@@ -146,7 +148,7 @@ ramp-used-7-foreground = ${xrdb:color1}
 [module/clock]
 type = internal/date
 interval = 0.1
-label-padding = 1
+label-padding-right = 1
 date =  %%{F}%a, %b %d%%{F-} %%{F}%H:%M:%S%%{F-}
 
 [module/battery]
