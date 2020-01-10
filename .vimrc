@@ -2,15 +2,6 @@ set 	number
 set 	nohlsearch
 syntax on
 
-nmap <silent> <c-k> :wincmd k<CR>
-nmap <silent> <c-j> :wincmd j<CR>
-nmap <silent> <c-h> :wincmd h<CR>
-nmap <silent> <c-l> :wincmd l<CR>
-nmap <silent> <c-Up> :wincmd k<CR>
-nmap <silent> <c-Down> :wincmd j<CR>
-nmap <silent> <c-Left> :wincmd h<CR>
-nmap <silent> <c-Right> :wincmd l<CR>
-
 nmap <silent> <c-k> <c-o> :Files<CR>
 
 command	Md 	:m +1
