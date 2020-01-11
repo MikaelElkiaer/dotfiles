@@ -8,7 +8,7 @@ width = 100%
 height = 20
 dpi = ${xrdb:Xft.dpi:72}
 background = ${xrdb:background}
-foreground = ${xrdb:foreground}
+foreground = ${xrdb:color4}
 module-margin-left = 1
 module-margin-right = 1
 underline-size = 2
@@ -47,14 +47,15 @@ type = internal/pulseaudio
 use-ui-max = true
 interval = 5
 format-volume-margin = 1
-format-volume = 墳 <label-volume>
+format-volume = 墳 %{F#fff}<label-volume>
 format-muted-padding = 1
 label-muted = ﱝ
+label-muted-foreground = ${xrdb:color3}
 
 [module/backlight]
 type = internal/backlight
 card = intel_backlight
-label =  %percentage%%
+label =  %{F#fff}%percentage%%
 
 [module/wired-network]
 type = internal/network
@@ -66,7 +67,7 @@ label-connected = 
 type = internal/network
 interval = 5
 interface = wlan0
-format-connected = <ramp-signal> <label-connected>
+format-connected = <ramp-signal> %{F#fff}<label-connected>
 label-connected =  %essid%
 label-disconnected = 睊
 ramp-signal-0 = 直
@@ -85,11 +86,10 @@ ramp-signal-5-foreground = ${xrdb:color2}
 [module/i3]
 type = internal/i3
 pin-workspaces = true
-format = <label-state> <label-mode>
+format = %{F#fff}<label-state> %{F#fff}<label-mode>
 label-focused = %name%
-label-focused-foreground = ${xrdb:foreground}
 label-focused-padding = 1
-label-focused-underline = ${xrdb:color4}
+label-focused-underline = ${xrdb:color5}
 label-unfocused = %name%
 label-unfocused-foreground = ${xrdb:color7}
 label-unfocused-padding = 1
@@ -149,15 +149,15 @@ ramp-used-7-foreground = ${xrdb:color1}
 type = internal/date
 interval = 0.1
 label-padding-right = 1
-date =  %%{F}%a, %b %d%%{F-} %%{F}%H:%M:%S%%{F-}
+date =  %%{F#fff}%a, %b %d %H:%M:%S
 
 [module/battery]
 type = internal/battery
 battery = BAT0
 adapter = AC
 full-at = 99
-format-charging = <ramp-capacity> <label-charging>
-format-discharging = <ramp-capacity> <label-discharging>
+format-charging = <ramp-capacity> %{F#fff}<label-charging>
+format-discharging = <ramp-capacity> %{F#fff}<label-discharging>
 label-charging = +%percentage%%
 label-full = 
 ramp-capacity-0 = 
@@ -165,5 +165,8 @@ ramp-capacity-0-foreground = ${xrdb:color1}
 ramp-capacity-1 = 
 ramp-capacity-1-foreground = ${xrdb:color3}
 ramp-capacity-2 = 
+ramp-capacity-2-foreground = ${xrdb:color2}
 ramp-capacity-3 = 
+ramp-capacity-3-foreground = ${xrdb:color2}
 ramp-capacity-4 = 
+ramp-capacity-4-foreground = ${xrdb:color2}
