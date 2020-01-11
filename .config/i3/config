@@ -9,18 +9,15 @@
 # layout, use the i3-config-wizard
 
 # Dracula colors
-set $background 	#282a36
-set $currentline 	#44475a
-set $selection 		#44475a
-set $foreground 	#f8f8f2
-set $comment 		#6272a4
-set $cyan 		#8be9fd
-set $green 		#50fa7b
-set $orange 		#ffb86c
-set $pink 		#ff79c6
-set $purple 		#bd93f9
-set $red 		#ff5555
-set $yellow 		#f1fa8c
+set_from_resource $background i3wm.background 	#282a36
+set_from_resource $foreground i3wm.foreground 	#f8f8f2
+set_from_resource $color1 i3wm.color1 		#ff5555
+set_from_resource $color2 i3wm.color2 		#50fa7b
+set_from_resource $color3 i3wm.color3 		#f1fa8c
+set_from_resource $color4 i3wm.color4 		#bd93f9
+set_from_resource $color5 i3wm.color5 		#ff79c6
+set_from_resource $color6 i3wm.color6 		#8be9fd
+set_from_resource $color7 i3wm.color7		#bfbfbf
 
 font pango:DejaVu Sans Mono 11
 
@@ -200,11 +197,11 @@ smart_gaps on
 smart_borders on
 
 # class                 	border  	backgr. 	text		indicator 	child_border
-client.focused			$background    	$selection	$foreground	$cyan 		$pink
-client.focused_inactive		$background    	$background	$foreground	$cyan 		$background
-client.unfocused		$background    	$background	$selection 	$cyan 		$background
-client.urgent			$background    	$background	$red		$cyan 		$red
-client.placeholder		$background    	$purple		$foreground	$cyan 		$background
+client.focused			$background    	$background	$color5		$color6 	$color5
+client.focused_inactive		$background    	$background	$foreground	$color6 	$background
+client.unfocused		$background    	$background	$color7 	$color6 	$background
+client.urgent			$background    	$background	$color1		$color6 	$color1
+client.placeholder		$background    	$color4		$foreground	$color6 	$background
 client.background		$background
 
 exec_always --no-startup-id pgrep -f "autoname_workspaces.py" | xargs -r kill -2; $HOME/Repositories/i3scripts/autoname_workspaces.py --norenumber_workspaces --icon_list_format mathematician
