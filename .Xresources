@@ -37,10 +37,30 @@
 *.color7:     _color7
 *.color15:    _color15
 
+Xft.dpi: 72
+
 URxvt*termName: xterm-256color
 URxvt*scrollBar: false
 URxvt*scrollBar_right: false
 URxvt*scrollBar_floating: false
 URxvt.font: xft:DejaVuSansMono Nerd Font Mono:size=11
 
-Xft.dpi: 72
+rofi.show-icons:		true
+rofi.modi:			drun,run,window,ssh
+rofi.lines:			10
+rofi.matching:			fuzzy
+rofi.font:			DejaVu Sans Book 11
+rofi.terminal:			urxvt
+rofi.run-command:		{cmd}
+rofi.run-shell-command:		{terminal} -e {cmd}
+rofi.ssh-client:		ssh
+rofi.ssh-command:		{terminal} -e {ssh-client} {host}
+rofi.hide-scrollbar:		true
+rofi.line-margin:		5
+rofi.line-padding:		10
+! bg, fg, bgalt, hlbg, hlfg
+rofi.color-normal: _background,	_foreground, _background, _color4, _background
+rofi.color-active: _color5, _foreground, _background, _color5, _background
+rofi.color-urgent: _color1, _foreground, _background, _color1, _background
+! background, border, separator
+rofi.color-window: _background, _color4, _color4
