@@ -1,22 +1,41 @@
 ! Dracula Xresources palette
-*.foreground: #F8F8F2
-*.background: #282A36
-*.color0:     #000000
-*.color8:     #4D4D4D
-*.color1:     #FF5555
-*.color9:     #FF6E67
-*.color2:     #50FA7B
-*.color10:    #5AF78E
-*.color3:     #F1FA8C
-*.color11:    #F4F99D
-*.color4:     #BD93F9
-*.color12:    #CAA9FA
-*.color5:     #FF79C6
-*.color13:    #FF92D0
-*.color6:     #8BE9FD
-*.color14:    #9AEDFE
-*.color7:     #BFBFBF
-*.color15:    #E6E6E6
+#define _foreground	#F8F8F2
+#define _background	#282A36
+#define _color0		#000000
+#define _color8		#4D4D4D
+#define _color1		#FF5555
+#define _color9		#FF6E67
+#define _color2		#50FA7B
+#define _color10	#5AF78E
+#define _color3		#F1FA8C
+#define _color11	#F4F99D
+#define _color4		#BD93F9
+#define _color12	#CAA9FA
+#define _color5		#FF79C6
+#define _color13	#FF92D0
+#define _color6		#8BE9FD
+#define _color14	#9AEDFE
+#define _color7		#BFBFBF
+#define _color15	#E6E6E6
+
+*.foreground: _foreground
+*.background: _background
+*.color0:     _color0
+*.color8:     _color8
+*.color1:     _color1
+*.color9:     _color9
+*.color2:     _color2
+*.color10:    _color10
+*.color3:     _color3
+*.color11:    _color11
+*.color4:     _color4
+*.color12:    _color12
+*.color5:     _color5
+*.color13:    _color13
+*.color6:     _color6
+*.color14:    _color14
+*.color7:     _color7
+*.color15:    _color15
 
 URxvt*termName: xterm-256color
 URxvt*scrollBar: false
