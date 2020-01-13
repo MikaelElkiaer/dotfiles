@@ -31,6 +31,7 @@
 		if [ ${CONFIRM_AMEND:-y} = y ]; \
 		then git commit --amend --no-edit; \
 		else exit 1; fi"
+	co = checkout
 	ilog = !"git flog \
 		| fzf --ansi --bind 'ctrl-p:toggle-preview' --preview-window=':hidden' --preview \
 			\"echo {} | grep -oEi '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]?' \
