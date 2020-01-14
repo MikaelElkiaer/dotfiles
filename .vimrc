@@ -66,6 +66,7 @@ let g:airline_theme='dracula'
 
 let g:dracula_colorterm=0
 
+autocmd FileType git set foldlevel=1
 let g:indentLine_char = '┆'
 
 colorscheme dracula
