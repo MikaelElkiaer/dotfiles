@@ -61,6 +61,6 @@ rofi.line-padding:		10
 ! bg, fg, bgalt, hlbg, hlfg
 rofi.color-normal: _background,	_foreground, _background, _color4, _background
 rofi.color-active: _color5, _foreground, _background, _color5, _background
-rofi.color-urgent: _color1, _foreground, _background, _color1, _background
+rofi.color-urgent: _color1, _foreground, _color1, _color1, _background
 ! background, border, separator
 rofi.color-window: _background, _color4, _color4
