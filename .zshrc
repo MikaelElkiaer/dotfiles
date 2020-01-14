@@ -109,6 +109,7 @@ alias find="fd -H -I"
 alias ls="exa -al"
 alias cat="bat"
 
+export BAT_THEME=base16
 export FZF_DEFAULT_COMMAND="fd -H"
 export EDITOR=vim
 
