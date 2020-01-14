@@ -108,6 +108,7 @@ source $ZSH/oh-my-zsh.sh
 alias find="fd -H -I"
 alias ls="exa -al"
 alias cat="bat"
+alias vim="nvim"
 
 export BAT_THEME=base16
 export FZF_DEFAULT_COMMAND="fd -H"
