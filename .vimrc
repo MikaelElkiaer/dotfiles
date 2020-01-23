@@ -58,15 +58,14 @@ Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'chrisbra/colorizer'
 Plug 'yggdroot/indentline'
-Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'morhetz/gruvbox'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
-let g:airline_theme='dracula'
-
-let g:dracula_colorterm=0
+let g:airline_theme='base16_gruvbox_dark_hard'
+let g:gruvbox_contrast_dark='hard'
 
 autocmd FileType git set foldlevel=1
 let g:indentLine_char = '┆'
 
-colorscheme dracula
+colorscheme gruvbox 

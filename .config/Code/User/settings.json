@@ -1,5 +1,5 @@
 {
-    "workbench.colorTheme": "Dracula",
+    "workbench.colorTheme": "Gruvbox Dark Hard",
     "go.formatTool": "goimports",
     "go.useLanguageServer": true,
     "gitlens.codeLens.scopes": [

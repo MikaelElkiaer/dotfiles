@@ -1,41 +1,48 @@
-! Dracula Xresources palette
-#define _foreground	#F8F8F2
-#define _background	#282A36
-#define _color0		#000000
-#define _color8		#4D4D4D
-#define _color1		#FF5555
-#define _color9		#FF6E67
-#define _color2		#50FA7B
-#define _color10	#5AF78E
-#define _color3		#F1FA8C
-#define _color11	#F4F99D
-#define _color4		#BD93F9
-#define _color12	#CAA9FA
-#define _color5		#FF79C6
-#define _color13	#FF92D0
-#define _color6		#8BE9FD
-#define _color14	#9AEDFE
-#define _color7		#BFBFBF
-#define _color15	#E6E6E6
+! Base16 Gruvbox dark, hard
+! Scheme: Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
 
-*.foreground: _foreground
-*.background: _background
-*.color0:     _color0
-*.color8:     _color8
-*.color1:     _color1
-*.color9:     _color9
-*.color2:     _color2
-*.color10:    _color10
-*.color3:     _color3
-*.color11:    _color11
-*.color4:     _color4
-*.color12:    _color12
-*.color5:     _color5
-*.color13:    _color13
-*.color6:     _color6
-*.color14:    _color14
-*.color7:     _color7
-*.color15:    _color15
+#define base00 #1d2021
+#define base01 #3c3836
+#define base02 #504945
+#define base03 #665c54
+#define base04 #bdae93
+#define base05 #d5c4a1
+#define base06 #ebdbb2
+#define base07 #fbf1c7
+#define base08 #fb4934
+#define base09 #fe8019
+#define base0A #fabd2f
+#define base0B #b8bb26
+#define base0C #8ec07c
+#define base0D #83a598
+#define base0E #d3869b
+#define base0F #d65d0e
+
+*foreground:   base05
+#ifdef background_opacity
+*background:   [background_opacity]base00
+#else
+*background:   base00
+#endif
+*cursorColor:  base05
+
+*color0:       base00
+*color1:       base08
+*color2:       base0B
+*color3:       base0A
+*color4:       base0D
+*color5:       base0E
+*color6:       base0C
+*color7:       base05
+
+*color8:       base03
+*color9:       base09
+*color10:      base01
+*color11:      base02
+*color12:      base04
+*color13:      base06
+*color14:      base0F
+*color15:      base07
 
 Xft.dpi: 72
 
@@ -59,8 +66,8 @@ rofi.hide-scrollbar:		true
 rofi.line-margin:		5
 rofi.line-padding:		10
 ! bg, fg, bgalt, hlbg, hlfg
-rofi.color-normal: _background,	_foreground, _background, _color4, _background
-rofi.color-active: _color5, _foreground, _background, _color5, _background
-rofi.color-urgent: _color1, _foreground, _color1, _color1, _background
+rofi.color-normal: base00, base07, base00, base0D, base00
+rofi.color-active: base0B, base07, base0B, base0B, base00
+rofi.color-urgent: base08, base07, base08, base08, base00
 ! background, border, separator
-rofi.color-window: _background, _color4, _color4
+rofi.color-window: base00, base0D, base0D

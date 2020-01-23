@@ -9,15 +9,23 @@
 # layout, use the i3-config-wizard
 
 # Dracula colors
-set_from_resource $background i3wm.background 	#282a36
-set_from_resource $foreground i3wm.foreground 	#f8f8f2
-set_from_resource $color1 i3wm.color1 		#ff5555
-set_from_resource $color2 i3wm.color2 		#50fa7b
-set_from_resource $color3 i3wm.color3 		#f1fa8c
-set_from_resource $color4 i3wm.color4 		#bd93f9
-set_from_resource $color5 i3wm.color5 		#ff79c6
-set_from_resource $color6 i3wm.color6 		#8be9fd
-set_from_resource $color7 i3wm.color7		#bfbfbf
+set_from_resource $background i3wm.background
+set_from_resource $foreground i3wm.foreground
+set_from_resource $color1 i3wm.color1
+set_from_resource $color2 i3wm.color2
+set_from_resource $color3 i3wm.color3
+set_from_resource $color4 i3wm.color4
+set_from_resource $color5 i3wm.color5
+set_from_resource $color6 i3wm.color6
+set_from_resource $color7 i3wm.color7
+set_from_resource $color8 i3wm.color8
+set_from_resource $color9 i3wm.color9
+set_from_resource $color10 i3wm.color10
+set_from_resource $color11 i3wm.color11
+set_from_resource $color12 i3wm.color12
+set_from_resource $color13 i3wm.color13
+set_from_resource $color14 i3wm.color14
+set_from_resource $color15 i3wm.color15
 
 font pango:DejaVu Sans Mono 11
 
@@ -197,9 +205,9 @@ smart_gaps on
 smart_borders on
 
 # class                 	border  	backgr. 	text		indicator 	child_border
-client.focused			$background    	$background	$color5		$color6 	$color5
+client.focused			$background    	$background	$color14	$color6 	$color14
 client.focused_inactive		$background    	$background	$foreground	$color6 	$background
-client.unfocused		$background    	$background	$color7 	$color6 	$background
+client.unfocused		$background    	$background	$color8		$color6 	$background
 client.urgent			$background    	$background	$color1		$color6 	$color1
 client.placeholder		$background    	$color4		$foreground	$color6 	$background
 client.background		$background
@@ -207,4 +215,4 @@ client.background		$background
 exec_always --no-startup-id pgrep -f "autoname_workspaces.py" | xargs -r kill -2; $HOME/Repositories/i3scripts/autoname_workspaces.py --norenumber_workspaces --icon_list_format mathematician
 exec_always --no-startup-id killall -qw dunst; dunst
 exec_always --no-startup-id killall -qw picom; picom
-exec_always --no-startup-id autorandr --change; $HOME/.config/polybar/launch.sh;feh --bg-scale $HOME/Wallpapers/dracula/45412.jpg
+exec_always --no-startup-id autorandr --change; $HOME/.config/polybar/launch.sh;hsetroot -solid "$background"
