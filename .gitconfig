@@ -9,6 +9,8 @@
 	autocrlf = input 
 	editor = vim
 	pager = "diff-so-fancy | less --tabs=4 -RFX"
+[interactive]
+	diffFilter = (echo && diff-so-fancy)
 [rebase]
 	autosquash = true
 [credential]
