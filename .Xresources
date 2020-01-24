@@ -46,6 +46,7 @@
 
 Xft.dpi: 72
 
+URxvt.perl-ext-common: font-size
 URxvt*termName: xterm-256color
 URxvt*scrollBar: false
 URxvt*scrollBar_right: false
