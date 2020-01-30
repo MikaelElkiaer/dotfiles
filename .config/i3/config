@@ -162,6 +162,8 @@ bindsym Mod4+Shift+0 move container to workspace number $ws10
 # move focused workspace to output (monitor)
 bindsym Mod4+Shift+Ctrl+h move workspace to output left
 bindsym Mod4+Shift+Ctrl+l move workspace to output right
+bindsym Mod4+Shift+Ctrl+j move workspace to output down
+bindsym Mod4+Shift+Ctrl+k move workspace to output up
 
 # reload the configuration file
 bindsym Mod4+Shift+c reload
