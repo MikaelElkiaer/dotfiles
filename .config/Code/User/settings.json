@@ -1,0 +1,10 @@
+{
+    "window.menuBarVisibility": "default",
+    "window.titleBarStyle": "custom",
+    "terminal.integrated.fontSize": 11,
+    "editor.fontFamily": "'Deja Vu Sans Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontSize": 11,
+    "debug.console.fontSize": 11,
+    "markdown.preview.fontSize": 11,
+    "workbench.colorTheme": "Gruvbox Dark Hard"
+}
