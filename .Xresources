@@ -1,4 +1,24 @@
-Xft.dpi:       96
+! Base16 Gruvbox dark, hard
+! Scheme: Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
+
+#define base00 #1d2021
+#define base01 #3c3836
+#define base02 #504945
+#define base03 #665c54
+#define base04 #bdae93
+#define base05 #d5c4a1
+#define base06 #ebdbb2
+#define base07 #fbf1c7
+#define base08 #fb4934
+#define base09 #fe8019
+#define base0A #fabd2f
+#define base0B #b8bb26
+#define base0C #8ec07c
+#define base0D #83a598
+#define base0E #d3869b
+#define base0F #d65d0e
+
+Xft.dpi:       72
 Xft.antialias: true
 Xft.hinting:   true
 Xft.rgba:      rgb
@@ -6,58 +26,58 @@ Xft.autohint:  false
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 
-XTerm*background:        #222D31
-XTerm*foreground:        #d8d8d8
-XTerm*pointerColor:      #1ABB9B
+XTerm*background:        base00
+XTerm*foreground:        base05
+XTerm*pointerColor:      base0C
 XTerm*faceName:          Fixed
 XTerm*faceSize:          11
 XTerm*reverseVideo:      on
 XTerm*selectToClipboard: true
 
-*background:                      #222D31
-*foreground:                      #d8d8d8
+*background:                      base00
+*foreground:                      base05
 *fading:                          8
 *fadeColor:                       black
-*cursorColor:                     #1ABB9B
+*cursorColor:                     base0C
 *pointerColorBackground:          #2B2C2B
 *pointerColorForeground:          #16A085
 
 !! black dark/light
-*color0:                          #222D31
-*color8:                          #585858
+*color0:                          base00
+*color8:                          base03
 
 !! red dark/light
-*color1:                          #ab4642
-*color9:                          #ab4642
+*color1:                          base08
+*color9:                          base09
 
 !! green dark/light
-*color2:                          #7E807E
-*color10:                         #8D8F8D
+*color2:                          base0B
+*color10:                         base01
 
 !! yellow dark/light
-*color3:                          #f7ca88
-*color11:                         #f7ca88
+*color3:                          base0A
+*color11:                         base02
 
 !! blue dark/light
-*color4:                          #7cafc2
-*color12:                         #7cafc2
+*color4:                          base0D
+*color12:                         base04
 
 !! magenta dark/light
-*color5:                          #ba8baf
-*color13:                         #ba8baf
+*color5:                          base0E
+*color13:                         base06
 
 !! cyan dark/light
-*color6:                          #1ABB9B
-*color14:                         #1ABB9B
+*color6:                          base0C
+*color14:                         base0F
 
 !! white dark/light
-*color7:                          #d8d8d8
-*color15:                         #f8f8f8
+*color7:                          base05
+*color15:                         base07
 
-Xcursor.theme: Breeze
+Xcursor.theme: xcursor-breeze
 Xcursor.size:                     0
 
-URxvt.font:                       9x15,xft:TerminessTTFNerdFontMono
+URxvt.font: xft:DejaVuSansMono Nerd Font Mono:size=11,xft:DejaVuSans:size=11
 
 ! alternative font settings with 'terminus':
 ! URxvt.font:      -xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1
@@ -65,7 +85,7 @@ URxvt.font:                       9x15,xft:TerminessTTFNerdFontMono
 !! terminus names see end of file!
 
 URxvt.depth:                      32
-URxvt.background:                 [100]#222D31
+URxvt.background:                 [100]base00
 URxvt*scrollBar:                  false
 URxvt*mouseWheelScrollPage:       false
 URxvt*cursorBlink:                true
@@ -91,6 +111,27 @@ URxvt.keysym.Control-Up:          \033[1;5A
 URxvt.keysym.Shift-Control-Up:    \033[1;6A
 URxvt.keysym.Control-Down:        \033[1;5B
 URxvt.keysym.Shift-Control-Down:  \033[1;6B
+
+rofi.show-icons:		true
+rofi.modi:			drun,run,window,ssh
+rofi.lines:			10
+rofi.matching:			fuzzy
+rofi.font:			DejaVu Sans Book 11
+rofi.terminal:			urxvt
+rofi.run-command:		{cmd}
+rofi.run-shell-command:		{terminal} -e {cmd}
+rofi.ssh-client:		ssh
+rofi.ssh-command:		{terminal} -e {ssh-client} {host}
+rofi.hide-scrollbar:		true
+rofi.line-margin:		5
+rofi.line-padding:		10
+! bg, fg, bgalt, hlbg, hlfg
+rofi.color-normal: base00, base07, base00, base0D, base00
+rofi.color-active: base0B, base07, base0B, base0B, base00
+rofi.color-urgent: base08, base07, base08, base08, base00
+! background, border, separator
+rofi.color-window: base00, base0D, base0D
+
 ! Rxvt.perl-ext-common:             ...,clipboard
 ! URxvt.keysym.M-C-c:               perl:clipboard:copy
 ! URxvt.keysym.M-v:                 perl:clipboard:paste
@@ -234,3 +275,4 @@ URxvt.keysym.Shift-Control-Down:  \033[1;6B
 ! -xos4-terminus-bold-r-normal--24-240-72-72-c-120-iso10646-1
 ! -xos4-terminus-bold-r-normal--28-280-72-72-c-140-iso10646-1
 ! -xos4-terminus-bold-r-normal--32-320-72-72-c-160-iso10646-1
+

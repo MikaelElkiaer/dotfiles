@@ -17,15 +17,14 @@ font-0 = DejaVuSansMono:size=11;3
 font-1 = DejaVuSansMonoNerdFontMono:size=18;4
 font-2 = DejaVuSans:size=11;3
 
-
 [bar/primary]
 inherit = bar/shared
 monitor = ${env:POLYBAR_MONITOR:eDP-1}
 tray-position = right
 tray-padding = 2
-modules-left = pulseaudio player-mpris-simple
+modules-left = player-mpris-simple
 modules-center = i3
-modules-right = vpn-openvpn-isrunning wired-network wireless-network backlight battery cpu memory clock
+modules-right = vpn-openvpn-isrunning backlight battery cpu memory clock
 
 [bar/secondary]
 inherit = bar/shared
@@ -42,46 +41,10 @@ type = custom/script
 exec = ~/.config/polybar/scripts/vpn-openvpn-isrunning.sh
 interval = 5
 
-[module/pulseaudio]
-type = internal/pulseaudio
-use-ui-max = true
-interval = 5
-format-volume-margin = 1
-format-volume = 墳 %{F#fbf1c7}<label-volume>
-format-muted-padding = 1
-label-muted = ﱝ
-label-muted-foreground = ${xrdb:color3}
-
 [module/backlight]
 type = internal/backlight
 card = intel_backlight
 label =  %{F#fbf1c7}%percentage%%
-
-[module/wired-network]
-type = internal/network
-interval = 5
-interface = enp0s31f6
-label-connected = 
-
-[module/wireless-network]
-type = internal/network
-interval = 5
-interface = wlan0
-format-connected = <ramp-signal> %{F#fbf1c7}<label-connected>
-label-connected =  %essid%
-label-disconnected = 睊
-ramp-signal-0 = 直
-ramp-signal-0-foreground = ${xrdb:color1}
-ramp-signal-1 = 直
-ramp-signal-1-foreground = ${xrdb:color1}
-ramp-signal-2 = 直
-ramp-signal-2-foreground = ${xrdb:color3}
-ramp-signal-3 = 直
-ramp-signal-3-foreground = ${xrdb:color3}
-ramp-signal-4 = 直
-ramp-signal-4-foreground = ${xrdb:color2}
-ramp-signal-5 = 直
-ramp-signal-5-foreground = ${xrdb:color2}
 
 [module/i3]
 type = internal/i3

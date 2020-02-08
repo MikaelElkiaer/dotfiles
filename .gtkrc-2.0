@@ -2,10 +2,10 @@
 # Any customization should be done in ~/.gtkrc-2.0.mine instead.
 
 include "/home/me/.gtkrc-2.0.mine"
-gtk-theme-name="Ant-Dracula"
-gtk-icon-theme-name="Suru++-Asprómauros"
+gtk-theme-name="Adapta-Nokto-Eta-Maia"
+gtk-icon-theme-name="Papirus-Adapta-Nokto-Maia"
 gtk-font-name="DejaVu Sans 11"
-gtk-cursor-theme-name="Adwaita"
+gtk-cursor-theme-name="xcursor-breeze"
 gtk-cursor-theme-size=0
 gtk-toolbar-style=GTK_TOOLBAR_BOTH
 gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
@@ -15,4 +15,5 @@ gtk-enable-event-sounds=1
 gtk-enable-input-feedback-sounds=1
 gtk-xft-antialias=1
 gtk-xft-hinting=1
-gtk-xft-hintstyle="hintfull"
+gtk-xft-hintstyle="hintslight"
+gtk-xft-rgba="rgb"
