@@ -63,6 +63,7 @@ call plug#end()
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme='base16_gruvbox_dark_hard'
+let g:gruvbox_termcolors=16
 let g:gruvbox_contrast_dark='hard'
 
 autocmd FileType git set foldlevel=1
