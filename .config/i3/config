@@ -313,7 +313,7 @@ exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 
 # class                 	border  	backgr. 	text		indicator 	child_border
-client.focused			$background    	$background	$color14	$color6 	$color14
+client.focused			$color14	$background	$color14	$color6 	$color14
 client.focused_inactive		$background    	$background	$foreground	$color6 	$color8
 client.unfocused		$background    	$background	$color8		$color6 	$color8
 client.urgent			$background    	$background	$color1		$color6 	$color1
