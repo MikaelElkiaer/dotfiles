@@ -24,7 +24,7 @@ tray-position = right
 tray-padding = 2
 modules-left = player-mpris-simple
 modules-center = i3
-modules-right = vpn-openvpn-isrunning backlight battery cpu memory clock
+modules-right = backlight battery cpu memory clock
 
 [bar/secondary]
 inherit = bar/shared
@@ -35,11 +35,6 @@ modules-center = i3
 type = custom/script
 exec = ~/.config/polybar/scripts/player-mpris-simple.sh
 interval = 2
-
-[module/vpn-openvpn-isrunning]
-type = custom/script
-exec = ~/.config/polybar/scripts/vpn-openvpn-isrunning.sh
-interval = 5
 
 [module/backlight]
 type = internal/backlight
