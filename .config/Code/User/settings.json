@@ -5,5 +5,7 @@
     "editor.fontSize": 11,
     "debug.console.fontSize": 11,
     "markdown.preview.fontSize": 11,
-    "workbench.colorTheme": "Gruvbox Dark Hard"
+    "workbench.colorTheme": "Gruvbox Dark Hard",
+    "go.formatTool": "goimports",
+    "go.useLanguageServer": true
 }
