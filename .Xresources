@@ -38,7 +38,7 @@ XTerm*selectToClipboard: true
 *foreground:                      base05
 *fading:                          8
 *fadeColor:                       black
-*cursorColor:                     base0C
+*cursorColor:                     base05
 *pointerColorBackground:          #2B2C2B
 *pointerColorForeground:          #16A085
 
@@ -74,7 +74,7 @@ XTerm*selectToClipboard: true
 *color7:                          base05
 *color15:                         base07
 
-Xcursor.theme: xcursor-breeze
+Xcursor.theme: Adwaita
 Xcursor.size:                     0
 
 URxvt.font: xft:DejaVuSansMono Nerd Font Mono:size=11,xft:DejaVuSans:size=11
