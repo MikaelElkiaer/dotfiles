@@ -102,33 +102,32 @@ bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 # focus_follows_mouse no
 
 # change focus
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
+bindsym $mod+h focus left; exec mouse_warp_focus
+bindsym $mod+j focus down; exec mouse_warp_focus
+bindsym $mod+k focus up; exec mouse_warp_focus
+bindsym $mod+l focus right; exec mouse_warp_focus
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+bindsym $mod+Left focus left; exec mouse_warp_focus
+bindsym $mod+Down focus down; exec mouse_warp_focus
+bindsym $mod+Up focus up; exec mouse_warp_focus
+bindsym $mod+Right focus right; exec mouse_warp_focus
 
 # move focused window
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
+bindsym $mod+Shift+h move left; exec mouse_warp_focus
+bindsym $mod+Shift+j move down; exec mouse_warp_focus
+bindsym $mod+Shift+k move up; exec mouse_warp_focus
+bindsym $mod+Shift+l move right; exec mouse_warp_focus
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+bindsym $mod+Shift+Left move left; exec mouse_warp_focus
+bindsym $mod+Shift+Down move down; exec mouse_warp_focus
+bindsym $mod+Shift+Up move up; exec mouse_warp_focus
+bindsym $mod+Shift+Right move right; exec mouse_warp_focus
 
 # workspace back and forth (with/without active container)
 workspace_auto_back_and_forth yes
 bindsym $mod+b workspace back_and_forth
-bindsym $mod+Shift+b move container to workspace back_and_forth; workspace back_and_forth
 
 # split orientation
 bindsym $mod+o split h;exec notify-send 'tile horizontally'
@@ -192,22 +191,22 @@ bindsym Mod4+9 workspace number $ws9
 bindsym Mod4+0 workspace number $ws10
 
 # move focused container to workspace
-bindsym Mod4+Shift+1 move container to workspace number $ws1
-bindsym Mod4+Shift+2 move container to workspace number $ws2
-bindsym Mod4+Shift+3 move container to workspace number $ws3
-bindsym Mod4+Shift+4 move container to workspace number $ws4
-bindsym Mod4+Shift+5 move container to workspace number $ws5
-bindsym Mod4+Shift+6 move container to workspace number $ws6
-bindsym Mod4+Shift+7 move container to workspace number $ws7
-bindsym Mod4+Shift+8 move container to workspace number $ws8
-bindsym Mod4+Shift+9 move container to workspace number $ws9
-bindsym Mod4+Shift+0 move container to workspace number $ws10
+bindsym Mod4+Shift+1 move container to workspace number $ws1; exec mouse_warp_focus
+bindsym Mod4+Shift+2 move container to workspace number $ws2; exec mouse_warp_focus
+bindsym Mod4+Shift+3 move container to workspace number $ws3; exec mouse_warp_focus
+bindsym Mod4+Shift+4 move container to workspace number $ws4; exec mouse_warp_focus
+bindsym Mod4+Shift+5 move container to workspace number $ws5; exec mouse_warp_focus
+bindsym Mod4+Shift+6 move container to workspace number $ws6; exec mouse_warp_focus
+bindsym Mod4+Shift+7 move container to workspace number $ws7; exec mouse_warp_focus
+bindsym Mod4+Shift+8 move container to workspace number $ws8; exec mouse_warp_focus
+bindsym Mod4+Shift+9 move container to workspace number $ws9; exec mouse_warp_focus
+bindsym Mod4+Shift+0 move container to workspace number $ws10; exec mouse_warp_focus
 
 # move focused workspace to output (monitor)
 bindsym Mod4+Shift+Ctrl+h move workspace to output left
 bindsym Mod4+Shift+Ctrl+l move workspace to output right
 bindsym Mod4+Shift+Ctrl+j move workspace to output down
-bindsym Mod4+Shift+Ctrl+k move workspace to output up# Workspace names
+bindsym Mod4+Shift+Ctrl+k move workspace to output up
 
 # Open specific applications in floating mode
 for_window [title="alsamixer"] floating enable border pixel 1
