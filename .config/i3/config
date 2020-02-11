@@ -127,7 +127,7 @@ bindsym $mod+Shift+Right move right; exec mouse_warp_focus
 
 # workspace back and forth (with/without active container)
 workspace_auto_back_and_forth yes
-bindsym $mod+b workspace back_and_forth
+bindsym $mod+b workspace back_and_forth; exec mouse_warp_focus
 
 # split orientation
 bindsym $mod+o split h;exec notify-send 'tile horizontally'
@@ -138,15 +138,15 @@ bindsym $mod+q split toggle
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+bindsym $mod+s layout stacking; exec mouse_warp_focus
+bindsym $mod+w layout tabbed; exec mouse_warp_focus
+bindsym $mod+e layout toggle split; exec mouse_warp_focus
 
 # toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
+bindsym $mod+Shift+space floating toggle; exec mouse_warp_focus
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+bindsym $mod+space focus mode_toggle; exec mouse_warp_focus
 
 # toggle sticky
 bindsym $mod+Shift+s sticky toggle
@@ -179,16 +179,16 @@ set $ws9 "9"
 set $ws10 "10"
 
 # switch to workspace
-bindsym Mod4+1 workspace number $ws1
-bindsym Mod4+2 workspace number $ws2
-bindsym Mod4+3 workspace number $ws3
-bindsym Mod4+4 workspace number $ws4
-bindsym Mod4+5 workspace number $ws5
-bindsym Mod4+6 workspace number $ws6
-bindsym Mod4+7 workspace number $ws7
-bindsym Mod4+8 workspace number $ws8
-bindsym Mod4+9 workspace number $ws9
-bindsym Mod4+0 workspace number $ws10
+bindsym Mod4+1 workspace number $ws1; exec mouse_warp_focus
+bindsym Mod4+2 workspace number $ws2; exec mouse_warp_focus
+bindsym Mod4+3 workspace number $ws3; exec mouse_warp_focus
+bindsym Mod4+4 workspace number $ws4; exec mouse_warp_focus
+bindsym Mod4+5 workspace number $ws5; exec mouse_warp_focus
+bindsym Mod4+6 workspace number $ws6; exec mouse_warp_focus
+bindsym Mod4+7 workspace number $ws7; exec mouse_warp_focus
+bindsym Mod4+8 workspace number $ws8; exec mouse_warp_focus
+bindsym Mod4+9 workspace number $ws9; exec mouse_warp_focus
+bindsym Mod4+0 workspace number $ws10; exec mouse_warp_focus
 
 # move focused container to workspace
 bindsym Mod4+Shift+1 move container to workspace number $ws1; exec mouse_warp_focus
