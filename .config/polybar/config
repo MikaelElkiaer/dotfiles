@@ -26,7 +26,7 @@ tray-position = right
 tray-padding = 2
 modules-left = player-mpris-simple
 modules-center = i3
-modules-right = backlight battery cpu memory clock
+modules-right = cpu memory clock
 
 [bar/secondary]
 inherit = bar/shared
@@ -37,11 +37,6 @@ modules-center = i3
 type = custom/script
 exec = ~/.config/polybar/scripts/player-mpris-simple.sh
 interval = 2
-
-[module/backlight]
-type = internal/backlight
-card = intel_backlight
-label =  %{F#fbf1c7}%percentage%%
 
 [module/i3]
 type = internal/i3
@@ -114,22 +109,3 @@ interval = 0.1
 label-padding-right = 1
 date =  %%{F#fbf1c7}%a, %b %d %H:%M:%S
 
-[module/battery]
-type = internal/battery
-battery = BAT0
-adapter = AC
-full-at = 98
-format-charging = <ramp-capacity> %{F#fbf1c7}<label-charging>
-format-discharging = <ramp-capacity> %{F#fbf1c7}<label-discharging>
-label-charging = +%percentage%%
-label-full = 
-ramp-capacity-0 = 
-ramp-capacity-0-foreground = ${xrdb:color1}
-ramp-capacity-1 = 
-ramp-capacity-1-foreground = ${xrdb:color3}
-ramp-capacity-2 = 
-ramp-capacity-2-foreground = ${xrdb:color2}
-ramp-capacity-3 = 
-ramp-capacity-3-foreground = ${xrdb:color2}
-ramp-capacity-4 = 
-ramp-capacity-4-foreground = ${xrdb:color2}
