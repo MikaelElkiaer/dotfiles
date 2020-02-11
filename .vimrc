@@ -40,10 +40,6 @@ command -nargs=1 R call RebaseAction(<f-args>)
 
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
-if &diff
-colorscheme elflord
-endif
-
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -66,7 +62,7 @@ call plug#end()
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme='base16_gruvbox_dark_hard'
-let g:gruvbox_termcolors=16
+let g:gruvbox_termcolors=256
 let g:gruvbox_contrast_dark='hard'
 
 autocmd FileType git set foldlevel=1
