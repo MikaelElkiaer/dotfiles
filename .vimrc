@@ -1,6 +1,8 @@
 set 	number
 set 	nohlsearch
 syntax on
+set nocompatible
+filetype plugin on
 
 nmap <silent> <c-k> <c-o> :Files<CR>
 
@@ -59,6 +61,7 @@ Plug 'junegunn/gv.vim'
 Plug 'chrisbra/colorizer'
 Plug 'yggdroot/indentline'
 Plug 'morhetz/gruvbox'
+Plug 'vimwiki/vimwiki'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
@@ -69,4 +72,7 @@ let g:gruvbox_contrast_dark='hard'
 autocmd FileType git set foldlevel=1
 let g:indentLine_char = '┆'
 
-colorscheme gruvbox 
+colorscheme gruvbox
+
+let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
+
