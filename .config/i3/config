@@ -57,7 +57,7 @@ font xft:Deja Vu Sans Mono 10
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec terminal
+bindsym $mod+Shift+Return exec terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -99,7 +99,10 @@ bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
 bindsym $mod+Shift+Print --release exec --no-startup-id i3-scrot -s
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
-# focus_follows_mouse no
+# drop down terminal
+exec i3-quaketerm -H -t urxvt --height 0.9 -w 0.9 -o 20
+for_window [instance="i3-quaketerm"] border none floating enable
+bindsym $mod+Return exec i3-quaketerm -t urxvt --height 0.9 -w 0.9 -o 20
 
 # change focus
 bindsym $mod+h focus left; exec mouse_warp_focus
