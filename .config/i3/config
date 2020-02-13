@@ -88,15 +88,12 @@ bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
 
 # Start Applications
 bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
-bindsym $mod+F2 exec palemoon
-bindsym $mod+F3 exec pcmanfm
+bindsym $mod+Ctrl+c exec killall picom && picom -b
 # bindsym $mod+F3 exec ranger
-bindsym $mod+Shift+F3 exec pcmanfm_pkexec
-bindsym $mod+F5 exec terminal -e 'mocp'
 bindsym $mod+Shift+d --release exec "killall dunst; exec notify-send 'restart dunst'"
 bindsym Print exec --no-startup-id i3-scrot
 bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
-bindsym $mod+Shift+Print --release exec --no-startup-id i3-scrot -s
+bindsym $mod+Shift+Print --release exec --no-startup-id scrot -a $(slop -f '%x,%y,%w,%h') 
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
 # drop down terminal
@@ -300,7 +297,7 @@ bindsym $mod+Shift+x exec --no-startup-id blurlock
 exec_always --no-startup-id hsetroot -solid "$background"
 exec_always --no-startup-id pgrep -f "autoname_workspaces.py" | xargs -r kill -2; ~/Repositories/i3scripts/autoname_workspaces.py --norenumber_workspaces --icon_list_format mathematician
 exec_always --no-startup-id autorandr --change; ~/.config/polybar/launch.sh
-exec --no-startup-id compton -b
+exec --no-startup-id picom -b
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
