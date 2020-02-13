@@ -56,19 +56,17 @@ Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'chrisbra/colorizer'
 Plug 'yggdroot/indentline'
-Plug 'morhetz/gruvbox'
 Plug 'vimwiki/vimwiki'
+Plug 'chriskempson/base16-vim'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme='base16_gruvbox_dark_hard'
-let g:gruvbox_termcolors=256
-let g:gruvbox_contrast_dark='hard'
 
 autocmd FileType git set foldlevel=1
 let g:indentLine_char = '┆'
 
-colorscheme gruvbox
+colorscheme base16-default-dark
 
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 
