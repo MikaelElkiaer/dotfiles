@@ -101,33 +101,37 @@ exec i3-quaketerm -H -t urxvt --height 0.9 -w 0.9 -o 20 -e "-bg '[90]$background
 for_window [instance="i3-quaketerm"] floating enable
 bindsym $mod+Return exec i3-quaketerm -t urxvt --height 0.9 -w 0.9 -o 20 -e "-bg '[90]$background'"
 
+# warp mouse
+mouse_warping none
+exec --no-startup-id i3-warp-mouse
+
 # change focus
-bindsym $mod+h focus left; exec mouse_warp_focus
-bindsym $mod+j focus down; exec mouse_warp_focus
-bindsym $mod+k focus up; exec mouse_warp_focus
-bindsym $mod+l focus right; exec mouse_warp_focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left; exec mouse_warp_focus
-bindsym $mod+Down focus down; exec mouse_warp_focus
-bindsym $mod+Up focus up; exec mouse_warp_focus
-bindsym $mod+Right focus right; exec mouse_warp_focus
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
 
 # move focused window
-bindsym $mod+Shift+h move left; exec mouse_warp_focus
-bindsym $mod+Shift+j move down; exec mouse_warp_focus
-bindsym $mod+Shift+k move up; exec mouse_warp_focus
-bindsym $mod+Shift+l move right; exec mouse_warp_focus
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left; exec mouse_warp_focus
-bindsym $mod+Shift+Down move down; exec mouse_warp_focus
-bindsym $mod+Shift+Up move up; exec mouse_warp_focus
-bindsym $mod+Shift+Right move right; exec mouse_warp_focus
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
 
 # workspace back and forth (with/without active container)
 workspace_auto_back_and_forth yes
-bindsym $mod+b workspace back_and_forth; exec mouse_warp_focus
+bindsym $mod+b workspace back_and_forth
 
 # split orientation
 bindsym $mod+o split h;exec notify-send 'tile horizontally'
@@ -138,15 +142,15 @@ bindsym $mod+q split toggle
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking; exec mouse_warp_focus
-bindsym $mod+w layout tabbed; exec mouse_warp_focus
-bindsym $mod+e layout toggle split; exec mouse_warp_focus
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
-bindsym $mod+Shift+space floating toggle; exec mouse_warp_focus
+bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle; exec mouse_warp_focus
+bindsym $mod+space focus mode_toggle
 
 # toggle sticky
 bindsym $mod+Shift+s sticky toggle
@@ -179,28 +183,28 @@ set $ws9 "9"
 set $ws10 "10"
 
 # switch to workspace
-bindsym Mod4+1 workspace number $ws1; exec mouse_warp_focus
-bindsym Mod4+2 workspace number $ws2; exec mouse_warp_focus
-bindsym Mod4+3 workspace number $ws3; exec mouse_warp_focus
-bindsym Mod4+4 workspace number $ws4; exec mouse_warp_focus
-bindsym Mod4+5 workspace number $ws5; exec mouse_warp_focus
-bindsym Mod4+6 workspace number $ws6; exec mouse_warp_focus
-bindsym Mod4+7 workspace number $ws7; exec mouse_warp_focus
-bindsym Mod4+8 workspace number $ws8; exec mouse_warp_focus
-bindsym Mod4+9 workspace number $ws9; exec mouse_warp_focus
-bindsym Mod4+0 workspace number $ws10; exec mouse_warp_focus
+bindsym Mod4+1 workspace number $ws1
+bindsym Mod4+2 workspace number $ws2
+bindsym Mod4+3 workspace number $ws3
+bindsym Mod4+4 workspace number $ws4
+bindsym Mod4+5 workspace number $ws5
+bindsym Mod4+6 workspace number $ws6
+bindsym Mod4+7 workspace number $ws7
+bindsym Mod4+8 workspace number $ws8
+bindsym Mod4+9 workspace number $ws9
+bindsym Mod4+0 workspace number $ws10
 
 # move focused container to workspace
-bindsym Mod4+Shift+1 move container to workspace number $ws1; exec mouse_warp_focus
-bindsym Mod4+Shift+2 move container to workspace number $ws2; exec mouse_warp_focus
-bindsym Mod4+Shift+3 move container to workspace number $ws3; exec mouse_warp_focus
-bindsym Mod4+Shift+4 move container to workspace number $ws4; exec mouse_warp_focus
-bindsym Mod4+Shift+5 move container to workspace number $ws5; exec mouse_warp_focus
-bindsym Mod4+Shift+6 move container to workspace number $ws6; exec mouse_warp_focus
-bindsym Mod4+Shift+7 move container to workspace number $ws7; exec mouse_warp_focus
-bindsym Mod4+Shift+8 move container to workspace number $ws8; exec mouse_warp_focus
-bindsym Mod4+Shift+9 move container to workspace number $ws9; exec mouse_warp_focus
-bindsym Mod4+Shift+0 move container to workspace number $ws10; exec mouse_warp_focus
+bindsym Mod4+Shift+1 move container to workspace number $ws1
+bindsym Mod4+Shift+2 move container to workspace number $ws2
+bindsym Mod4+Shift+3 move container to workspace number $ws3
+bindsym Mod4+Shift+4 move container to workspace number $ws4
+bindsym Mod4+Shift+5 move container to workspace number $ws5
+bindsym Mod4+Shift+6 move container to workspace number $ws6
+bindsym Mod4+Shift+7 move container to workspace number $ws7
+bindsym Mod4+Shift+8 move container to workspace number $ws8
+bindsym Mod4+Shift+9 move container to workspace number $ws9
+bindsym Mod4+Shift+0 move container to workspace number $ws10
 
 # move focused workspace to output (monitor)
 bindsym Mod4+Shift+Ctrl+h move workspace to output left
