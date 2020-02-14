@@ -10,5 +10,16 @@
     "go.useLanguageServer": true,
     "terminal.external.linuxExec": "urxvt",
     "editor.wordWrap": "on",
-    "editor.wrappingIndent": "deepIndent"
+    "editor.wrappingIndent": "deepIndent",
+    "vim.insertModeKeyBindings": [
+        {
+            "before": [
+                "j",
+                "j"
+            ],
+            "after": [
+                "<Esc>"
+            ]
+        }
+    ]
 }
