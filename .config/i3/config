@@ -93,7 +93,7 @@ bindsym $mod+Ctrl+c exec killall picom && picom -b
 bindsym $mod+Shift+d --release exec "killall dunst; exec notify-send 'restart dunst'"
 bindsym Print exec --no-startup-id i3-scrot
 bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
-bindsym $mod+Shift+Print --release exec --no-startup-id scrot -a $(slop -f '%x,%y,%w,%h') 
+bindsym $mod+Shift+Print --release exec --no-startup-id "scrot -a $(slop -f '%x,%y,%w,%h')"
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
 # drop down terminal
