@@ -59,6 +59,7 @@ Plug 'chrisbra/colorizer'
 Plug 'yggdroot/indentline'
 Plug 'vimwiki/vimwiki'
 Plug 'chriskempson/base16-vim'
+Plug 'easymotion/vim-easymotion'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
