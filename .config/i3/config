@@ -299,7 +299,7 @@ bindsym $mod+Shift+x exec --no-startup-id blurlock
 
 # Autostart applications
 exec_always --no-startup-id hsetroot -solid "$background"
-exec_always --no-startup-id pgrep -f "autoname_workspaces.py" | xargs -r kill -2; ~/Repositories/i3scripts/autoname_workspaces.py --norenumber_workspaces --icon_list_format mathematician
+exec_always --no-startup-id pgrep -f "autoname_workspaces" | xargs -r kill -2; autoname_workspaces --norenumber_workspaces --icon_list_format mathematician
 exec_always --no-startup-id autorandr --change; ~/.config/polybar/launch.sh; nitrogen --restore
 exec --no-startup-id picom -b
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
