@@ -97,9 +97,9 @@ bindsym $mod+Shift+Print --release exec --no-startup-id "scrot -a $(slop -f '%x,
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
 # drop down terminal
-exec i3-quaketerm -H -t urxvt --height 0.9 -w 0.9 -o 20 -e "-bg '[95]$background'"
+exec i3-quaketerm -H -t urxvt --height 0.95 -w 0.95 -o 30
 for_window [instance="i3-quaketerm"] floating enable
-bindsym $mod+Return exec i3-quaketerm -t urxvt --height 0.9 -w 0.9 -o 20 -e "-bg '[95]$background'"
+bindsym $mod+Return exec i3-quaketerm -t urxvt --height 0.95 -w 0.95 -o 30
 
 # warp mouse
 mouse_warping none
@@ -329,7 +329,7 @@ client.background		$background
 
 # Set inner/outer gaps
 gaps inner 10
-gaps outer -2
+gaps outer 0
 
 # Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
 # gaps inner|outer current|all set|plus|minus <px>
