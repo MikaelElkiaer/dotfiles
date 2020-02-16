@@ -8,4 +8,9 @@ export XDG_CONFIG_HOME="$HOME/.config"
 
 [ "$PATH" == *"$HOME/bin"* ] || PATH="$HOME/bin:$PATH"
 [ "$PATH" == *"/opt/dotnet"* ] || PATH="/opt/dotnet:$PATH"
-[ "$PATH" == *"/home/me/.dotnet/tools"* ] || PATH="/home/me/.dotnet/tools:$PATH"
+[ "$PATH" == *"$HOME/.dotnet/tools"* ] || PATH="$HOME/.dotnet/tools:$PATH"
+
+for c in $(fd config $HOME/.kube); do
+	export KUBECONFIG="$KUBECONFIG:$c"
+done
+
