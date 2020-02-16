@@ -103,7 +103,7 @@ bindsym $mod+Return exec i3-quaketerm -t urxvt --height 0.95 -w 0.95 -o 30
 
 # warp mouse
 mouse_warping none
-exec --no-startup-id i3-warp-mouse
+exec_always --no-startup-id killall i3-warp-mouse; i3-warp-mouse
 
 # change focus
 bindsym $mod+h focus left
