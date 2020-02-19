@@ -22,5 +22,10 @@
             ]
         }
     ],
-    "vim.easymotion": true
+    "vim.easymotion": true,
+    "gitlens.codeLens.scopes": [
+        "document",
+        "containers",
+        "blocks"
+    ]
 }
