@@ -97,7 +97,7 @@ bindsym $mod+Shift+Print --release exec --no-startup-id "scrot -a $(slop -f '%x,
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
 # drop down terminal
-exec i3-quaketerm -H -t urxvt --height 0.95 -w 0.95 -o 30
+exec --no-startup-id i3-quaketerm -H -t urxvt --height 0.95 -w 0.95 -o 30
 for_window [instance="i3-quaketerm"] floating enable
 bindsym $mod+Return exec i3-quaketerm -t urxvt --height 0.95 -w 0.95 -o 30
 
