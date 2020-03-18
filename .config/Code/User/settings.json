@@ -1,5 +1,5 @@
 {
-    "window.menuBarVisibility": "default",
+    "window.menuBarVisibility": "toggle",
     "terminal.integrated.fontSize": 11,
     "editor.fontFamily": "'DejaVuSansMono Nerd Font Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 11,
