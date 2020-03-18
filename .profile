@@ -14,3 +14,5 @@ for c in $(fd config $HOME/.kube); do
 	export KUBECONFIG="$KUBECONFIG:$c"
 done
 
+export GAMEMODERUNEXEC=prime-run
+
