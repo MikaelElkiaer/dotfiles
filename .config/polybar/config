@@ -37,6 +37,7 @@ modules-center = i3
 type = custom/script
 exec = ~/.config/polybar/scripts/player-mpris-simple.sh
 interval = 2
+label-padding-left = 1
 
 [module/i3]
 type = internal/i3

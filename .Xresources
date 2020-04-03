@@ -127,7 +127,7 @@ rofi.line-margin:		5
 rofi.line-padding:		10
 ! bg, fg, bgalt, hlbg, hlfg
 rofi.color-normal: base00, base07, base00, base0D, base00
-rofi.color-active: base0B, base07, base0B, base0B, base00
+rofi.color-active: base0F, base07, base0B, base0B, base00
 rofi.color-urgent: base08, base07, base08, base08, base00
 ! background, border, separator
 rofi.color-window: base00, base0D, base0D
