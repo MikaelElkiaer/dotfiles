@@ -380,3 +380,13 @@ mode "$mode_gaps_outer" {
         bindsym Escape mode "default"
 }
 
+assign [class="^Code$"] number 1
+assign [class="^firefox$"] number 2
+assign [class="^Lutris$"] number 5
+assign [class="^Wine$" instance="^battle.net.exe$"] number 5
+assign [class="^Wine$" instance="^wowclassic.exe$"] number 5
+assign [class="^discord$"] number 7
+assign [class="^Signal$"] number 8
+assign [class="^Slack$"] number 9
+assign [class="^Chromium$"] number 10
+
