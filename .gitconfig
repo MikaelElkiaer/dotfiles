@@ -8,9 +8,9 @@
 [core]
 	autocrlf = input 
 	editor = vim
-	pager = "diff-so-fancy | less --tabs=4 -RFX"
+	pager = delta --dark
 [interactive]
-	diffFilter = (echo && diff-so-fancy)
+	diffFilter = delta --dark --color-only
 [rebase]
 	autosquash = true
 [credential]
