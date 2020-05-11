@@ -110,6 +110,7 @@ alias ls="exa -al"
 alias cat="bat"
 alias vim="nvim"
 alias vimdiff="nvim -d"
+alias helm="/bin/helm"
 
 export BAT_THEME=base16
 export FZF_DEFAULT_COMMAND="fd -H"
@@ -132,3 +133,5 @@ alias lg="lazygit"
 
 export POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="$POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND|fluxctl|kubeseal"
 
+alias kubectx="kubectl config get-contexts --no-headers | fzf | awk '{ print $2 }'"
+#| xargs --no-run-if-empty kubectl config use-context"
