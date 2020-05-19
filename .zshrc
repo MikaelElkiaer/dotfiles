@@ -110,7 +110,6 @@ alias ls="exa -al"
 alias cat="bat"
 alias vim="nvim"
 alias vimdiff="nvim -d"
-alias helm="/bin/helm"
 
 export BAT_THEME=ansi-dark
 export FZF_DEFAULT_COMMAND="fd -H"
