@@ -131,7 +131,5 @@ bindkey "^[[8~" end-of-line
 alias gv="vim -c GV"
 alias lg="lazygit"
 
-export POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="$POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND|fluxctl|kubeseal"
+export POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="$POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND|fluxctl|kubeseal|helm2"
 
-alias kubectx="kubectl config get-contexts --no-headers | fzf | awk '{ print $2 }'"
-#| xargs --no-run-if-empty kubectl config use-context"
