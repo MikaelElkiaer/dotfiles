@@ -112,7 +112,7 @@ alias vim="nvim"
 alias vimdiff="nvim -d"
 alias helm="/bin/helm"
 
-export BAT_THEME=base16
+export BAT_THEME=ansi-dark
 export FZF_DEFAULT_COMMAND="fd -H"
 export EDITOR=vim
 
