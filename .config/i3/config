@@ -88,7 +88,7 @@ bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
 
 # Start Applications
 bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
-bindsym $mod+Ctrl+c exec killall picom && picom -b
+bindsym $mod+Ctrl+c exec "killall picom; picom"
 # bindsym $mod+F3 exec ranger
 bindsym $mod+Shift+d --release exec "killall dunst; exec notify-send 'restart dunst'"
 bindsym Print exec --no-startup-id i3-scrot
