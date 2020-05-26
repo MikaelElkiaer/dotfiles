@@ -113,6 +113,7 @@ alias vimdiff="nvim -d"
 
 export BAT_THEME=ansi-dark
 export FZF_DEFAULT_COMMAND="fd -H"
+export FZF_DEFAULT_OPTS='--layout=reverse'
 export EDITOR=vim
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
