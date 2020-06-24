@@ -133,3 +133,6 @@ alias lg="lazygit"
 
 export POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="$POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND|fluxctl|kubeseal|helm2"
 
+PATH="$HOME/.node_modules/bin:$PATH"
+export npm_config_prefix=~/.node_modules
+
