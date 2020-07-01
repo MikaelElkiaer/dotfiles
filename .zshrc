@@ -106,7 +106,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias find="fd -H -I"
-alias ls="exa -al"
+alias ls="exa"
 alias cat="bat"
 alias vim="nvim"
 alias vimdiff="nvim -d"
