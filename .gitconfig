@@ -38,7 +38,8 @@
 		| fzf --ansi --bind 'ctrl-p:toggle-preview' --preview-window=':hidden' --preview \
 			\"echo {} | grep -oEi '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]?' \
 			| xargs -r git show\" \
-		| grep -oEi '[0-9a-f]{7,8}'"
+		| grep -oEi '[0-9a-f]{7,8}' \
+		| head -1"
 	llog = !"watch --interval 1 --color \"git --no-pager flog | less -R\""
 	sprune = !"git fetch -p && for branch in `git branch -vv | grep ': gone]' | awk '{print $1}'`; do git branch -D $branch; done"
 	oclean = !"find -type f -name *.orig -print0 | xargs -0 rm -f"
