@@ -72,3 +72,6 @@ colorscheme base16-default-dark
 
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 
+set path+=**
+set wildmenu
+
