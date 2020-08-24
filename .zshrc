@@ -107,6 +107,7 @@ source $ZSH/oh-my-zsh.sh
 
 alias find="fd -H -I"
 alias ls="exa"
+alias la="ls -la"
 alias cat="bat"
 alias vim="nvim"
 alias vimdiff="nvim -d"
