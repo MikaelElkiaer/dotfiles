@@ -1,0 +1,4 @@
+#!/bin/sh
+
+vim -c ":term fdiff $@"
+
