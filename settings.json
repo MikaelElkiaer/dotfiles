@@ -13,6 +13,7 @@
   "copyOnSelect": false,
   // If enabled, formatted data is also copied to your clipboard
   "copyFormatting": false,
+  "launchMode": "maximizedFocus",
   // A profile specifies a command to execute paired with information about how it should look and feel.
   // Each one of them will appear in the 'New Tab' dropdown,
   //   and can be invoked from the commandline with `wt.exe -p xxx`
@@ -22,7 +23,8 @@
       // Put settings here that you want to apply to all profiles.
       "fontFace": "DejaVuSansMono NF",
       "fontSize": 8,
-      "colorScheme": "Gruvbox Dark Hard"
+      "colorScheme": "Gruvbox Dark Hard",
+      "scrollbarState": "hidden"
     },
     "list": [
       {
@@ -126,20 +128,6 @@
   // To unbind a key combination from your defaults.json, set the command to "unbound".
   // To learn more about actions and keybindings, visit https://aka.ms/terminal-keybindings
   "actions": [
-    // Copy and paste are bound to Ctrl+Shift+C and Ctrl+Shift+V in your defaults.json.
-    // These two lines additionally bind them to Ctrl+C and Ctrl+V.
-    // To learn more about selection, visit https://aka.ms/terminal-selection
-    {
-      "command": {
-        "action": "copy",
-        "singleLine": false
-      },
-      "keys": "ctrl+c"
-    },
-    {
-      "command": "paste",
-      "keys": "ctrl+v"
-    },
     // Press Ctrl+Shift+F to open the search box
     {
       "command": "find",
@@ -152,10 +140,46 @@
     {
       "command": {
         "action": "splitPane",
-        "split": "auto",
+        "split": "horizontal",
         "splitMode": "duplicate"
       },
-      "keys": "alt+shift+d"
+      "keys": "alt+shift+j"
+    },
+    {
+      "command": {
+        "action": "splitPane",
+        "split": "vertical",
+        "splitMode": "duplicate"
+      },
+      "keys": "alt+shift+l"
+    },
+    {
+      "command": {
+        "action": "moveFocus",
+        "direction": "down"
+      },
+      "keys": "alt+j"
+    },
+    {
+      "command": {
+        "action": "moveFocus",
+        "direction": "up"
+      },
+      "keys": "alt+k"
+    },
+    {
+      "command": {
+        "action": "moveFocus",
+        "direction": "left"
+      },
+      "keys": "alt+h"
+    },
+    {
+      "command": {
+        "action": "moveFocus",
+        "direction": "right"
+      },
+      "keys": "alt+l"
     }
   ]
 }
