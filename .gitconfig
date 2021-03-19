@@ -1,10 +1,10 @@
 [user]
 	name = Mikael Elkiaer
 	email = 2102306+MikaelElkiaer@users.noreply.github.com
-[includeIf "gitdir:~/Repositories/GitHub/"]
-	path = ~/Repositories/GitHub/.gitconfig
-[includeIf "gitdir:~/Repositories/Work/"]
-	path = ~/Repositories/Work/.gitconfig
+[includeIf "gitdir:**/Repositories/GitHub/**"]
+	path = ~/.gitconfig-github
+[includeIf "gitdir:**/Repositories/MapsPeople/**"]
+	path = ~/.gitconfig-mapspeople
 [core]
 	autocrlf = input 
 	editor = vim
