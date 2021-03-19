@@ -112,7 +112,7 @@ alias cat="bat"
 alias vim="nvim"
 alias vimdiff="nvim -d"
 
-export BAT_THEME=ansi-dark
+export BAT_THEME=ansi
 export FZF_DEFAULT_COMMAND="fd -H"
 export FZF_DEFAULT_OPTS='--layout=reverse'
 export EDITOR=vim
