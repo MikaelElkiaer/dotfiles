@@ -70,6 +70,15 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# Preload oh-my-zsh and required plugins
+ZSH_CUSTOM=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}
+[ -f ~/.oh-my-zsh/oh-my-zsh.sh ] || sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+[ -d $ZSH_CUSTOM/themes/powerlevel10k ] || sh -c "git clone https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k"
+[ -d $ZSH_CUSTOM/plugins/zsh-syntax-highlighting ] || sh -c "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+[ -d $ZSH_CUSTOM/plugins/zsh-autosuggestions ] || sh -c "git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions"
+[ -d $ZSH_CUSTOM/plugins/zsh-z ] || sh -c "git clone https://github.com/agkozak/zsh-z $ZSH_CUSTOM/plugins/zsh-z"
+[ -d $ZSH_CUSTOM/plugins/zsh-vim-mode ] || sh -c "git clone https://github.com/softmoth/zsh-vim-mode.git $ZSH_CUSTOM/plugins/zsh-vim-mode"
+
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -105,15 +114,15 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias find="fd -H -I"
-alias ls="exa"
-alias la="ls -la"
-alias cat="bat"
-alias vim="nvim"
-alias vimdiff="nvim -d"
+[ ! $(command -v fd) ] || alias find="fd -H -I" \
+	&& export FZF_DEFAULT_COMMAND="fd -H"
+[ ! $(command -v exa) ] || alias ls="exa"
+[ ! $(command -v fd) ] || alias la="ls -la"
+[ ! $(command -v bat) ] || alias cat="bat"
+[ ! $(command -v nvim) ] || alias vim="nvim" \
+	&& alias vimdiff="nvim -d"
 
 export BAT_THEME=ansi
-export FZF_DEFAULT_COMMAND="fd -H"
 export FZF_DEFAULT_OPTS='--layout=reverse'
 export EDITOR=vim
 
