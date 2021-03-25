@@ -6,10 +6,10 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/me/.oh-my-zsh"
+export ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -70,6 +70,15 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# Preload oh-my-zsh and required plugins
+ZSH_CUSTOM=${ZSH_CUSTOM:-$ZSH/custom}
+[ -d ~/.oh-my-zsh ] || sh -c "git clone https://github.com/ohmyzsh/ohmyzsh.git $ZSH && compaudit | xargs chmod g-w,o-w $ZSH"
+[ -d $ZSH_CUSTOM/themes/powerlevel10k ] || sh -c "git clone https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k"
+[ -d $ZSH_CUSTOM/plugins/zsh-syntax-highlighting ] || sh -c "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+[ -d $ZSH_CUSTOM/plugins/zsh-autosuggestions ] || sh -c "git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions"
+[ -d $ZSH_CUSTOM/plugins/zsh-z ] || sh -c "git clone https://github.com/agkozak/zsh-z $ZSH_CUSTOM/plugins/zsh-z"
+[ -d $ZSH_CUSTOM/plugins/zsh-vim-mode ] || sh -c "git clone https://github.com/softmoth/zsh-vim-mode.git $ZSH_CUSTOM/plugins/zsh-vim-mode"
+
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -87,11 +96,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -105,16 +114,16 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias find="fd -H -I"
-alias ls="exa"
+[ ! $(command -v fd) ] || alias find="fd -H -I" \
+	&& export FZF_DEFAULT_COMMAND="fd -H"
+[ ! $(command -v exa) ] || alias ls="exa"
+[ ! $(command -v bat) ] || alias cat="bat"
+[ ! $(command -v nvim) ] || alias vim="nvim" \
+	&& alias vimdiff="nvim -d"
 alias la="ls -la"
-alias cat="bat"
-alias vim="nvim"
-alias vimdiff="nvim -d"
 alias cmd=cmd.exe /C start
 
 export BAT_THEME=ansi
-export FZF_DEFAULT_COMMAND="fd -H"
 export FZF_DEFAULT_OPTS='--layout=reverse'
 export EDITOR=vim
 
@@ -123,6 +132,8 @@ export EDITOR=vim
 
 export DOTNET_ROOT=/opt/dotnet
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export PATH=$DOTNET_ROOT:$PATH
+export PATH="$PATH:/home/me/.dotnet/tools"
 
 [[ ! -d ~/.kube ]] || export KUBECONFIG="$(fd ^config $HOME/.kube | paste -sd ":" -):$KUBECONFIG"
 export FLUX_FORWARD_NAMESPACE=flux
