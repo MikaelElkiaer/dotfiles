@@ -111,6 +111,7 @@ alias la="ls -la"
 alias cat="bat"
 alias vim="nvim"
 alias vimdiff="nvim -d"
+alias cmd=cmd.exe /C start
 
 export BAT_THEME=ansi
 export FZF_DEFAULT_COMMAND="fd -H"
