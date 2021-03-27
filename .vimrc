@@ -58,17 +58,24 @@ Plug 'junegunn/gv.vim'
 Plug 'chrisbra/colorizer'
 Plug 'yggdroot/indentline'
 Plug 'vimwiki/vimwiki'
-Plug 'chriskempson/base16-vim'
 Plug 'easymotion/vim-easymotion'
+Plug 'morhetz/gruvbox'
+Plug 'psliwka/vim-smoothie'
+Plug 'dense-analysis/ale'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme='base16_gruvbox_dark_hard'
 
 autocmd FileType git set foldlevel=1
-let g:indentLine_char = '┆'
 
-colorscheme base16-default-dark
+let g:gruvbox_contrast_dark='hard'
+
+" Fix vimdiff coloring, based on theme colors
+highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+highlight DiffChange cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=none guifg=bg guibg=Red
 
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 

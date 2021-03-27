@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [[ $* == *-X* ]]
+	then diff $1 $2 -rwuBq | grep "^Only in" --color=never | sort | grep -E "dev|production|$"
+elif [[ $* == *-F* ]]
+	then diff $1 $2 -rwuBq | grep -e "^Files" --color=never | sort | grep -E "dev|production|$"
+elif [[ $* == *-D* ]]
+	then diff $1 $2 -rwuB | sed -E 's/([-+].*:\s?)("?.{5})(.{190,})(.{5}"?,?)/\1\2...\4/' | grep -v "^Only in" | delta
+elif [[ $* == *-H* ]] || [[ $* == *--help* ]]
+	then echo "Usage: fdiff DIR1 DIR2 [-X|-F|-D (only display: file exclusivity|files with differences|content differences)]"
+else diff $1 $2 -rwuB | sed -E 's/([-+].*:\s?)("?.{5})(.{190,})(.{5}"?,?)/\1\2...\4/' | delta
+fi
+
