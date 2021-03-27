@@ -121,7 +121,7 @@ fi
 [ ! $(command -v nvim) ] || alias vim="nvim" \
 	&& alias vimdiff="nvim -d"
 alias la="ls -la"
-alias cmd=cmd.exe /C start
+alias start="cmd.exe /C start"
 
 export BAT_THEME=ansi
 export FZF_DEFAULT_OPTS='--layout=reverse'
