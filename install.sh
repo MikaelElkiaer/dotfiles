@@ -26,7 +26,7 @@ systemctl enable docker
 sudo usermod -aG docker $USER
 
 # Manjaro specifics 
-sudo pacman --noconfirm -S polybar dunst xclip rofi autorandr brave vscode gcc
+sudo pacman --noconfirm -S polybar dunst xclip rofi autorandr brave vscode gcc manjaro-settings-manager
 yay --noconfirm -S nerd-fonts-dejavu-complete visual-studio-code-bin
 sudo rsync -r /usr/share/ /usr/share
 
