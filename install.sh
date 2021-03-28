@@ -29,6 +29,7 @@ sudo usermod -aG docker $USER
 sudo pacman --noconfirm -S polybar dunst xclip rofi autorandr brave vscode gcc manjaro-settings-manager
 yay --noconfirm -S nerd-fonts-dejavu-complete visual-studio-code-bin
 sudo rsync -r /usr/share/ /usr/share
+nmcli c modify $WIRED 802-3-ethernet.wake-on-lan magic
 
 # Extra Manjaro rice
 sudo pacman --noconfirm -S python xorg-xprop python-pip
