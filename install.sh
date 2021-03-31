@@ -26,8 +26,8 @@ systemctl enable docker
 sudo usermod -aG docker $USER
 
 # Manjaro specifics 
-sudo pacman --noconfirm -S polybar dunst xclip rofi autorandr brave vscode gcc manjaro-settings-manager
-yay --noconfirm -S nerd-fonts-dejavu-complete visual-studio-code-bin
+sudo pacman --noconfirm -S polybar dunst xclip rofi autorandr brave vscode gcc manjaro-settings-manager chromium signal-desktop github-cli yq slop ranger
+yay --noconfirm -S nerd-fonts-dejavu-complete visual-studio-code-bin google-chrome slack-desktop i3lock-color
 sudo rsync -r /usr/share/ /usr/share
 nmcli c modify $WIRED 802-3-ethernet.wake-on-lan magic
 
@@ -46,4 +46,10 @@ timedatectl set-local-rtc 1 --adjust-system-clock
 read EMAIL
 ssh-keygen -t ed25519 -C $EMAIL
 eval "$(ssh-agent -s)"
+
+# .NET
+wget https://dot.net/v1/dotnet-install.sh && chmod +x dotnet-install.sh
+./dotnet-install.sh --channel 2.1 --version latest --install-dir /opt/dotnet
+./dotnet-install.sh --channel 3.1 --version latest --install-dir /opt/dotnet
+./dotnet-install.sh --channel 5.0 --version latest --install-dir /opt/dotnet
 

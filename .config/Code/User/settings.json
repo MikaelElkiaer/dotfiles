@@ -2,7 +2,6 @@
     "window.menuBarVisibility": "toggle",
     "terminal.integrated.fontSize": 11,
     "editor.fontFamily": "'DejaVuSansMono Nerd Font Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontSize": 11,
     "debug.console.fontSize": 11,
     "markdown.preview.fontSize": 11,
     "workbench.colorTheme": "Gruvbox Dark Hard",
@@ -37,5 +36,8 @@
         "document",
         "containers",
         "blocks"
-    ]
+    ],
+    "editor.smoothScrolling": true,
+    "editor.fontSize": 11,
+    "window.zoomLevel": 2
 }
