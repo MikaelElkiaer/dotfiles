@@ -80,8 +80,8 @@ else
 					ANS="$(rofi -sep "|" -dmenu -i -p 'System' -width 20 -dpi $ROFI_DPI -no-show-icons -lines 5 <<< " Lock| Logout| Suspend| Reboot| Shutdown")"
 				fi
 				case "$ANS" in
-					*Lock) i3exit lock ;;
-					*Suspend) i3exit suspend ;;
+					*Lock) i3lock.sh ;;
+					*Suspend) i3lock.sh && systemctl suspend ;;
 					*Reboot) i3exit reboot ;;
 					*Shutdown) i3exit shutdown ;;
 					*Logout) i3exit logout ;;
