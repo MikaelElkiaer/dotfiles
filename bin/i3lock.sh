@@ -42,6 +42,7 @@ i3lock \
 	--timestr="%H:%M:%S" \
 	--greetertext="${dadjoke:-"What do I look like? A JOKE MACHINE!?"}" \
 	--greetercolor=$color_fg \
+	--greeterpos="ix:iy+300" \
 	--pass-volume-keys \
 	--insidecolor=${color_bg} \
 	--ringcolor=$color_bg \
