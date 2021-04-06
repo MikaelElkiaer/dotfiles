@@ -62,6 +62,8 @@ Plug 'easymotion/vim-easymotion'
 Plug 'morhetz/gruvbox'
 Plug 'psliwka/vim-smoothie'
 Plug 'dense-analysis/ale'
+Plug 'omnisharp/omnisharp-vim'
+Plug 'nickspoons/vim-sharpenup'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
