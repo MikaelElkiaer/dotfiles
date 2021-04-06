@@ -37,6 +37,7 @@ i3lock \
 	--ring-width=10 \
 	--blur 10 \
 	--clock \
+	--indicator \
 	--datestr="%a, %b %e" \
 	--timestr="%H:%M:%S" \
 	--greetertext="${dadjoke:-"What do I look like? A JOKE MACHINE!?"}" \

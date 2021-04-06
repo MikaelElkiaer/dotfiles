@@ -27,7 +27,7 @@ sudo usermod -aG docker $USER
 
 # Manjaro specifics 
 sudo pacman --noconfirm -S polybar dunst xclip rofi autorandr brave vscode gcc manjaro-settings-manager chromium signal-desktop github-cli yq slop ranger
-yay --noconfirm -S nerd-fonts-dejavu-complete visual-studio-code-bin google-chrome slack-desktop i3lock-color
+yay --noconfirm -S nerd-fonts-dejavu-complete visual-studio-code-bin google-chrome slack-desktop i3lock-color rxvt-unicode-pixbuf
 sudo rsync -r /usr/share/ /usr/share
 nmcli c modify $WIRED 802-3-ethernet.wake-on-lan magic
 
