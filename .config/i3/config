@@ -381,11 +381,7 @@ mode "$mode_gaps_outer" {
         bindsym Escape mode "default"
 }
 
-assign [class="^Code$"] number 1
-assign [class="^firefox$"] number 2
-assign [class="^Brave-browser$"] number 2
 assign [class="^discord$"] number 7
 assign [class="^Signal$"] number 8
 assign [class="^Slack$"] number 9
-assign [class="^Chromium$"] number 10
 
