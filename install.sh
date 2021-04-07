@@ -39,6 +39,12 @@ git clone git@github.com:MikaelElkiaer/i3-warp-mouse.git ~/Repositories/GitHub/i
 git clone git@github.com:MikaelElkiaer/i3scripts.git ~/Repositories/GitHub/i3scripts
 git clone git@github.com:gawen947/i3-quaketerm.git ~/Repositories/GitHub/i3-quaketerm
 
+# xrdp
+yay -S xrdp xorgxrdp
+sudo echo 'allowed_users=anybody' > /etc/X11/Xwrapper.config
+sudo systemctl enable xrdp --now
+sudo systemctl enable xrdp-sesman --now
+
 # Fix time if dualboot with Windows
 timedatectl set-local-rtc 1 --adjust-system-clock
 
