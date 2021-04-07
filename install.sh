@@ -29,7 +29,6 @@ sudo usermod -aG docker $USER
 sudo pacman --noconfirm -S polybar dunst xclip rofi autorandr brave vscode gcc manjaro-settings-manager chromium signal-desktop github-cli yq slop ranger
 yay --noconfirm -S nerd-fonts-dejavu-complete visual-studio-code-bin google-chrome slack-desktop i3lock-color rxvt-unicode-pixbuf
 sudo rsync -r /usr/share/ /usr/share
-nmcli c modify $WIRED 802-3-ethernet.wake-on-lan magic
 
 # Extra Manjaro rice
 sudo pacman --noconfirm -S python xorg-xprop python-pip
@@ -38,6 +37,10 @@ pip install --user fontawesome
 git clone git@github.com:MikaelElkiaer/i3-warp-mouse.git ~/Repositories/GitHub/i3-warp-mouse
 git clone git@github.com:MikaelElkiaer/i3scripts.git ~/Repositories/GitHub/i3scripts
 git clone git@github.com:gawen947/i3-quaketerm.git ~/Repositories/GitHub/i3-quaketerm
+
+# wol
+nmcli c modify $WIRED 802-3-ethernet.wake-on-lan magic
+sudo sed -i "s/#?\(WOL_DISABLE=\)[YN]/\1Y/" /etc/tlp.conf
 
 # xrdp
 yay -S xrdp xorgxrdp
