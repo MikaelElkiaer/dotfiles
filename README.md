@@ -7,7 +7,7 @@ git clone git@github.com:gawen947/i3-quaketerm.git ~/Repositories/GitHub/i3-quak
 
 ## Tungsten
 
-1. Install tungsten (e.g. `yay tungsten`)
+1. Install tungsten (e.g. `yay -S tungsten xmlstarlet`)
 2. Get API key from http://developer.wolframalpha.com/portal/myapps/
 3. Put it in `~/.wolfram_api_key`
 4. Use `~/bin/rofi_run -t` or `~/bin/tungsten` directly
