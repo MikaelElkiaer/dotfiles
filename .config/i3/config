@@ -86,6 +86,12 @@ bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
 # bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
 # bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
 
+# Media controls
+bindsym XF86AudioPlay exec playerctl -p spotifyd play-pause
+bindsym XF86AudioPause exec playerctl -p spotifyd play-pause
+bindsym XF86AudioNext exec playerctl -p spotifyd next
+bindsym XF86AudioPrev exec playerctl -p spotifyd previous
+
 # Start Applications
 bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
 bindsym $mod+Ctrl+c exec "killall picom; picom"
@@ -380,8 +386,4 @@ mode "$mode_gaps_outer" {
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
-
-assign [class="^discord$"] number 7
-assign [class="^Signal$"] number 8
-assign [class="^Slack$"] number 9
 
