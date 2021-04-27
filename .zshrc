@@ -132,8 +132,10 @@ export EDITOR=vim
 
 export DOTNET_ROOT=/opt/dotnet
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
-export PATH=$DOTNET_ROOT:$PATH
-export PATH="$PATH:/home/me/.dotnet/tools"
+export PATH="$HOME/bin:$PATH"
+export PATH="/opt/dotnet:$PATH"
+export PATH="$HOME/.dotnet/tools:$PATH"
+export PATH="$HOME/go/bin:$PATH"
 
 [[ ! -d ~/.kube ]] || export KUBECONFIG="$(fd ^config $HOME/.kube | paste -sd ":" -):$KUBECONFIG"
 export FLUX_FORWARD_NAMESPACE=flux
@@ -157,5 +159,5 @@ function git() {
 	fi
 }
 
-export JIRA_API_TOKEN=$(cat ~/.tmp/jira-api-key)
+[[ ! -d ~/.tmp/jira-api-key ]] || export JIRA_API_TOKEN=$(cat ~/.tmp/jira-api-key)
 
