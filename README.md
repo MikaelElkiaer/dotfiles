@@ -64,19 +64,10 @@ sudo pacman -Sy git openssh bat exa fd tldr neovim htop diff-so-fancy wget fzf r
 yay git-delta
 ```
 
-### Oh-my-zsh with theme and plugins
-```
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-git clone https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/agkozak/zsh-z ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-z
-git clone https://github.com/softmoth/zsh-vim-mode.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-vim-mode
-```
-
 ### Tungsten (Wolfram Alpha API via CLI)
 
 1. Install tungsten: `yay tungsten`
 2. Get API key from http://developer.wolframalpha.com/portal/myapps/
 3. Put API key in `~/.wolfram_api_key`
 4. Run tungsten commands, e.g. `tungsten what is the meaning of life`
+

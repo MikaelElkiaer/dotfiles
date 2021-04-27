@@ -84,7 +84,7 @@ ZSH_CUSTOM=${ZSH_CUSTOM:-$ZSH/custom}
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions zsh-z zsh-vim-mode)
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions zsh-z)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -156,4 +156,6 @@ function git() {
 		command git "$@"
 	fi
 }
+
+export JIRA_API_TOKEN=$(cat ~/.tmp/jira-api-key)
 
