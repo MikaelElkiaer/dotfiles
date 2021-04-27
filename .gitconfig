@@ -34,7 +34,7 @@
 		then git commit --amend --no-edit; \
 		else exit 1; fi"
 	co = checkout
-	ilog = !"git flog \
+	ilog = !"git flog --all \
 		| fzf --ansi --bind 'ctrl-p:toggle-preview' --preview-window=':hidden' --preview \
 			\"echo {} | grep -oEi '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]?' \
 			| xargs -r git show\" \
@@ -45,6 +45,7 @@
 	oclean = !"find -type f -name *.orig -print0 | xargs -0 rm -f"
 	irebase = !"git ilog | xargs -r git rebase -i"
 	ifixup = !"git ilog | xargs -I {} -r git commit --fixup={}"
+	iours = !"fzf | xargs -I {} -r git checkout --ours -- {}"
 [color]
 	ui = always
 [diff]
