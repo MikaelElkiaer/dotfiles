@@ -44,9 +44,15 @@ sudo sed -i "s/#?\(WOL_DISABLE=\)[YN]/\1Y/" /etc/tlp.conf
 
 # xrdp
 yay -S xrdp xorgxrdp
-sudo echo 'allowed_users=anybody' > /etc/X11/Xwrapper.config
+sudo echo 'allowed_users=anybody' >> /etc/X11/Xwrapper.config
 sudo systemctl enable xrdp --now
 sudo systemctl enable xrdp-sesman --now
+## -layout and something else in /etc/xrdp/sesman.ini
+
+# bluetooth
+yay -S blueman
+systemctl enable bluetooth --now
+## set AutoEnable=true in /etc/bluetooth/main.conf
 
 # Fix time if dualboot with Windows
 timedatectl set-local-rtc 1 --adjust-system-clock
