@@ -17,7 +17,8 @@
                 "j"
             ],
             "after": [
-                "<Esc>"
+                "<Esc>",
+                "l"
             ]
 	}
     ],
@@ -31,7 +32,6 @@
             "filenamePattern": "*.ipynb"
         }
     ],
-    "vim.easymotion": true,
     "gitlens.codeLens.scopes": [
         "document",
         "containers",
@@ -39,5 +39,8 @@
     ],
     "editor.smoothScrolling": true,
     "editor.fontSize": 11,
+    "vim.camelCaseMotion.enable": true,
+    "vim.smartRelativeLine": true,
+    "files.autoSave": "afterDelay",
     "window.zoomLevel": 2
 }

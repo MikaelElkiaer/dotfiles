@@ -64,6 +64,8 @@ Plug 'psliwka/vim-smoothie'
 Plug 'dense-analysis/ale'
 Plug 'omnisharp/omnisharp-vim'
 Plug 'nickspoons/vim-sharpenup'
+Plug 'bkad/camelcasemotion'
+Plug 'pedrohdz/vim-yaml-folds'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
@@ -83,4 +85,19 @@ let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}
 
 set path+=**
 set wildmenu
+set number relativenumber
+set number relativenumber
+
+augroup numbertoggle
+  autocmd!
+  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+augroup END
+
+set foldlevelstart=100
+
+let g:ale_completion_enabled = 1
+let g:ale_linters = {
+    \ 'sh': ['language_server'],
+    \ }
 
