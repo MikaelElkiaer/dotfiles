@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@angular/cli": "^11.2.9",
+    "vim-language-server": "^2.2.2"
+  }
+}
