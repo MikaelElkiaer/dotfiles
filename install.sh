@@ -54,6 +54,9 @@ yay -S blueman
 systemctl enable bluetooth --now
 ## set AutoEnable=true in /etc/bluetooth/main.conf
 
+# audio
+install_pulse
+
 # Fix time if dualboot with Windows
 timedatectl set-local-rtc 1 --adjust-system-clock
 
