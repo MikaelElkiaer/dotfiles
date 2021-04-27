@@ -10,5 +10,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 [ "$PATH" == *"/opt/dotnet"* ] || PATH="/opt/dotnet:$PATH"
 [ "$PATH" == *"$HOME/.dotnet/tools"* ] || PATH="$HOME/.dotnet/tools:$PATH"
 
+[ "$PATH" == *"$HOME/go/bin"* ] || PATH="$HOME/go/bin:$PATH"
+
 export GAMEMODERUNEXEC=prime-run
 
