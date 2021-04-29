@@ -149,4 +149,8 @@ PATH="$HOME/.node_modules/bin:$PATH"
 export npm_config_prefix=~/.node_modules
 
 export JIRA_API_TOKEN=$(cat ~/.tmp/jira-api-key)
+if [ -z "$TMUX" ] && [ -n "$SSH_TTY" ] && [[ $- =~ i ]]; then
+	tmux attach-session -t ssh || tmux new-session -s ssh
+	exit
+fi
 
