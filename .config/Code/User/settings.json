@@ -7,7 +7,7 @@
     "workbench.colorTheme": "Gruvbox Dark Hard",
     "go.formatTool": "goimports",
     "go.useLanguageServer": true,
-    "terminal.external.linuxExec": "urxvt",
+    "terminal.external.linuxExec": "alacritty",
     "editor.wordWrap": "on",
     "editor.wrappingIndent": "deepIndent",
     "vim.insertModeKeyBindings": [

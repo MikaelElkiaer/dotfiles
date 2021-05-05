@@ -117,7 +117,7 @@ rofi.modi:			drun,run,window,ssh
 rofi.lines:			10
 rofi.matching:			fuzzy
 rofi.font:			DejaVu Sans Book 11
-rofi.terminal:			urxvt
+rofi.terminal:			alacritty
 rofi.run-command:		{cmd}
 rofi.run-shell-command:		{terminal} -e {cmd}
 rofi.ssh-client:		ssh
