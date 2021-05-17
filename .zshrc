@@ -154,3 +154,5 @@ if [ -z "$TMUX" ] && [ -n "$SSH_TTY" ] && [[ $- =~ i ]]; then
 	exit
 fi
 
+[ ! $(command -v kubectl) ] || kubectl completion zsh > "${fpath[1]}/_kubectl"
+
