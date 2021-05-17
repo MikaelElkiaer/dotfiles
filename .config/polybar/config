@@ -24,7 +24,7 @@ inherit = bar/shared
 monitor = ${env:POLYBAR_MONITOR:eDP-1}
 tray-position = right
 tray-padding = 2
-modules-left = player-mpris-simple
+modules-left = weather player-mpris-simple
 modules-center = i3
 modules-right = keyboard-layout cpu memory clock
 
@@ -37,6 +37,11 @@ modules-center = i3
 type = custom/script
 exec = ~/.config/polybar/scripts/player-mpris-simple.sh
 interval = 2
+
+[module/weather]
+type = custom/script
+exec = curl -s 'wttr.in/Aalborg?format=%c+%l:+%C+%t+%p+%w\n'
+interval = 60
 label-padding-left = 1
 
 [module/keyboard-layout]
