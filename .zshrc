@@ -159,5 +159,11 @@ function git() {
 	fi
 }
 
-[[ ! -d ~/.tmp/jira-api-key ]] || export JIRA_API_TOKEN=$(cat ~/.tmp/jira-api-key)
+[[ ! -f ~/.tmp/jira-api-key ]] || export JIRA_API_TOKEN=$(cat ~/.tmp/jira-api-key)
+if [ -z "$TMUX" ] && [ -n "$SSH_TTY" ] && [[ $- =~ i ]]; then
+	tmux attach-session -t ssh || tmux new-session -s ssh
+	exit
+fi
+
+[ ! $(command -v kubectl) ] || kubectl completion zsh > "${fpath[1]}/_kubectl"
 
