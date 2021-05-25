@@ -39,7 +39,9 @@ endfunction
 
 command -nargs=1 R call RebaseAction(<f-args>)
 
-autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+set ts=2 sts=2 sw=2 expandtab
+set smartindent
+let g:vim_json_syntax_conceal = 0
 
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -66,6 +68,7 @@ Plug 'omnisharp/omnisharp-vim'
 Plug 'nickspoons/vim-sharpenup'
 Plug 'bkad/camelcasemotion'
 Plug 'pedrohdz/vim-yaml-folds'
+Plug 'elzr/vim-json'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
@@ -100,4 +103,7 @@ let g:ale_completion_enabled = 1
 let g:ale_linters = {
     \ 'sh': ['language_server'],
     \ }
+
+set splitright
+set splitbelow
 
