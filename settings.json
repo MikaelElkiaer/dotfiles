@@ -24,7 +24,8 @@
       "fontFace": "DejaVuSansMono NF",
       "fontSize": 8,
       "colorScheme": "Gruvbox Dark Hard",
-      "scrollbarState": "hidden"
+      "scrollbarState": "hidden",
+      "bellStyle": "none"
     },
     "list": [
       {
