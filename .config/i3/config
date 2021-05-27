@@ -58,6 +58,7 @@ floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Shift+Return exec alacritty
+bindsym $mod+Ctrl+Return exec alacritty -e tmux
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -102,10 +103,10 @@ bindsym Ctrl+Print --release exec --no-startup-id "cd ~/Pictures && scrot -a $(s
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
 # drop down terminal
-exec --no-startup-id i3-quaketerm -H -N --class -t alacritty --height 1 --width 1
+exec --no-startup-id i3-quaketerm -H -N --class -t alacritty -e "-e tmux" --height 1 --width 1
 #--height 0.95 -w 0.95 -o 30
 for_window [instance="i3-quaketerm"] floating enable
-bindsym $mod+Return exec i3-quaketerm -N --class -t alacritty --height 1 --width 1
+bindsym $mod+Return exec i3-quaketerm -N --class -t alacritty -e "-e tmux" --height 1 --width 1
 #--height 0.95 -w 0.95 -o 30
 
 # warp mouse

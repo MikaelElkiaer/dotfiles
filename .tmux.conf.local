@@ -404,3 +404,7 @@ tmux_conf_update_plugins_on_reload=true
 #
 # "$@"
 # # /!\ do not remove the previous line
+
+# fix colors while running inside alacritty
+set -ag terminal-overrides ",alacritty:RGB"
+
