@@ -122,7 +122,7 @@ fi
 	&& alias vimdiff="nvim -d"
 alias la="ls -la"
 
-export BAT_THEME=ansi
+export BAT_THEME=base16
 export FZF_DEFAULT_OPTS='--layout=reverse'
 export EDITOR=vim
 
