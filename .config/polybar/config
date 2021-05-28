@@ -40,7 +40,7 @@ interval = 2
 
 [module/weather]
 type = custom/script
-exec = curl -s 'wttr.in/Aalborg?format=%c+%l:+%C+%t+%p+%w\n'
+exec = curl -s 'wttr.in/Aalborg?format=%c+%l:+%C,+%t,+%p,+%w\n'
 interval = 60
 label-padding-left = 1
 
