@@ -46,6 +46,7 @@
 	irebase = !"git ilog | xargs -r git rebase -i"
 	ifixup = !"git ilog | xargs -I {} -r git commit --fixup={}"
 	iours = !"fzf | xargs -I {} -r git checkout --ours -- {}"
+  su = submodule update --recursive
 [color]
 	ui = always
 [diff]
