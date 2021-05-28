@@ -8,7 +8,7 @@ get_dadjoke() {
 	timeout 3 curl -s -H "Accept: application/json" https://icanhazdadjoke.com/ | jq -r ".joke"
 }
 
-font="DejaVuSansMonoNerdFontMono"
+font="DejaVuSans"
 font_size=20
 color_bg=$(get_color color0)
 color_fg=$(get_color color7)
@@ -28,33 +28,35 @@ i3lock \
 	--verif-font=$font \
 	--wrong-font=$font \
 	--greeter-font=$font \
-	--timesize=$(expr $font_size + 8) \
-	--datesize=$font_size \
-	--layoutsize=$font_size \
-	--verifsize=$font_size \
-	--wrongsize=$font_size \
-	--greetersize=$font_size \
+	--time-size=$(expr $font_size + 8) \
+	--date-size=$font_size \
+	--layout-size=$font_size \
+	--verif-size=$font_size \
+	--wrong-size=$font_size \
+  --greeter-size=$(expr $font_size + 8) \
 	--ring-width=10 \
 	--blur 10 \
 	--clock \
 	--indicator \
-	--datestr="%a, %b %e" \
-	--timestr="%H:%M:%S" \
-	--greetertext="${dadjoke:-"What do I look like? A JOKE MACHINE!?"}" \
-	--greetercolor=$color_fg \
-	--greeterpos="ix:iy+300" \
+	--date-str="%a, %b %e" \
+	--time-str="%H:%M:%S" \
+	--greeter-text="${dadjoke:-"What do I look like? A JOKE MACHINE!?"}" \
+	--greeter-color=$color_fg \
+	--greeter-pos="ix:iy+300" \
 	--pass-volume-keys \
-	--insidecolor=${color_bg} \
-	--ringcolor=$color_bg \
-	--linecolor=$color_fg \
-	--timecolor=$color_fg \
-	--datecolor=$color_fg \
-	--insidevercolor=$color_blue \
-	--ringvercolor=$color_blue \
-	--ringwrongcolor=$color_red \
-	--insidewrongcolor=$color_red \
-	--keyhlcolor=$color_green \
-	--bshlcolor=$color_red \
-	--verifcolor=$color_bg \
-	--wrongcolor=$color_bg
+	--inside-color=${color_bg} \
+	--ring-color=$color_bg \
+	--line-color=$color_fg \
+	--time-color=$color_fg \
+	--date-color=$color_fg \
+	--insidever-color=$color_blue \
+	--ringver-color=$color_blue \
+	--ringwrong-color=$color_red \
+	--insidewrong-color=$color_red \
+	--keyhl-color=$color_green \
+	--bshl-color=$color_red \
+	--verif-color=$color_bg \
+	--wrong-color=$color_bg \
+  --greeteroutline-color=$color_bg \
+  --greeteroutline-width=0.25
 
