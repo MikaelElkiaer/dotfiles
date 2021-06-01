@@ -86,6 +86,8 @@ highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=none guifg=bg guibg=Re
 
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
 
+set ignorecase
+set smartcase
 set path+=**
 set wildmenu
 set number relativenumber
