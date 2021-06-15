@@ -123,7 +123,7 @@ fi
 alias la="ls -la"
 alias start="cmd.exe /C start"
 
-export BAT_THEME=ansi
+export BAT_THEME=base16
 export FZF_DEFAULT_OPTS='--layout=reverse'
 export EDITOR=vim
 
