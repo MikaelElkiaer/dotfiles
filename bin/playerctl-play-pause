@@ -1,0 +1,3 @@
+#!/bin/sh
+
+playerctl -l | grep spotifyd &> 0 && (playerctl -p spotifyd status | grep Playing &> 0 && playerctl -p spotifyd pause) || (playerctl -p spotifyd status | grep Paused &> 0 && playerctl -p spotifyd play)

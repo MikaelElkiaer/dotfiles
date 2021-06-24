@@ -88,8 +88,8 @@ bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
 # bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
 
 # Media controls
-bindsym XF86AudioPlay exec playerctl -p spotifyd play-pause
-bindsym XF86AudioPause exec playerctl -p spotifyd play-pause
+bindsym XF86AudioPlay exec playerctl-play-pause
+bindsym XF86AudioPause exec playerctl-play-pause
 bindsym XF86AudioNext exec playerctl -p spotifyd next
 bindsym XF86AudioPrev exec playerctl -p spotifyd previous
 
