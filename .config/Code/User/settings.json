@@ -42,5 +42,7 @@
     "vim.camelCaseMotion.enable": true,
     "vim.smartRelativeLine": true,
     "files.autoSave": "afterDelay",
-    "window.zoomLevel": 2
+    "window.zoomLevel": 1,
+    "vim.leader": ";",
+    "editor.formatOnType": true
 }
