@@ -103,9 +103,11 @@ bindsym Ctrl+Print --release exec --no-startup-id "cd ~/Pictures && scrot -a $(s
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
 # drop down terminal
+#exec --no-startup-id i3-quaketerm -H -N --class -t alacritty -e "-e tmux attach-session -t quaketerm || tmux new-session -s quaketerm" --height 1 --width 1
 exec --no-startup-id i3-quaketerm -H -N --class -t alacritty -e "-e tmux" --height 1 --width 1
 #--height 0.95 -w 0.95 -o 30
 for_window [instance="i3-quaketerm"] floating enable
+#bindsym $mod+Return exec i3-quaketerm -N --class -t alacritty -e "-e tmux attach-session -t quaketerm || tmux new-session -s quaketerm" --height 1 --width 1
 bindsym $mod+Return exec i3-quaketerm -N --class -t alacritty -e "-e tmux" --height 1 --width 1
 #--height 0.95 -w 0.95 -o 30
 
