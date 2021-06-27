@@ -70,6 +70,7 @@ Plug 'nickspoons/vim-sharpenup'
 Plug 'bkad/camelcasemotion'
 Plug 'pedrohdz/vim-yaml-folds'
 Plug 'elzr/vim-json'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 call plug#end()
 
 let g:airline_powerline_fonts = 1
