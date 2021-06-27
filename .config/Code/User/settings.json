@@ -26,12 +26,9 @@
     "settingsSync.ignoredExtensions": [
         "ms-vscode-remote.remote-wsl"
     ],
-    "workbench.editorAssociations": [
-        {
-            "viewType": "jupyter.notebook.ipynb",
-            "filenamePattern": "*.ipynb"
-        }
-    ],
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter.notebook.ipynb"
+    },
     "gitlens.codeLens.scopes": [
         "document",
         "containers",
