@@ -41,13 +41,13 @@ interval = 2
 [module/weather]
 type = custom/script
 exec = curl -s 'wttr.in/Aalborg?format=%c+%l:+%C,+%t,+%p,+%w\n'
-interval = 60
+interval = 600
 label-padding-left = 1
 
 [module/keyboard-layout]
 type = custom/script
 exec = ~/.config/polybar/scripts/keyboard-layout.sh
-interval = 0.2
+interval = 5
 
 [module/i3]
 type = internal/i3
