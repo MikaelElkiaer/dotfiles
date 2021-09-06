@@ -5,7 +5,7 @@ set nocompatible
 filetype plugin on
 
 nmap <silent> <c-k> <c-o> :Files<CR>
-imap jj <ESC>
+imap qq <ESC>
 let mapleader = ";"
 
 command! Md :m +1

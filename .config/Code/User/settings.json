@@ -11,14 +11,14 @@
     "editor.wordWrap": "on",
     "editor.wrappingIndent": "deepIndent",
     "vim.insertModeKeyBindings": [
+
 	{
             "before": [
-                "j",
-                "j"
+                "q",
+                "q"
             ],
             "after": [
-                "<Esc>",
-                "l"
+                "<Esc>"
             ]
 	}
     ],
