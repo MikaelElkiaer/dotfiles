@@ -389,3 +389,4 @@ mode "$mode_gaps_outer" {
         bindsym Escape mode "default"
 }
 
+exec --no-startup-id setxkbmap -model pc105 -layout us -variant intl-unicode
