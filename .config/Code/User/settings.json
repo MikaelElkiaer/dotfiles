@@ -14,8 +14,8 @@
 
 	{
             "before": [
-                "q",
-                "q"
+                "j",
+                "k"
             ],
             "after": [
                 "<Esc>"
@@ -40,6 +40,6 @@
     "vim.smartRelativeLine": true,
     "files.autoSave": "afterDelay",
     "window.zoomLevel": 1,
-    "vim.leader": ";",
+    "vim.leader": "<Space>",
     "editor.formatOnType": true
 }
