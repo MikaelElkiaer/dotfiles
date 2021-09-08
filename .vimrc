@@ -6,7 +6,8 @@ filetype plugin on
 
 nmap <silent> <c-k> <c-o> :Files<CR>
 imap jk <ESC>
-let mapleader = "<Space>"
+noremap <SPACE> <Nop>
+let mapleader = "\<Space>"
 
 command! Md :m +1
 command! Mu :m -2
