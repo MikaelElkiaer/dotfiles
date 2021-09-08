@@ -1,9 +1,9 @@
 {
     "window.menuBarVisibility": "toggle",
-    "terminal.integrated.fontSize": 11,
+    "terminal.integrated.fontSize": 12,
     "editor.fontFamily": "'DejaVuSansMono Nerd Font Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "debug.console.fontSize": 11,
-    "markdown.preview.fontSize": 11,
+    "debug.console.fontSize": 12,
+    "markdown.preview.fontSize": 12,
     "workbench.colorTheme": "Gruvbox Dark Hard",
     "go.formatTool": "goimports",
     "go.useLanguageServer": true,
@@ -35,11 +35,12 @@
         "blocks"
     ],
     "editor.smoothScrolling": true,
-    "editor.fontSize": 11,
+    "editor.fontSize": 12,
     "vim.camelCaseMotion.enable": true,
     "vim.smartRelativeLine": true,
     "files.autoSave": "afterDelay",
-    "window.zoomLevel": 1,
     "vim.leader": "<Space>",
-    "editor.formatOnType": true
+    "editor.formatOnType": true,
+    "scm.inputFontSize": 12,
+    "window.zoomLevel": 1
 }
