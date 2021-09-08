@@ -72,6 +72,7 @@ Plug 'pedrohdz/vim-yaml-folds'
 Plug 'elzr/vim-json'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'machakann/vim-swap'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
