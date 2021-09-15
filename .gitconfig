@@ -48,6 +48,6 @@
 	iours = !"fzf | xargs -I {} -r git checkout --ours -- {}"
   su = submodule update --recursive
 [color]
-	ui = always
+	ui = auto
 [diff]
 	tool = vimdiff
