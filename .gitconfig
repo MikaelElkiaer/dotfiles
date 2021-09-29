@@ -7,7 +7,7 @@
 	path = ~/.gitconfig-mapspeople
 [core]
 	autocrlf = input 
-	editor = vim
+	editor = nvim
 	pager = delta --dark
 [interactive]
 	diffFilter = delta --dark --color-only
