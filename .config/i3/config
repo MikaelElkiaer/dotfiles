@@ -45,9 +45,9 @@ default_floating_border normal
 hide_edge_borders none
 
 # change borders
-bindsym $mod+u border none
-bindsym $mod+y border pixel 2
-bindsym $mod+n border normal
+# bindsym $mod+u border none
+# bindsym $mod+y border pixel 2
+# bindsym $mod+n border normal
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -57,26 +57,30 @@ font xft:Deja Vu Sans Mono 10
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Shift+Return exec alacritty
-bindsym $mod+Ctrl+Return exec alacritty -e tmux
+bindsym $mod+t exec alacritty
 
 # kill focused window
-bindsym $mod+Shift+q kill
+bindsym $mod+w mode "$kill"
+set $kill kill? (y/n)
+mode "$kill" {
+    bindsym y kill, mode "default"
+    bindsym n mode "default"
+    bindsym q mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+Shift+w kill
+bindsym $mod+Ctrl+w --release exec --no-startup-id xkill
 
 # start program launcher
 bindsym $mod+d exec --no-startup-id rofi_run -r
 bindsym $mod+Tab exec --no-startup-id rofi_run -w
-bindsym $mod+t exec --no-startup-id rofi_run -t
-
-# launch categorized menu
-bindsym $mod+z exec --no-startup-id morc_menu
+bindsym $mod+u exec --no-startup-id rofi_run -t
 
 ################################################################################################
 ## sound-section - DO NOT EDIT if you wish to automatically upgrade Alsa -> Pulseaudio later! ##
 ################################################################################################
 
 exec --no-startup-id volumeicon
-bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
 #exec --no-startup-id pulseaudio
 #exec --no-startup-id pa-applet
 #bindsym $mod+Ctrl+m exec pavucontrol
@@ -93,14 +97,21 @@ bindsym XF86AudioPause exec playerctl-play-pause
 bindsym XF86AudioNext exec playerctl -p spotifyd next
 bindsym XF86AudioPrev exec playerctl -p spotifyd previous
 
-# Start Applications
-bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
-bindsym $mod+Ctrl+c exec "killall picom; picom"
 # bindsym $mod+F3 exec ranger
-bindsym $mod+Shift+d --release exec "killall dunst; exec notify-send 'restart dunst'"
 bindsym Print exec --no-startup-id i3-scrot
 bindsym Ctrl+Print --release exec --no-startup-id "cd ~/Pictures && scrot -a $(slop -f '%x,%y,%w,%h') -e 'xclip -selection clipboard -t image/png -i $f'"
-bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
+
+bindsym $mod+Ctrl+Shift+w mode "$kill_service"
+set $kill_service kill service: (i)3, (c)onfig, (d)unst, (p)icom, i3-(w)arp-mouse
+mode "$kill_service" {
+    bindsym i restart
+    bindsym c reload
+    bindsym p "killall picom; picom"
+    bindsym d "killall dunst; exec notify-send 'restart dunst'"
+    bindsym w "killall i3-warp-mouse; i3-warp-mouse"
+    bindsym q mode "default"
+    bindsym Escape mode "default"
+}
 
 # drop down terminal
 #exec --no-startup-id i3-quaketerm -H -N --class -t alacritty -e "-e tmux attach-session -t quaketerm || tmux new-session -s quaketerm" --height 1 --width 1
@@ -108,7 +119,7 @@ exec --no-startup-id i3-quaketerm -H -N --class -t alacritty -e "-e tmux" --heig
 #--height 0.95 -w 0.95 -o 30
 for_window [instance="i3-quaketerm"] floating enable
 #bindsym $mod+Return exec i3-quaketerm -N --class -t alacritty -e "-e tmux attach-session -t quaketerm || tmux new-session -s quaketerm" --height 1 --width 1
-bindsym $mod+Return exec i3-quaketerm -N --class -t alacritty -e "-e tmux" --height 1 --width 1
+bindsym $mod+Shift+t exec i3-quaketerm -N --class -t alacritty -e "-e tmux" --height 1 --width 1
 #--height 0.95 -w 0.95 -o 30
 
 # warp mouse
@@ -141,39 +152,42 @@ bindsym $mod+Shift+Right move right
 
 # workspace back and forth (with/without active container)
 workspace_auto_back_and_forth yes
-bindsym $mod+b workspace back_and_forth
 
 # split orientation
-bindsym $mod+o split h;exec notify-send 'tile horizontally'
-bindsym $mod+v split v;exec notify-send 'tile vertically'
-bindsym $mod+q split toggle
+bindsym $mod+g split toggle
 
 # toggle fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+bindsym $mod+a mode "$layout"
+set $layout layout: (s)tacking, (t)abbed, to(g)gle split
+mode "$layout" {
+    bindsym s layout stacking
+    bindsym t layout tabbed
+    bindsym g layout toggle split
+    bindsym q mode "default"
+    bindsym Escape mode "default"
+}
 
 # toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
+# bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+# bindsym $mod+space focus mode_toggle
 
 # toggle sticky
-bindsym $mod+Shift+s sticky toggle
+# bindsym $mod+Shift+s sticky toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+# bindsym $mod+a focus parent
 
 # move the currently focused window to the scratchpad
-bindsym $mod+Shift+minus move scratchpad
+# bindsym $mod+Shift+minus move scratchpad
 
 # Show the next scratchpad window or hide the focused scratchpad window.
 # If there are multiple scratchpad windows, this command cycles through them.
-bindsym $mod+minus scratchpad show
+# bindsym $mod+minus scratchpad show
 
 #navigate workspaces next / previous
 bindsym $mod+Ctrl+l workspace next
@@ -254,31 +268,11 @@ for_window [class="Xfburn"] floating enable
 # switch to workspace with urgent window automatically
 for_window [urgent=latest] focus
 
-# reload the configuration file
-bindsym $mod+Shift+c reload
-
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
-
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Ctrl+Shift+q exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # Set shut down, restart and locking features
 bindsym $mod+x exec --no-startup-id rofi_run -l
-set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
-mode "$mode_system" {
-    bindsym l exec --no-startup-id i3exit lock, mode "default"
-    bindsym s exec --no-startup-id i3exit suspend, mode "default"
-    bindsym u exec --no-startup-id i3exit switch_user, mode "default"
-    bindsym e exec --no-startup-id i3exit logout, mode "default"
-    bindsym h exec --no-startup-id i3exit hibernate, mode "default"
-    bindsym r exec --no-startup-id i3exit reboot, mode "default"
-    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
-
-    # exit system mode: "Enter" or "Escape"
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
 
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
@@ -300,7 +294,7 @@ mode "resize" {
         bindsym Right resize grow width 10 px or 10 ppt
 
         # exit resize mode: Enter or Escape
-        bindsym Return mode "default"
+        bindsym q mode "default"
         bindsym Escape mode "default"
 }
 
