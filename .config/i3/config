@@ -104,11 +104,11 @@ bindsym Ctrl+Print --release exec --no-startup-id "cd ~/Pictures && scrot -a $(s
 bindsym $mod+Ctrl+Shift+w mode "$kill_service"
 set $kill_service kill service: (i)3, (c)onfig, (d)unst, (p)icom, i3-(w)arp-mouse
 mode "$kill_service" {
-    bindsym i restart
-    bindsym c reload
-    bindsym p "killall picom; picom"
-    bindsym d "killall dunst; exec notify-send 'restart dunst'"
-    bindsym w "killall i3-warp-mouse; i3-warp-mouse"
+    bindsym i restart, mode "default"
+    bindsym c reload, mode "default"
+    bindsym p exec "killall picom; picom", mode "default"
+    bindsym d exec "killall dunst; exec notify-send 'restart dunst'", mode "default"
+    bindsym w exec "killall i3-warp-mouse; i3-warp-mouse", mode "default"
     bindsym q mode "default"
     bindsym Escape mode "default"
 }
