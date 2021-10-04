@@ -1,4 +1,6 @@
 git:
   pull:
-    mode: 'rebase'
-
+    mode: 'auto'
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
