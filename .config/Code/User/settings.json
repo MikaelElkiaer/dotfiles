@@ -42,5 +42,6 @@
     "vim.leader": "<Space>",
     "editor.formatOnType": true,
     "scm.inputFontSize": 12,
-    "window.zoomLevel": 1
+    "window.zoomLevel": 1,
+    "redhat.telemetry.enabled": false
 }
