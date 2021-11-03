@@ -94,8 +94,8 @@ exec --no-startup-id volumeicon
 # Media controls
 bindsym XF86AudioPlay exec playerctl-play-pause
 bindsym XF86AudioPause exec playerctl-play-pause
-bindsym XF86AudioNext exec playerctl -p spotifyd next
-bindsym XF86AudioPrev exec playerctl -p spotifyd previous
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
 
 # bindsym $mod+F3 exec ranger
 bindsym Print exec --no-startup-id i3-scrot
