@@ -26,7 +26,9 @@
 	flog = log --pretty=format:'%C(yellow)%h %C(red)%ad %C(cyan)%x09%an%x09%C(green)%d %C(white)%s' --date=relative --graph
 	ss = status -s
 	aa = add -A
-	ca = !"git flog -1 | head -1 | xargs echo; \
+	au = add -u
+	ap = add -p
+    ca = !"git flog -1 --color=always | head -1 | xargs echo; \
 		echo \"Amend to above commit? [Yn]\"; \
 		read -sn 1 CONFIRM_AMEND; \
 		CONFIRM_AMEND=${CONFIRM_AMEND,,}; \
@@ -51,3 +53,5 @@
 	ui = auto
 [diff]
 	tool = vimdiff
+[advice]
+  addIgnoredFile = false
