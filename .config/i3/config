@@ -163,8 +163,8 @@ bindsym $mod+f fullscreen toggle
 bindsym $mod+a mode "$layout"
 set $layout layout: (s)tacking, (t)abbed, to(g)gle split
 mode "$layout" {
-    bindsym s layout stacking
-    bindsym t layout tabbed
+    bindsym s layout stacking, mode "default"
+    bindsym t layout tabbed, mode "default"
     bindsym g layout toggle split
     bindsym q mode "default"
     bindsym Escape mode "default"
