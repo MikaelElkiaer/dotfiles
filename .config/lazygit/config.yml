@@ -1,6 +1,6 @@
 git:
   pull:
     mode: 'auto'
-  #paging:
-  #  colorArg: always
-  #  pager: delta --dark --paging=never
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
