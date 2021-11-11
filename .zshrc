@@ -77,7 +77,6 @@ ZSH_CUSTOM=${ZSH_CUSTOM:-$ZSH/custom}
 [ -d $ZSH_CUSTOM/plugins/zsh-syntax-highlighting ] || sh -c "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 [ -d $ZSH_CUSTOM/plugins/zsh-autosuggestions ] || sh -c "git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions"
 [ -d $ZSH_CUSTOM/plugins/zsh-z ] || sh -c "git clone https://github.com/agkozak/zsh-z $ZSH_CUSTOM/plugins/zsh-z"
-[ -d $ZSH_CUSTOM/plugins/zsh-vim-mode ] || sh -c "git clone https://github.com/softmoth/zsh-vim-mode.git $ZSH_CUSTOM/plugins/zsh-vim-mode"
 
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
