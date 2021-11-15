@@ -155,3 +155,4 @@ fi
 
 [ ! $(command -v kubectl) ] || kubectl completion zsh > "${fpath[1]}/_kubectl"
 
+alias vim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'"
