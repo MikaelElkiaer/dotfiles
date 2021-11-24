@@ -148,10 +148,8 @@ PATH="$HOME/.node_modules/bin:$PATH"
 export npm_config_prefix=~/.node_modules
 
 [[ ! -f ~/.tmp/jira-api-key ]] || export JIRA_API_TOKEN=$(cat ~/.tmp/jira-api-key)
-if [ -z "$TMUX" ] && [ -n "$SSH_TTY" ] && [[ $- =~ i ]]; then
-	tmux attach-session -t ssh || tmux new-session -s ssh
-	exit
-fi
+
+function ssh_tmux () { /usr/bin/ssh -t "$@" "tmux attach-session -t ssh || tmux new-session -s ssh"; }
 
 [ ! $(command -v kubectl) ] || kubectl completion zsh > "${fpath[1]}/_kubectl"
 
