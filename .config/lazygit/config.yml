@@ -5,3 +5,5 @@ git:
   # paging:
   #   colorArg: always
   #   pager: delta --dark --paging=never
+services:
+  'git.rtx.mapspeople.com': 'gitlab:git.rtx.mapspeople.com'
