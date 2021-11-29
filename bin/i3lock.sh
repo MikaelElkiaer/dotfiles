@@ -21,7 +21,10 @@ color_magenta=$(get_color color5)
 color_cyan=$(get_color color6)
 dadjoke=$(get_dadjoke)
 
+dunstctl set-paused true
+
 i3lock \
+    --nofork \
 	--time-font=$font \
 	--date-font=$font \
 	--layout-font=$font \
@@ -60,3 +63,4 @@ i3lock \
   --greeteroutline-color=$color_bg \
   --greeteroutline-width=0.25
 
+dunstctl set-paused false
