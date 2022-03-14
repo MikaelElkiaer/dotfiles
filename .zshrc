@@ -133,7 +133,7 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export PATH=$DOTNET_ROOT:$PATH
 export PATH="$PATH:/home/me/.dotnet/tools"
 
-[[ ! -d ~/.kube ]] || export KUBECONFIG="$(fd ^config $HOME/.kube | paste -sd ":" -):$KUBECONFIG"
+[[ ! -d ~/.kube ]] || export KUBECONFIG="$(fd ^config $HOME/.kube | paste -sd ":" -)"
 export FLUX_FORWARD_NAMESPACE=flux
 
 bindkey "^[[7~" beginning-of-line
@@ -142,7 +142,7 @@ bindkey "^[[8~" end-of-line
 alias gv="vim -c GV"
 alias lg="lazygit"
 
-export POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="$POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND|fluxctl|kubeseal|helm2|k9s"
+export POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="$POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND|fluxctl|kubeseal|helm2|k9s|flux"
 
 PATH="$HOME/.node_modules/bin:$PATH"
 export npm_config_prefix=~/.node_modules
