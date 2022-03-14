@@ -153,7 +153,7 @@ function ssh_tmux () { /usr/bin/ssh -t "$@" "tmux attach-session -t ssh || tmux 
 
 [ ! $(command -v kubectl) ] || kubectl completion zsh > "${fpath[1]}/_kubectl"
 
-alias vim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'"
+alias nvim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'"
 
 export HIGHLIGHT_OPTIONS='--style base16/gruvbox-dark-hard'
 
