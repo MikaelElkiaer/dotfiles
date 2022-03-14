@@ -35,7 +35,7 @@
 		if [ ${CONFIRM_AMEND:-y} = y ]; \
 		then git commit --amend --no-edit; \
 		else exit 1; fi"
-	co = checkout
+	co = !"echo 'Stop using checkout for everything!' && exit 1 &&"
 	ilog = !"git flog --all \
 		| fzf --ansi --bind 'ctrl-p:toggle-preview' --preview-window=':hidden' --preview \
 			\"echo {} | grep -oEi '[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]?' \
@@ -48,7 +48,7 @@
 	irebase = !"git ilog | xargs -r git rebase -i"
 	ifixup = !"git ilog | xargs -I {} -r git commit --fixup={}"
 	iours = !"fzf | xargs -I {} -r git checkout --ours -- {}"
-  su = submodule update --recursive
+    su = submodule update --recursive
 [color]
 	ui = auto
 [diff]
