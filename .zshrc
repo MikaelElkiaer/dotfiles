@@ -156,3 +156,6 @@ function ssh_tmux () { /usr/bin/ssh -t "$@" "tmux attach-session -t ssh || tmux 
 alias vim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'"
 
 export HIGHLIGHT_OPTIONS='--style base16/gruvbox-dark-hard'
+
+alias rcd="ranger --choosedir=>( xargs echo ) --show-only-dirs"
+alias rcf="ranger --choosefile=>( xargs echo )"
