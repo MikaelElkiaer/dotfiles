@@ -67,7 +67,7 @@ eval "$(ssh-agent -s)"
 
 # .NET
 wget https://dot.net/v1/dotnet-install.sh && chmod +x dotnet-install.sh
-./dotnet-install.sh --channel 2.1 --version latest --install-dir /opt/dotnet
-./dotnet-install.sh --channel 3.1 --version latest --install-dir /opt/dotnet
-./dotnet-install.sh --channel 5.0 --version latest --install-dir /opt/dotnet
+sudo ./dotnet-install.sh --channel 2.1 --version latest --install-dir /opt/dotnet
+sudo ./dotnet-install.sh --channel 3.1 --version latest --install-dir /opt/dotnet
+sudo ./dotnet-install.sh --channel 6.0 --version latest --install-dir /opt/dotnet
 
