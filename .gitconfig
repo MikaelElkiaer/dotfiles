@@ -5,6 +5,8 @@
 	path = ~/.gitconfig-github
 [includeIf "gitdir:**/Repositories/MapsPeople/**"]
 	path = ~/.gitconfig-mapspeople
+[includeIf "gitdir:**/Repositories/AUR/**"]
+	path = ~/.gitconfig-aur
 [core]
 	autocrlf = input 
 	editor = nvim
