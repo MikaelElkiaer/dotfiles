@@ -1,0 +1,13 @@
+alacritty
+bat
+bitwarden-cli
+brave-bin
+dracula-gtk-theme
+git-delta
+gotop
+lazygit
+oh-my-zsh-git
+pacmanfile
+ripgrep
+tungsten
+zsh

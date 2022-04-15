@@ -1,49 +1,34 @@
 /*******************************************************
- * ROFI configs i3 Apps menu for EndeavourOS
+ * ROFI configs i3 powermenu for EndeavourOS
  * Maintainer: joekamprad <joekamprad@endeavouros.com>
  *******************************************************/
 
 configuration {
-    font:				"Sourcecode Pro Regular 10";
-    show-icons:				true;
-    icon-theme:				"Arc-X-D";
-    display-drun:			"Apps";
-    drun-display-format:		"{name}";
-    scroll-method:			0;
-    disable-history:			false;
-    sidebar-mode:			false;
+    font:                           "Sourcecode Pro Regular 10";
+    show-icons:                     false;
+    icon-theme: 		    "Arc-X-D";
+    scroll-method:                  0;
+    disable-history:                false;
+    sidebar-mode: 		    false;
 }
 
 @import "~/.config/rofi/arc_dark_transparent_colors.rasi"
 
 window {
-    background-color: @background;
-    border:           0;
-    padding:          30;
+    background-color:               @background;
+    border:                         0;
+    padding:                        10;
+    transparency:                   "real";
+    width:                          180px;
+    location:                       northwest;
+y-offset:                       30;
+/*x-offset:	                    850;*/
+    transparency:                   "real";
 }
 listview {
-    lines:                          10;
-    columns:                        3;
-}
-mainbox {
-    border:  0;
-    padding: 0;
-}
-message {
-    border:       2px 0px 0px ;
-    border-color: @separatorcolor;
-    padding:      1px ;
-}
-textbox {
-    text-color: @foreground;
-}
-listview {
-    fixed-height: 0;
-    border:       8px 0px 0px ;
-    border-color: @separatorcolor;
-    spacing:      8px ;
-    scrollbar:    false;
-    padding:      2px 0px 0px ;
+    lines:                          6;
+    columns:                        1;
+    scrollbar:			false;
 }
 element {
     border:  0;
@@ -134,3 +119,4 @@ textbox-prompt-colon {
     margin:     0px 0.3em 0em 0em ;
     text-color: @normal-foreground;
 }
+
