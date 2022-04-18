@@ -197,7 +197,8 @@ lvim.plugins = {
     config = function()
       require("nvim-dap-virtual-text").setup()
     end
-  }
+  },
+  { "lukas-reineke/indent-blankline.nvim" }
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
