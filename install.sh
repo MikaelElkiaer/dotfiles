@@ -18,6 +18,9 @@ yay -S --noconfirm pacmanfile
 # restore packages
 pacmanfile --noconfirm sync
 
+# install lunarvim
+bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh) --no-install-dependencies
+
 # change to zsh
 chsh -s /usr/bin/zsh
 

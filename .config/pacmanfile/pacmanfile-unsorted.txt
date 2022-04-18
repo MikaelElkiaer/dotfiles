@@ -6,6 +6,7 @@ dracula-gtk-theme
 git-delta
 gotop
 lazygit
+neovim
 oh-my-zsh-git
 pacmanfile
 ripgrep
