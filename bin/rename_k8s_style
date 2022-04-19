@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 
 get_filename() {
-	cat $1 | yq -r '(.metadata.name|ascii_downcase) + "_" + (.kind|ascii_downcase) + ".yaml"' | head -n 1| xargs echo
+	cat $1 | yq '(.metadata.name|ascii_downcase) + "_" + (.kind|ascii_downcase) + ".yaml"' | head -n 1| xargs echo
 }
 
 for x in $(exa -G $1); do mv -Tv $x $(get_filename $x); done
