@@ -198,7 +198,8 @@ lvim.plugins = {
       require("nvim-dap-virtual-text").setup()
     end
   },
-  { "lukas-reineke/indent-blankline.nvim" }
+  { "lukas-reineke/indent-blankline.nvim" },
+  { "metakirby5/codi.vim" }
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
@@ -332,8 +333,8 @@ lspconfig.efm.setup {
 local opts = { noremap = true, silent = true }
 local map = vim.api.nvim_set_keymap
 map("n", "gw", "<cmd>HopWord<cr>", opts)
-map("n", "gl", "<cmd>HopLine<cr>", opts)
-map("n", "gf", "<cmd>HopChar1<cr>", opts)
+map("n", "gL", "<cmd>HopLine<cr>", opts)
+map("n", "gF", "<cmd>HopChar1<cr>", opts)
 map("n", "g/", "<cmd>HopPattern<cr>", opts)
 lvim.builtin.which_key.mappings["t"] = {
   name = "Test",
@@ -344,3 +345,10 @@ lvim.builtin.which_key.mappings["t"] = {
   v = { "<cmd>TestVisit<CR>-\\><C-n><C-w>l", "Visit" }
 }
 lvim.builtin.which_key.mappings["r"] = { "<cmd>RangerCurrentFile<CR>", "Ranger file" }
+vim.g["codi#interpreters"] = {
+  csharp = {
+    bin = {"dotnet-script"},
+    prompt = "[>*] ",
+    quitcmd = "#exit"
+  }
+}
