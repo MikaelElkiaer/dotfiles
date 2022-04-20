@@ -294,6 +294,7 @@ dap.configurations.cs = {
 vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "efm", "omnisharp" })
 
 local lspconfig = require "lspconfig"
+local util = require('lspconfig').util
 local pid = vim.fn.getpid()
 local on_attach = require("lvim.lsp").common_on_attach
 local capabilities = require("lvim.lsp").common_capabilities()
@@ -301,12 +302,15 @@ local capabilities = require("lvim.lsp").common_capabilities()
 lspconfig.omnisharp.setup {
   on_attach = on_attach,
   capabilities = capabilities,
-  filetypes = { "cs" },
+  filetypes = { "cs", "csx" },
   handlers = {
     ["textDocument/definition"] = require('omnisharp_extended').handler,
   },
   cmd = { "/usr/bin/omnisharp", "--languageserver", "--hostPID", tostring(pid) },
   root_dir = function(fname)
+    if fname:sub(-#".csx") == ".csx" then
+      return util.path.dirname(fname)
+    end
     return vim.fn.getcwd()
   end,
 }
@@ -352,3 +356,9 @@ vim.g["codi#interpreters"] = {
     quitcmd = "#exit"
   }
 }
+vim.g["codi#aliases"] = {
+  ["csx"] = "csharp"
+}
+vim.api.nvim_command('au BufRead,BufNewFile *.csx set filetype=csx')
+local ft_to_parser = require"nvim-treesitter.parsers".filetype_to_parsername
+ft_to_parser.csx = "c_sharp"
