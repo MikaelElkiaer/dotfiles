@@ -63,6 +63,8 @@ lvim.builtin.nvimtree.show_icons.git = 0
 lvim.builtin.lualine.active = true
 lvim.builtin.dap.active = true
 lvim.builtin.terminal.active = true
+lvim.builtin.nvimtree.setup.update_cwd = false
+lvim.builtin.nvimtree.setup.update_focused_file.update_cwd = false
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
