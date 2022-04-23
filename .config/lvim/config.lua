@@ -199,7 +199,14 @@ lvim.plugins = {
     end
   },
   { "lukas-reineke/indent-blankline.nvim" },
-  { "metakirby5/codi.vim" }
+  { "metakirby5/codi.vim" },
+  {
+    'nvim-telescope/telescope-ui-select.nvim',
+    requires = { { "nvim-telescope/telescope.nvim" } },
+    config = function()
+      require("telescope").load_extension("ui-select")
+    end
+  }
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
@@ -308,7 +315,7 @@ lspconfig.omnisharp.setup {
   },
   cmd = { "/usr/bin/omnisharp", "--languageserver", "--hostPID", tostring(pid) },
   root_dir = function(fname)
-    if fname:sub(-#".csx") == ".csx" then
+    if fname:sub(- #".csx") == ".csx" then
       return util.path.dirname(fname)
     end
     return vim.fn.getcwd()
@@ -351,7 +358,7 @@ lvim.builtin.which_key.mappings["t"] = {
 lvim.builtin.which_key.mappings["r"] = { "<cmd>RangerCurrentFile<CR>", "Ranger file" }
 vim.g["codi#interpreters"] = {
   csharp = {
-    bin = {"dotnet-script"},
+    bin = { "dotnet-script" },
     prompt = "[>*] ",
     quitcmd = "#exit"
   }
@@ -360,5 +367,5 @@ vim.g["codi#aliases"] = {
   ["csx"] = "csharp"
 }
 vim.api.nvim_command('au BufRead,BufNewFile *.csx set filetype=csx')
-local ft_to_parser = require"nvim-treesitter.parsers".filetype_to_parsername
+local ft_to_parser = require "nvim-treesitter.parsers".filetype_to_parsername
 ft_to_parser.csx = "c_sharp"
