@@ -9,7 +9,7 @@
 	path = ~/.gitconfig-aur
 [core]
 	autocrlf = input 
-	editor = nvim
+	editor = lvim
 	pager = delta --dark
 [interactive]
 	diffFilter = delta --dark --color-only

@@ -98,7 +98,7 @@ source $ZSH/oh-my-zsh.sh
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='nvim'
+  export EDITOR='lvim'
 fi
 
 # Compilation flags
@@ -117,13 +117,13 @@ fi
 	&& export FZF_DEFAULT_COMMAND="fd -H"
 [ ! $(command -v exa) ] || alias ls="exa"
 [ ! $(command -v bat) ] || alias cat="bat"
-[ ! $(command -v nvim) ] || alias vim="nvim" \
-	&& alias vimdiff="nvim -d"
+[ ! $(command -v lvim) ] || alias vim="lvim" \
+	&& alias vimdiff="lvim -d"
 alias la="ls -la"
 
 export BAT_THEME=base16
 export FZF_DEFAULT_OPTS='--layout=reverse'
-export EDITOR=vim
+export EDITOR=lvim
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
