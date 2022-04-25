@@ -63,6 +63,8 @@ lvim.builtin.nvimtree.show_icons.git = 0
 lvim.builtin.lualine.active = true
 lvim.builtin.dap.active = true
 lvim.builtin.terminal.active = true
+lvim.builtin.nvimtree.setup.update_cwd = false
+lvim.builtin.nvimtree.setup.update_focused_file.update_cwd = false
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -199,7 +201,18 @@ lvim.plugins = {
     end
   },
   { "lukas-reineke/indent-blankline.nvim" },
-  { "metakirby5/codi.vim" }
+  { "metakirby5/codi.vim" },
+  {
+    'nvim-telescope/telescope-ui-select.nvim',
+    requires = { { "nvim-telescope/telescope.nvim" } },
+    config = function()
+      require("telescope").load_extension("ui-select")
+    end
+  },
+  {
+    "jbyuki/one-small-step-for-vimkind",
+    requires = { { "mfussenegger/nvim-dap" } },
+  }
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
@@ -279,6 +292,29 @@ dap.configurations.cs = {
   },
 }
 
+dap.configurations.lua = {
+  {
+    type = 'nlua',
+    request = 'attach',
+    name = "Attach to running Neovim instance",
+    host = function()
+      local value = vim.fn.input('Host [127.0.0.1]: ')
+      if value ~= "" then
+        return value
+      end
+      return '127.0.0.1'
+    end,
+    port = function()
+      local val = tonumber(vim.fn.input('Port: '))
+      assert(val, "Please provide a port number")
+      return val
+    end,
+  }
+}
+dap.adapters.nlua = function(callback, config)
+  callback({ type = 'server', host = config.host, port = config.port })
+end
+
 -- toggleterm
 -- local Terminal = require('toggleterm.terminal').Terminal
 -- local default_terminal = Terminal:new({
@@ -308,7 +344,7 @@ lspconfig.omnisharp.setup {
   },
   cmd = { "/usr/bin/omnisharp", "--languageserver", "--hostPID", tostring(pid) },
   root_dir = function(fname)
-    if fname:sub(-#".csx") == ".csx" then
+    if fname:sub(- #".csx") == ".csx" then
       return util.path.dirname(fname)
     end
     return vim.fn.getcwd()
@@ -351,7 +387,7 @@ lvim.builtin.which_key.mappings["t"] = {
 lvim.builtin.which_key.mappings["r"] = { "<cmd>RangerCurrentFile<CR>", "Ranger file" }
 vim.g["codi#interpreters"] = {
   csharp = {
-    bin = {"dotnet-script"},
+    bin = { "dotnet-script" },
     prompt = "[>*] ",
     quitcmd = "#exit"
   }
@@ -368,5 +404,5 @@ vim.g["codi#aliases"] = {
   ["sh"] = "bash"
 }
 vim.api.nvim_command('au BufRead,BufNewFile *.csx set filetype=csx')
-local ft_to_parser = require"nvim-treesitter.parsers".filetype_to_parsername
+local ft_to_parser = require "nvim-treesitter.parsers".filetype_to_parsername
 ft_to_parser.csx = "c_sharp"
