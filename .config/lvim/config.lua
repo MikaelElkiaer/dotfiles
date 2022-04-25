@@ -392,8 +392,16 @@ vim.g["codi#interpreters"] = {
     quitcmd = "#exit"
   }
 }
+vim.g["codi#interpreters"] = {
+  bash = {
+    bin = {"bash"},
+    prompt = "[>$] "
+  }
+}
 vim.g["codi#aliases"] = {
-  ["csx"] = "csharp"
+  ["csx"] = "csharp",
+  ["bash"] = "bash",
+  ["sh"] = "bash"
 }
 vim.api.nvim_command('au BufRead,BufNewFile *.csx set filetype=csx')
 local ft_to_parser = require "nvim-treesitter.parsers".filetype_to_parsername
