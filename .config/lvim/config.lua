@@ -212,6 +212,21 @@ lvim.plugins = {
   {
     "jbyuki/one-small-step-for-vimkind",
     requires = { { "mfussenegger/nvim-dap" } },
+  },
+  {
+    "danymat/neogen",
+    config = function()
+      require('neogen').setup {
+        languages = {
+          cs = {
+            template = {
+              annotation_convention = "xmldoc"
+            }
+          }
+        }
+      }
+    end,
+    requires = "nvim-treesitter/nvim-treesitter"
   }
 }
 
@@ -394,7 +409,7 @@ vim.g["codi#interpreters"] = {
 }
 vim.g["codi#interpreters"] = {
   bash = {
-    bin = {"bash"},
+    bin = { "bash" },
     prompt = "[>$] "
   }
 }
