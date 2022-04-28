@@ -410,7 +410,8 @@ vim.g["codi#interpreters"] = {
 vim.g["codi#interpreters"] = {
   bash = {
     bin = { "bash" },
-    prompt = "[>$] "
+    prompt = "[>$] ",
+    quitcmd = "exit"
   }
 }
 vim.g["codi#aliases"] = {
@@ -418,6 +419,7 @@ vim.g["codi#aliases"] = {
   ["bash"] = "bash",
   ["sh"] = "bash"
 }
+vim.g["codi#autocmd"] = "InsertLeave"
 vim.api.nvim_command('au BufRead,BufNewFile *.csx set filetype=csx')
 local ft_to_parser = require "nvim-treesitter.parsers".filetype_to_parsername
 ft_to_parser.csx = "c_sharp"
