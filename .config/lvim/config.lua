@@ -403,6 +403,7 @@ lvim.builtin.which_key.mappings["t"] = {
   l = { "TestLast<CR>", "Last" },
   v = { "<cmd>TestVisit<CR>-\\><C-n><C-w>l", "Visit" }
 }
+lvim.builtin.which_key.mappings["dk"] = { "<cmd>lua require('dap.ui.widgets').hover()<cr>", "Hover" }
 lvim.builtin.which_key.mappings["r"] = { "<cmd>RangerCurrentFile<CR>", "Ranger file" }
 vim.g["codi#interpreters"] = {
   csharp = {
