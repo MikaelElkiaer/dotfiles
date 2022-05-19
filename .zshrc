@@ -98,7 +98,7 @@ source $ZSH/oh-my-zsh.sh
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='lvim'
+  export EDITOR='nvim'
 fi
 
 # Compilation flags
@@ -117,8 +117,8 @@ fi
 	&& export FZF_DEFAULT_COMMAND="fd -H"
 [ ! $(command -v exa) ] || alias ls="exa"
 [ ! $(command -v bat) ] || alias cat="bat"
-[ ! $(command -v lvim) ] || alias vim="lvim" \
-	&& alias vimdiff="lvim -d"
+[ ! $(command -v nvim) ] || alias vim="nvim" \
+	&& alias vimdiff="nvim -d"
 alias la="ls -la"
 
 export BAT_THEME=base16
@@ -138,7 +138,7 @@ export FLUX_FORWARD_NAMESPACE=flux
 bindkey "^[[7~" beginning-of-line
 bindkey "^[[8~" end-of-line
 
-alias gv="vim -c GV"
+alias gv="nvim -c GV"
 alias lg="lazygit"
 
 export POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="$POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND|fluxctl|kubeseal|helm2|k9s|flux"
