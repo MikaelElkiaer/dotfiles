@@ -66,6 +66,10 @@ lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.update_cwd = false
 lvim.builtin.nvimtree.setup.update_focused_file.update_cwd = false
 
+lvim.builtin.project = {
+  manual_mode = true
+}
+
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
   "bash",
@@ -145,7 +149,6 @@ lvim.builtin.treesitter.highlight.enabled = true
 
 -- Additional Plugins
 lvim.plugins = {
-  { "Mofiqul/dracula.nvim" },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     module = "nvim-treesitter-textobjects",
@@ -212,6 +215,21 @@ lvim.plugins = {
   {
     "jbyuki/one-small-step-for-vimkind",
     requires = { { "mfussenegger/nvim-dap" } },
+  },
+  {
+    "danymat/neogen",
+    config = function()
+      require('neogen').setup {
+        languages = {
+          cs = {
+            template = {
+              annotation_convention = "xmldoc"
+            }
+          }
+        }
+      }
+    end,
+    requires = "nvim-treesitter/nvim-treesitter"
   }
 }
 
@@ -384,6 +402,7 @@ lvim.builtin.which_key.mappings["t"] = {
   l = { "TestLast<CR>", "Last" },
   v = { "<cmd>TestVisit<CR>-\\><C-n><C-w>l", "Visit" }
 }
+lvim.builtin.which_key.mappings["dk"] = { "<cmd>lua require('dap.ui.widgets').hover()<cr>", "Hover" }
 lvim.builtin.which_key.mappings["r"] = { "<cmd>RangerCurrentFile<CR>", "Ranger file" }
 vim.g["codi#interpreters"] = {
   csharp = {
@@ -394,8 +413,9 @@ vim.g["codi#interpreters"] = {
 }
 vim.g["codi#interpreters"] = {
   bash = {
-    bin = {"bash"},
-    prompt = "[>$] "
+    bin = { "bash" },
+    prompt = "[>$] ",
+    quitcmd = "exit"
   }
 }
 vim.g["codi#aliases"] = {
@@ -403,6 +423,7 @@ vim.g["codi#aliases"] = {
   ["bash"] = "bash",
   ["sh"] = "bash"
 }
+vim.g["codi#autocmd"] = "InsertLeave"
 vim.api.nvim_command('au BufRead,BufNewFile *.csx set filetype=csx')
 local ft_to_parser = require "nvim-treesitter.parsers".filetype_to_parsername
 ft_to_parser.csx = "c_sharp"
