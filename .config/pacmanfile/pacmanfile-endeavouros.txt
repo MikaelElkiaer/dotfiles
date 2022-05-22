@@ -162,7 +162,6 @@ perl
 picom
 pipewire-alsa
 pipewire-jack
-pipewire-media-session
 pipewire-pulse
 pkgconf
 pkgfile

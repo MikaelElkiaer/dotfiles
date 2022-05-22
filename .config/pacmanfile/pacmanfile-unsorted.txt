@@ -3,7 +3,6 @@ bat
 bitwarden-cli
 brave-bin
 docker
-dracula-gtk-theme
 efm-langserver
 git-delta
 gotop
