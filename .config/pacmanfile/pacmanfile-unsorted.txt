@@ -4,7 +4,9 @@ bitwarden-cli
 brave-bin
 docker
 efm-langserver
+fd
 git-delta
+glow
 gotop
 lazygit
 neovim
