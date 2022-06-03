@@ -3,8 +3,8 @@
 	email = 2102306+MikaelElkiaer@users.noreply.github.com
 [includeIf "gitdir:**/Repositories/GitHub/**"]
 	path = ~/.gitconfig-github
-[includeIf "gitdir:**/Repositories/MapsPeople/**"]
-	path = ~/.gitconfig-mapspeople
+[includeIf "gitdir:**/Repositories/GitLab-ks/**"]
+	path = ~/.gitconfig-gitlab-ks
 [includeIf "gitdir:**/Repositories/AUR/**"]
 	path = ~/.gitconfig-aur
 [core]
