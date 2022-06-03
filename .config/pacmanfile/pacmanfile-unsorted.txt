@@ -8,6 +8,10 @@ fd
 git-delta
 glow
 gotop
+go-yq
+k9s
+kubectl
+kubectx
 lazygit
 neovim
 netcoredbg
