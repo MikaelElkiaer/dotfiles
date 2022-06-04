@@ -19,7 +19,7 @@ yay -S --noconfirm pacmanfile
 pacmanfile --noconfirm sync
 
 # set up neovim config
-git clone https://github.com/LunarVim/LunarVim.git ~/.config/nvim
+git clone https://github.com/MikaelElkiaer/LunarVim.git ~/.config/nvim
 ln -sfn $PWD/config.lua ~/.config/nvim/config.lua
 
 # change to zsh
