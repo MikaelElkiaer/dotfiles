@@ -2,7 +2,7 @@
 
 # backup and create symlinks for all config files
 for f in $(find . -type f -name ".*"); do
-  [ -s ~/$f && mv ~/$f ~/$f.bak ];
+  [ -s ~/$f ] && mv ~/$f ~/$f.bak;
   ln -sf $PWD/$f ~/$f;
 done
 
