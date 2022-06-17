@@ -172,11 +172,13 @@ super + Print
   ~/.config/bspwm/scripts/screenshot.sh
 
 # Shortcuts
-super + w 
-  firefox
-
-super + n 
-  thunar  
-
 super + F1
   ~/.config/bspwm/scripts/keybindings_rofi.sh
+
+#
+# Extensions upon EndeavourOS/bspwm
+#
+
+# Set bsp layout
+super + w
+  bsp-layout layouts | rofi -dmenu | xargs bsp-layout set

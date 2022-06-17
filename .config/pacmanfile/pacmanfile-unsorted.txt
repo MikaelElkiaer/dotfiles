@@ -2,6 +2,7 @@ alacritty
 bat
 bitwarden-cli
 brave-bin
+bsp-layout
 docker
 efm-langserver
 fd
