@@ -96,7 +96,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
+  export EDITOR='nvim'
 else
   export EDITOR='nvim'
 fi
@@ -126,11 +126,6 @@ export FZF_DEFAULT_OPTS='--layout=reverse'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-export DOTNET_ROOT=/opt/dotnet
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
-export PATH=$DOTNET_ROOT:$PATH
-export PATH="$PATH:/home/me/.dotnet/tools"
 
 [[ ! -d ~/.kube ]] || export KUBECONFIG="$(fd ^config $HOME/.kube | paste -sd ":" -)"
 export FLUX_FORWARD_NAMESPACE=flux
