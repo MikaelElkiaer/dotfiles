@@ -117,8 +117,6 @@ fi
 	&& export FZF_DEFAULT_COMMAND="fd -H"
 [ ! $(command -v exa) ] || alias ls="exa"
 [ ! $(command -v bat) ] || alias cat="bat"
-[ ! $(command -v nvim) ] || alias vim="nvim" \
-	&& alias vimdiff="nvim -d"
 alias la="ls -la"
 
 export BAT_THEME=base16
