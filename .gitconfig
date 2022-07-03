@@ -57,3 +57,5 @@
 	tool = vimdiff
 [advice]
   addIgnoredFile = false
+[init]
+	defaultBranch = main
