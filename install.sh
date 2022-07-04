@@ -18,10 +18,6 @@ yay -S --noconfirm pacmanfile
 # restore packages
 pacmanfile --noconfirm sync
 
-# set up neovim config
-git clone https://github.com/MikaelElkiaer/LunarVim.git ~/.config/nvim
-ln -sfn $PWD/config.lua ~/.config/nvim/config.lua
-
 # change to zsh
 chsh -s /usr/bin/zsh
 
