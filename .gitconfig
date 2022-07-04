@@ -21,7 +21,7 @@
 	rebase = true
 [merge]
 	ff = false
-	tool = vimdiff
+	tool = nvimdiff
 [push]
 	default = current
 [alias]
@@ -57,3 +57,5 @@
 	tool = vimdiff
 [advice]
   addIgnoredFile = false
+[init]
+	defaultBranch = main

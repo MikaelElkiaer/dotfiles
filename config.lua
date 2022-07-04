@@ -325,6 +325,7 @@ dap.adapters.nlua = function(callback, config)
 end
 
 -- toggleterm
+lvim.builtin.terminal.execs[#lvim.builtin.terminal.execs+1] = {"lazydocker", "tt", "Lazy docker"}
 -- local Terminal = require('toggleterm.terminal').Terminal
 -- local default_terminal = Terminal:new({
 --   direction = "horizontal",
