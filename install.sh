@@ -1,15 +1,14 @@
 #!/bin/sh
 
 # backup and create symlinks for all config files
-for f in $(find . -type f -name ".*"); do
-  [ -s ~/$f && mv ~/$f ~/$f.bak ];
-  ln -sf $PWD/$f ~/$f;
-done
-
-# backup and create symlinks for everything in .config
-for f in $(ls .config); do
-  [ -s ~/.config/$f ] && mv ~/.config/$f ~/.config/$f.bak;
-  ln -sfn $PWD/.config/$f ~/.config/$f;
+DOT_FILES=`\find -maxdepth 1 -type f -name ".*" -not -name ".git*" -or -name ".gitconfig" | xargs -I{} basename {}`
+DOT_CONFIG_FILES=`\ls .config | xargs -I{} echo .config/{}`
+EXTRAS="bin"
+for f in `echo $DOT_FILES $DOT_CONFIG_FILES $EXTRAS`; do
+  if ! [ -L ~/$f ]; then
+    [ -s ~/$f ] && mv ~/$f ~/$f.me.bak
+    ln -sf $PWD/$f ~/$f
+  fi
 done
 
 # install pacmanfile for synchronizing packages
@@ -17,10 +16,6 @@ yay -S --noconfirm pacmanfile
 
 # restore packages
 pacmanfile --noconfirm sync
-
-# set up neovim config
-git clone https://github.com/LunarVim/LunarVim.git ~/.config/nvim
-ln -sfn $PWD/config.lua ~/.config/nvim/config.lua
 
 # change to zsh
 chsh -s /usr/bin/zsh
