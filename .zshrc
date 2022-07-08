@@ -151,3 +151,5 @@ export HIGHLIGHT_OPTIONS='--style base16/dracula'
 
 alias rcd="ranger --choosedir=>( xargs echo ) --show-only-dirs"
 alias rcf="ranger --choosefile=>( xargs echo )"
+
+eval "$(navi widget zsh)"
