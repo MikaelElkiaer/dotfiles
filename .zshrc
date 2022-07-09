@@ -153,3 +153,4 @@ alias rcd="ranger --choosedir=>( xargs echo ) --show-only-dirs"
 alias rcf="ranger --choosefile=>( xargs echo )"
 
 eval "$(navi widget zsh)"
+export MANPAGER='nvim --clean +Man!'
