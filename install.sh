@@ -11,6 +11,12 @@ for f in `echo $DOT_FILES $DOT_CONFIG_FILES $EXTRAS`; do
   fi
 done
 
+# set up .desktop applications
+mkdir -p ~/.local/share/applications
+for f in `ls applications/*`; do
+  ln -sf $PWD/$f ~/.local/share/$f
+done
+
 # install pacmanfile for synchronizing packages
 yay -S --noconfirm pacmanfile
 
