@@ -154,3 +154,19 @@ alias rcf="ranger --choosefile=>( xargs echo )"
 
 eval "$(navi widget zsh)"
 export MANPAGER='nvim --clean +Man!'
+
+function _nvim() { nvim; zle reset-prompt; zle redisplay }
+zle -N _nvim
+bindkey '^gn' _nvim
+
+function _lazygit() { lazygit; zle reset-prompt; zle redisplay }
+zle -N _lazygit
+bindkey '^gg' _lazygit
+
+function _lazydocker() { lazydocker; zle reset-prompt; zle redisplay }
+zle -N _lazydocker
+bindkey '^gd' _lazydocker
+
+function _k9s() { k9s; zle reset-prompt; zle redisplay }
+zle -N _k9s
+bindkey '^gk' _k9s
