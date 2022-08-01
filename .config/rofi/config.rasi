@@ -12,6 +12,10 @@ configuration {
     scroll-method:			0;
     disable-history:			false;
     sidebar-mode:			false;
+    kb-accept-entry:    "Return,KP_Enter";
+    kb-row-down:      "Down,Control+j";
+    kb-remove-to-eol: "";
+    kb-row-up:        "Up,Control+k";
 }
 
 @import "~/.config/rofi/arc_dark_transparent_colors.rasi"

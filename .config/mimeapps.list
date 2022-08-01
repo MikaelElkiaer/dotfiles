@@ -1,0 +1,5 @@
+[Default Applications]
+application/x-xpinstall=browser-picker.desktop;brave-browser.desktop
+application/xhtml+xml=browser-picker.desktop;brave-browser.desktop
+x-scheme-handler/http=browser-picker.desktop;brave-browser.desktop
+x-scheme-handler/https=browser-picker.desktop;brave-browser.desktop
