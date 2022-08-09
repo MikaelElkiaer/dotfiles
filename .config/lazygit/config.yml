@@ -2,8 +2,8 @@ git:
   pull:
     mode: 'auto'
   overrideGpg: true
-  # paging:
-  #   colorArg: always
-  #   pager: delta --dark --paging=never
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
 services:
   'git.rtx.mapspeople.com': 'gitlab:git.rtx.mapspeople.com'
