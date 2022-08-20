@@ -1,3 +1,0 @@
-#!/bin/sh
-
-playerctl -l | grep spotify &> 0 && (playerctl status | grep Playing &> 0 && playerctl pause) || (playerctl status | grep Paused &> 0 && playerctl play)
