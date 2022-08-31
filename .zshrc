@@ -149,9 +149,6 @@ alias nvim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c '
 
 export HIGHLIGHT_OPTIONS='--style base16/dracula'
 
-alias rcd="ranger --choosedir=>( xargs echo ) --show-only-dirs"
-alias rcf="ranger --choosefile=>( xargs echo )"
-
 eval "$(navi widget zsh)"
 export PAGER='nvimpager'
 

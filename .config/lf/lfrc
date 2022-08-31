@@ -1,0 +1,3 @@
+set hidden
+set previewer ~/.config/lf/preview.sh
+map i $nvimpager -p $f
