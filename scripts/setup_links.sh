@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # backup and create symlinks for all config files
 DOT_FILES=`\find -maxdepth 1 -type f -name ".*" -not -name ".git*" -or -name ".gitconfig" | xargs -I{} basename {}`
@@ -10,19 +10,3 @@ for f in `echo $DOT_FILES $DOT_CONFIG_FILES $EXTRAS`; do
     ln -sf $PWD/$f ~/$f
   fi
 done
-
-# set up .desktop applications
-mkdir -p ~/.local/share/applications
-for f in `ls applications/*`; do
-  ln -sf $PWD/$f ~/.local/share/$f
-done
-
-# install pacmanfile for synchronizing packages
-yay -S --noconfirm pacmanfile
-
-# restore packages
-pacmanfile --noconfirm sync
-
-# change to zsh
-chsh -s /usr/bin/zsh
-
