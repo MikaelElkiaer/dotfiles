@@ -148,7 +148,7 @@ function ssh_tmux () { /usr/bin/ssh -t "$@" "tmux attach-session -t ssh || tmux 
 alias nvim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'"
 
 export HIGHLIGHT_OPTIONS='--style base16/dracula'
-export MANPAGER='nvimpager -p'
+export MANPAGER='nvim +Man!'
 
 eval "$(navi widget zsh)"
 
