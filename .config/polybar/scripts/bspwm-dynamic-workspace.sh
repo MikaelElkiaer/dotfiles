@@ -25,7 +25,7 @@ function GetIcon {
       echo -ne ""
       ;;
     [Aa]lacritty)
-      echo -ne ""
+      echo -ne ""
       ;;
     [Cc]hrome|[Cc]hromium)
       echo -ne ""
@@ -33,11 +33,11 @@ function GetIcon {
     [Dd]iscord)
       echo -ne "ﭮ"
       ;;
-    [Ss]potify|"")
-      echo -ne ""
-      ;;
     [Tt]hunar)
       echo -ne ""
+      ;;
+    [Pp]avucontrol)
+      echo -ne ""
       ;;
     *)
       echo -ne $class
@@ -49,11 +49,39 @@ function FocusedWorkspace {
   bspc query -D  --names -d .focused
 }
 
+_MONITOR_NAMES=($(bspc query -D --names))
+_NUMBER_SUBSCRIPTS=( ₁ ₂ ₃ ₄ ₅ ₆ ₇ ₈ ₉ ₀ )
+declare -A _SUBSCRIPT_MAPPING
+for ((i=0; i<${#_NUMBER_SUBSCRIPTS[@]}; i++)); do
+  name=${_MONITOR_NAMES[$i]}
+  _SUBSCRIPT_MAPPING[$name]=${_NUMBER_SUBSCRIPTS[$i]}
+done
+
 function WriteWindows {
+  local superscripts=( ⁰ ¹ ² ³ ⁴ ⁵ ⁶ ⁷ ⁸ ⁹ ⁿ )
   local windows=($@)
+  declare -A Assoc
   for win in ${windows[@]}; do
-    echo -ne " $(GetIcon $win) "
+    if [ Assoc[$win] = "" ]; then 
+      Assoc[$win]=1
+    else
+      Assoc[$win]=$((Assoc[$win]+1))
+    fi
   done;
+
+  declare -a WinIcons
+  for win in ${!Assoc[@]}; do 
+    local cnt=${Assoc[$win]}
+    local superscript=""
+    if (( cnt > 1 )); then
+      if (( cnt > ${#superscripts[@]} )); then
+        cnt=$((${#superscripts[@]}-1))
+      fi
+      superscript=${superscripts[$cnt]}
+    fi
+    WinIcons[${#WinIcons[@]}]="$(GetIcon $win)$superscript"
+  done
+  echo -ne ${WinIcons[@]}
 }
 
 function Iconography {
@@ -91,7 +119,8 @@ function Iconography {
       fgStart="%{F#000}"
     fi
 
-    echo -ne "$fgStart$bgStart $workspace [ $(WriteWindows ${windows[@]}) ] $bgEnd$fgEnd"
+    local subscript=${_SUBSCRIPT_MAPPING[$workspace]}
+    echo -ne "$fgStart$bgStart$subscript[$(WriteWindows ${windows[@]})]$bgEnd$fgEnd"
     # End the click command
     echo -ne "%{A}"
   done
