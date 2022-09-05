@@ -39,7 +39,7 @@ sh ~/.screenlayout/monitor.sh &
 # Wallpaper
 nitrogen --restore &
 # Dex
-dex -a -s /etc/xdg/autostart/:~/.config/autostart/  
+dex -a -s ~/.config/autostart/:/etc/xdg/autostart/
 # Picom
 picom -b &
 # Network Applet
