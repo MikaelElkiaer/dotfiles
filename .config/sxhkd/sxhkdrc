@@ -164,6 +164,18 @@ XF86MonBrightnessUp
 XF86MonBrightnessDown
   xbacklight -dec 5
 
+# Next track
+XF86AudioNext
+  spt playback -n
+
+# Previous track
+XF86AudioPrev
+  spt playback -p
+
+# Toggle play/pause
+XF86AudioPlay
+  spt playback -t
+
 # Screenshot
 Print
   scrot ~/Pictures/Screenshot-$(date +%F_%T).png
