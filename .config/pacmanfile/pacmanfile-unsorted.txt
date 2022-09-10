@@ -5,6 +5,7 @@ bind
 binutils
 bison
 fakeroot
+fd
 file
 findutils
 flex
@@ -13,11 +14,13 @@ gcc
 gettext
 git
 git-delta
+glow
 grep
 groff
 gzip
 htop
 lazygit
+lf
 libtool
 m4
 make
