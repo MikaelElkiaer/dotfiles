@@ -7,15 +7,15 @@ function GetWindows {
   bspc wm -d | yq '.monitors | 
     map_values(. as $m | .desktops | 
       map_values(. as $d | 
-      $d.root | .. | select(has("firstChild")) | .client | select(.className != null) | .className | [ . ] | . as $windowNames | select(length > 0) |
-            [ "__DESKTOP__", $d.name, $windowNames ]
+      $d.root | .. | select(has("firstChild")) | .client | select(.className != null) | .className | sub(" ", "*__*") | [ . ] | . as $windowNames | select(length > 0) |
+      [ "__DESKTOP__", $d.name, $windowNames]
       )
     ) | flatten | .[]'
 # select(has("firstChild")) | .client | select(.className != null) | .className
 }
 
 function GetIcon {
-  local class="$1"
+  local class="$(echo $1 | sed 's;\*__\*; ;g')"
   case $class in 
     [Ff]irefox)
       echo -ne ""
@@ -37,6 +37,12 @@ function GetIcon {
       ;;
     [Pp]avucontrol)
       echo -ne ""
+      ;;
+    jetbrains-rider)
+      echo -ne ""
+      ;;
+    "Microsoft Teams"*)
+      echo -ne ""
       ;;
     *)
       echo -ne ""
