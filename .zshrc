@@ -167,3 +167,13 @@ bindkey '^gd' _lazydocker
 function _k9s() { k9s; zle reset-prompt; zle redisplay }
 zle -N _k9s
 bindkey '^gk' _k9s
+
+# >>>> Vagrant command completion (start)
+fpath=(/opt/vagrant/embedded/gems/2.3.0/gems/vagrant-2.3.0/contrib/zsh $fpath)
+compinit
+# <<<<  Vagrant command completion (end)
+
+source $HOME/.zsh.d/**
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/bin/vault vault
