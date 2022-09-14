@@ -172,3 +172,5 @@ bindkey '^gk' _k9s
 fpath=(/opt/vagrant/embedded/gems/2.3.0/gems/vagrant-2.3.0/contrib/zsh $fpath)
 compinit
 # <<<<  Vagrant command completion (end)
+
+source $HOME/.zsh.d/**
