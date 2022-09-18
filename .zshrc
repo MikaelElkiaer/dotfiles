@@ -144,7 +144,7 @@ compinit
 # <<<<  Vagrant command completion (end)
 
 # Source non-version-controlled shell scripts
-for f in `find $HOME/.zsh.d -name '*.zsh'`; do source $f; done
+[ -d $HOME/.zsh.d ] && for f in `find $HOME/.zsh.d -name '*.zsh'`; do source $f; done
 
 # vault autocompletion
 autoload -U +X bashcompinit && bashcompinit
