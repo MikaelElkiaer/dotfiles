@@ -94,12 +94,8 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='nvim'
-else
-  export EDITOR='nvim'
-fi
+# Preferred editor
+export EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -113,10 +109,6 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-[ ! $(command -v fd) ] || alias find="fd -H -I" \
-	&& export FZF_DEFAULT_COMMAND="fd -H"
-[ ! $(command -v exa) ] || alias ls="exa"
-[ ! $(command -v bat) ] || alias cat="bat"
 alias la="ls -la"
 
 export BAT_THEME=base16
@@ -125,24 +117,17 @@ export FZF_DEFAULT_OPTS='--layout=reverse'
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# Dynamically load multiple kube configs
 [[ ! -d ~/.kube ]] || export KUBECONFIG="$(fd ^config $HOME/.kube | paste -sd ":" -)"
-export FLUX_FORWARD_NAMESPACE=flux
 
-bindkey "^[[7~" beginning-of-line
-bindkey "^[[8~" end-of-line
-
-alias gv="nvim -c GV"
-alias lg="lazygit"
-
+# add additional kube context indicators
 export POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="$POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND|fluxctl|kubeseal|helm2|k9s|flux"
 
+# add npm binaries
 PATH="$HOME/.node_modules/bin:$PATH"
 export npm_config_prefix=~/.node_modules
 
-[[ ! -f ~/.tmp/jira-api-key ]] || export JIRA_API_TOKEN=$(cat ~/.tmp/jira-api-key)
-
-function ssh_tmux () { /usr/bin/ssh -t "$@" "tmux attach-session -t ssh || tmux new-session -s ssh"; }
-
+# kubectl autocompletion
 [ ! $(command -v kubectl) ] || kubectl completion zsh > "${fpath[1]}/_kubectl"
 
 alias nvim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'"
@@ -150,32 +135,20 @@ alias nvim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c '
 export HIGHLIGHT_OPTIONS='--style base16/dracula'
 export MANPAGER='nvim +Man!'
 
+# add navi widget (<c-g>)
 eval "$(navi widget zsh)"
-
-function _nvim() { nvim; zle reset-prompt; zle redisplay }
-zle -N _nvim
-bindkey '^gn' _nvim
-
-function _lazygit() { lazygit; zle reset-prompt; zle redisplay }
-zle -N _lazygit
-bindkey '^gg' _lazygit
-
-function _lazydocker() { lazydocker; zle reset-prompt; zle redisplay }
-zle -N _lazydocker
-bindkey '^gd' _lazydocker
-
-function _k9s() { k9s; zle reset-prompt; zle redisplay }
-zle -N _k9s
-bindkey '^gk' _k9s
 
 # >>>> Vagrant command completion (start)
 fpath=(/opt/vagrant/embedded/gems/2.3.0/gems/vagrant-2.3.0/contrib/zsh $fpath)
 compinit
 # <<<<  Vagrant command completion (end)
 
-source $HOME/.zsh.d/**
+# Source non-version-controlled shell scripts
+[ -d $HOME/.zsh.d ] && for f in `find $HOME/.zsh.d -name '*.zsh'`; do source $f; done
 
+# vault autocompletion
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/bin/vault vault
 
+# opt out of autocd
 unsetopt autocd

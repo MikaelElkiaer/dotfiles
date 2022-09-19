@@ -1,0 +1,40 @@
+#!/usr/bin/env hush
+
+let joinStrings = function(col, joinBy)
+  let result = if not std.is_empty(col) then col[0] end
+  for i in std.range(1, std.len(col), 1) do
+    result = result ++ joinBy ++ col[i]
+  end
+  return result
+end
+
+let response = ${ curl -s https://forum.endeavouros.com/c/important-notifications/125.rss | yq -p xml '.rss.channel.item | map({"title": .title, "pubDate": .pubDate, "link": .link})' -o json }.stdout
+let parsed = std.json.decode(response)
+
+let maxSecondsSince = 30 * 24 * 60 * 60
+let nowEpoch = std.int(${ date "+%s" | xargs echo -n }.stdout)
+let titles = []
+let links = []
+for p in std.iter(parsed) do
+  let pubDate = p.pubDate
+  let pubDateEpoch = std.int(${ date -d "$pubDate" "+%s" | xargs echo -n }.stdout)
+  if nowEpoch - pubDateEpoch < maxSecondsSince then
+    std.push(titles, p.title)
+    std.push(links, p.link)
+  end
+end
+
+if std.contains(std.args(), "--polybar") then
+  let len = std.len(titles)
+  std.print(len)
+  std.exit(len)
+end
+
+let input = joinStrings(titles, "\n")
+
+let selectionResult = ${ echo -e "$input" | rofi -dmenu -format i | xargs echo -n }
+if std.type(selectionResult) != "error" then
+  let selectionIndex = std.int(selectionResult.stdout)
+  let selectedLink = links[selectionIndex]
+  { xdg-open "$selectedLink" }
+end
