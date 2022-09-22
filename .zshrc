@@ -152,3 +152,6 @@ complete -o nospace -C /usr/bin/vault vault
 
 # opt out of autocd
 unsetopt autocd
+
+# aws cli autocompletion
+complete -C 'aws_completer' aws
