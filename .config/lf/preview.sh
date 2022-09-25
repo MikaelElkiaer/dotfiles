@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-nvimpager -c "$1"
+bat --terminal-width "$2" --line-range ":$3" "$1"

@@ -1,5 +1,2 @@
 set hidden
-set nopreview
 set previewer ~/.config/lf/preview.sh
-map i $nvimpager -p $f
-map <enter> :set preview!; redraw
