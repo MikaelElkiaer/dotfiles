@@ -1,0 +1,14 @@
+[Unit]
+Description=Neovim Server Daemon
+Documentation=https://github.com/neovim/neovim
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/nvim --headless --listen localhost:6666
+WorkingDirectory=/home/me
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
