@@ -155,3 +155,11 @@ unsetopt autocd
 
 # aws cli autocompletion
 complete -C 'aws_completer' aws
+
+# don't nest nvim
+if [ -n "$NVIM" ]; then
+  if [ `command -v nvr` ]; then
+    alias nvim="nvr -l"
+    export MANPAGER='nvr -l +Man! -'
+  fi
+fi
