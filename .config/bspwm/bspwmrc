@@ -51,3 +51,5 @@ xsetroot -cursor_name left_ptr &
 # Low battery notifier
 ~/.config/bspwm/scripts/low_bat_notifier.sh
 
+xset -dpms
+xset s 0 0
