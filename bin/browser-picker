@@ -8,4 +8,4 @@ BROWSER_CMD=`grep -r 'Web Browser' /usr/share/applications/ -l \
   | uniq \
   | rofi -dmenu`
 
-[ -n "$BROWSER_CMD" ] && eval "$BROWSER_CMD $@"
+[ -n "$BROWSER_CMD" ] && eval "$BROWSER_CMD \"$@\""
