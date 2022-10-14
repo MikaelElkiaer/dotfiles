@@ -1,0 +1,3 @@
+!#/usr/bin/env sh
+
+bsp-layout layouts | rofi -dmenu | xargs -r -I{} bsp-layout set {} -- --master-size 0.5

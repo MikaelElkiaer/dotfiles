@@ -193,4 +193,4 @@ super + F1
 
 # Set bsp layout
 super + w
-  bsp-layout layouts | rofi -dmenu | xargs bsp-layout set
+  rofi-bsp-layout
