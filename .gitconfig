@@ -3,10 +3,10 @@
 	email = 2102306+MikaelElkiaer@users.noreply.github.com
 [includeIf "gitdir:**/Repositories/GitHub/**"]
 	path = ~/.gitconfig-github
-[includeIf "gitdir:**/Repositories/GitLab-ks/**"]
-	path = ~/.gitconfig-gitlab-ks
+[includeIf "gitdir:**/Repositories/*-ks/**"]
+	path = ~/.ks.gitconfig
 [includeIf "gitdir:**/Repositories/AUR/**"]
-	path = ~/.gitconfig-aur
+	path = ~/.aur.gitconfig
 [core]
 	autocrlf = input 
 	editor = nvim

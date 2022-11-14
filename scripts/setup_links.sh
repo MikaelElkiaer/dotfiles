@@ -12,3 +12,8 @@ for f in `echo $DOT_FILES $DOT_CONFIG_FILES $EXTRAS`; do
     ln -sf $PWD/$f ~/$f
   fi
 done
+
+# create symlinks for custom XDG MIME applications
+for f in `find applications -name '*.desktop'`; do
+  ln -sf $PWD/$f ~/.local/share/applications/
+done
