@@ -163,3 +163,5 @@ if [ -n "$NVIM" ]; then
     export MANPAGER='nvr -l +Man! -'
   fi
 fi
+
+[ $(command -v switch.sh) ] && source switch.sh
