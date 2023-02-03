@@ -133,7 +133,7 @@ export npm_config_prefix=~/.node_modules
 alias nvim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'"
 
 export HIGHLIGHT_OPTIONS='--style base16/dracula'
-export MANPAGER='nvim +Man!'
+export MANPAGER='nvim +Man! "+let g:auto_session_enabled = v:false"'
 
 # add navi widget (<c-g>)
 eval "$(navi widget zsh)"
