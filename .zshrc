@@ -165,3 +165,5 @@ if [ -n "$NVIM" ]; then
 fi
 
 [ $(command -v switch.sh) ] && source switch.sh
+
+export PATH="${PATH}:${HOME}/.krew/bin"
