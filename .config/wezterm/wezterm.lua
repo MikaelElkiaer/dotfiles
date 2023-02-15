@@ -18,5 +18,9 @@ return {
   default_gui_startup_args = {'connect', 'unix'},
   quick_select_patterns = {
     '[\'"`][^\'"`]{2,}[\'"`]'
+  },
+
+  window_frame = {
+    font_size = 10,
   }
 }
