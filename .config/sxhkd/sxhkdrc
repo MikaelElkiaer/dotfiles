@@ -52,9 +52,9 @@ super + m
 super + y
 	bspc node newest.marked.local -n newest.!automatic.local
 
-# swap the current node and the biggest window
+# swap and follow to biggest window, or former
 super + g
-	bspc node -s biggest.window.local -f
+	echo "focused.local\nbiggest.local" | xargs -L 1 bspc query --nodes -n | read -d ' ' -r F B; [ "$F" = "$B" ] && bspc node -s older.local -f || bspc node -s $B -f
 
 #
 # state/flags
