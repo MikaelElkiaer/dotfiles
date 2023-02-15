@@ -17,6 +17,6 @@ return {
 
   default_gui_startup_args = {'connect', 'unix'},
   quick_select_patterns = {
-    '[^ \'"]{3,}'
+    '[\'"`][^\'"`]{2,}[\'"`]'
   }
 }
