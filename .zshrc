@@ -161,6 +161,7 @@ if [ -n "$NVIM" ]; then
   if [ `command -v nvr` ]; then
     alias nvim="nvr -l"
     export MANPAGER='nvr -l +Man! -'
+    export EDITOR='nvr -l'
   fi
 fi
 
