@@ -2,14 +2,13 @@
 	name = Mikael Elkiaer
 	email = 2102306+MikaelElkiaer@users.noreply.github.com
 [includeIf "gitdir:**/Repositories/GitHub/**"]
-	path = ~/.gitconfig-github
+	path = ~/.github.gitconfig
 [includeIf "gitdir:**/Repositories/*-ks/**"]
 	path = ~/.ks.gitconfig
 [includeIf "gitdir:**/Repositories/AUR/**"]
 	path = ~/.aur.gitconfig
 [core]
 	autocrlf = input 
-	editor = nvim
 	pager = delta --dark
 [interactive]
 	diffFilter = delta --dark --color-only

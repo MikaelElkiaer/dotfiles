@@ -120,9 +120,6 @@ export FZF_DEFAULT_OPTS='--layout=reverse'
 # Dynamically load multiple kube configs
 [[ ! -d ~/.kube ]] || export KUBECONFIG="$(fd ^config $HOME/.kube | paste -sd ":" -)"
 
-# add additional kube context indicators
-export POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="$POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND|fluxctl|kubeseal|helm2|k9s|flux"
-
 # add npm binaries
 PATH="$HOME/.node_modules/bin:$PATH"
 export npm_config_prefix=~/.node_modules
@@ -133,7 +130,7 @@ export npm_config_prefix=~/.node_modules
 alias nvim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'"
 
 export HIGHLIGHT_OPTIONS='--style base16/dracula'
-export MANPAGER='nvim +Man!'
+export MANPAGER='nvim +Man! "+let g:auto_session_enabled = v:false"'
 
 # add navi widget (<c-g>)
 eval "$(navi widget zsh)"
@@ -161,7 +158,12 @@ if [ -n "$NVIM" ]; then
   if [ `command -v nvr` ]; then
     alias nvim="nvr -l"
     export MANPAGER='nvr -l +Man! -'
+    export EDITOR='nvr -l'
   fi
 fi
 
 [ $(command -v switch.sh) ] && source switch.sh
+
+export PATH="${PATH}:${HOME}/.krew/bin"
+
+export GPG_TTY=$(tty)
