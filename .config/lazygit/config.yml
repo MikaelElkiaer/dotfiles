@@ -1,6 +1,6 @@
 git:
   commit:
-    signOff: true
+    signOff: false
   pull:
     mode: 'auto'
   overrideGpg: true
