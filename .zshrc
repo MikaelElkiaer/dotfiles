@@ -125,7 +125,7 @@ PATH="$HOME/.node_modules/bin:$PATH"
 export npm_config_prefix=~/.node_modules
 
 # kubectl autocompletion
-command -v kubectl && kubectl completion zsh > "${fpath[1]}/_kubectl"
+command -v kubectl &> /dev/null && kubectl completion zsh > "${fpath[1]}/_kubectl"
 
 alias nvim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'"
 
@@ -133,7 +133,7 @@ export HIGHLIGHT_OPTIONS='--style base16/dracula'
 export MANPAGER='nvim +Man! "+let g:auto_session_enabled = v:false"'
 
 # add navi widget (<c-g>)
-command -v navi && eval "$(navi widget zsh)"
+command -v navi &> /dev/null && eval "$(navi widget zsh)"
 
 # >>>> Vagrant command completion (start)
 fpath=(/opt/vagrant/embedded/gems/2.3.0/gems/vagrant-2.3.0/contrib/zsh $fpath)
@@ -155,14 +155,14 @@ complete -C 'aws_completer' aws
 
 # don't nest nvim
 if [ -n "$NVIM" ]; then
-  if command -v nvr; then
+  if command -v nvr &> /dev/null; then
     alias nvim="nvr -l"
     export MANPAGER='nvr -l +Man! -'
     export EDITOR='nvr -l'
   fi
 fi
 
-command -v switch.sh && source switch.sh
+command -v switch.sh &> /dev/null && source switch.sh
 
 export PATH="${PATH}:${HOME}/.krew/bin"
 
