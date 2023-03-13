@@ -7,9 +7,7 @@ export BROWSER=browser-picker
 export XDG_CONFIG_HOME="$HOME/.config"
 
 [ "$PATH" == *"$HOME/bin"* ] || PATH="$HOME/bin:$PATH"
-export DOTNET_ROOT=/opt/dotnet
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
-[ "$PATH" == *"/opt/dotnet"* ] || PATH="/opt/dotnet:$PATH"
 [ "$PATH" == *"$HOME/.dotnet/tools"* ] || PATH="$HOME/.dotnet/tools:$PATH"
 
 [ "$PATH" == *"$HOME/go/bin"* ] || PATH="$HOME/go/bin:$PATH"
