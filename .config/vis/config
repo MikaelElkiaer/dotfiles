@@ -1,6 +1,0 @@
-audio.sources=pulse
-audio.pulse.source=0
-
-colors.override.terminal=false
-colors.scheme=default
-

@@ -2,14 +2,13 @@
 	name = Mikael Elkiaer
 	email = 2102306+MikaelElkiaer@users.noreply.github.com
 [includeIf "gitdir:**/Repositories/GitHub/**"]
-	path = ~/.gitconfig-github
-[includeIf "gitdir:**/Repositories/MapsPeople/**"]
-	path = ~/.gitconfig-mapspeople
+	path = ~/.github.gitconfig
+[includeIf "gitdir:**/Repositories/*-ks/**"]
+	path = ~/.ks.gitconfig
 [includeIf "gitdir:**/Repositories/AUR/**"]
-	path = ~/.gitconfig-aur
+	path = ~/.aur.gitconfig
 [core]
 	autocrlf = input 
-	editor = lvim
 	pager = delta --dark
 [interactive]
 	diffFilter = delta --dark --color-only
@@ -21,7 +20,7 @@
 	rebase = true
 [merge]
 	ff = false
-	tool = vimdiff
+	tool = nvimdiff
 [push]
 	default = current
 [alias]
@@ -57,3 +56,5 @@
 	tool = vimdiff
 [advice]
   addIgnoredFile = false
+[init]
+	defaultBranch = main

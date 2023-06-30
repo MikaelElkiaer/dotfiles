@@ -94,12 +94,8 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='lvim'
-fi
+# Preferred editor
+export EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -113,49 +109,84 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-[ ! $(command -v fd) ] || alias find="fd -H -I" \
-	&& export FZF_DEFAULT_COMMAND="fd -H"
-[ ! $(command -v exa) ] || alias ls="exa"
-[ ! $(command -v bat) ] || alias cat="bat"
-[ ! $(command -v lvim) ] || alias vim="lvim" \
-	&& alias vimdiff="lvim -d"
 alias la="ls -la"
 
 export BAT_THEME=base16
 export FZF_DEFAULT_OPTS='--layout=reverse'
-export EDITOR=lvim
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export DOTNET_ROOT=/opt/dotnet
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
-export PATH=$DOTNET_ROOT:$PATH
-export PATH="$PATH:/home/me/.dotnet/tools"
-
-[[ ! -d ~/.kube ]] || export KUBECONFIG="$(fd ^config $HOME/.kube | paste -sd ":" -)"
-export FLUX_FORWARD_NAMESPACE=flux
-
-bindkey "^[[7~" beginning-of-line
-bindkey "^[[8~" end-of-line
-
-alias gv="vim -c GV"
-alias lg="lazygit"
-
-export POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="$POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND|fluxctl|kubeseal|helm2|k9s|flux"
-
+# add npm binaries
 PATH="$HOME/.node_modules/bin:$PATH"
 export npm_config_prefix=~/.node_modules
 
-[[ ! -f ~/.tmp/jira-api-key ]] || export JIRA_API_TOKEN=$(cat ~/.tmp/jira-api-key)
-
-function ssh_tmux () { /usr/bin/ssh -t "$@" "tmux attach-session -t ssh || tmux new-session -s ssh"; }
-
-[ ! $(command -v kubectl) ] || kubectl completion zsh > "${fpath[1]}/_kubectl"
+# kubectl autocompletion
+command -v kubectl &> /dev/null && kubectl completion zsh > "${fpath[1]}/_kubectl"
 
 alias nvim_update="nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'"
 
-export HIGHLIGHT_OPTIONS='--style base16/gruvbox-dark-hard'
+export HIGHLIGHT_OPTIONS='--style base16/dracula'
+export MANPAGER='nvim +Man! "+let g:auto_session_enabled = v:false"'
 
-alias rcd="ranger --choosedir=>( xargs echo ) --show-only-dirs"
-alias rcf="ranger --choosefile=>( xargs echo )"
+# add navi widget (<c-g>)
+command -v navi &> /dev/null && eval "$(navi widget zsh)"
+
+# >>>> Vagrant command completion (start)
+fpath=(/opt/vagrant/embedded/gems/2.3.0/gems/vagrant-2.3.0/contrib/zsh $fpath)
+# <<<<  Vagrant command completion (end)
+
+# Source non-version-controlled shell scripts
+[ -d $HOME/.zsh.d ] && for f in `find $HOME/.zsh.d -name '*.zsh'`; do source $f; done
+
+# vault autocompletion
+complete -o nospace -C /usr/bin/vault vault
+
+# opt out of autocd
+unsetopt autocd
+
+# aws cli autocompletion
+complete -C 'aws_completer' aws
+
+# don't nest nvim
+if [ -n "$NVIM" ]; then
+  if command -v nvr &> /dev/null; then
+    alias nvim="nvr -l"
+    export MANPAGER='nvr -l +Man! -'
+    export EDITOR='nvr -l'
+  fi
+fi
+
+command -v switch.sh &> /dev/null && source switch.sh && switch minikube &> /dev/null
+
+export PATH="${PATH}:${HOME}/.krew/bin"
+
+export GPG_TTY=$(tty)
+
+export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
+
+autoload -U compinit; compinit
+autoload -U +X bashcompinit && bashcompinit
+
+# source: https://learn.microsoft.com/en-us/dotnet/core/tools/enable-tab-autocomplete#zsh
+# zsh parameter completion for the dotnet CLI
+
+_dotnet_zsh_complete() 
+{
+  local completions=("$(dotnet complete "$words")")
+
+  # If the completion list is empty, just continue with filename selection
+  if [ -z "$completions" ]
+  then
+    _arguments '*::arguments: _normal'
+    return
+  fi
+
+  # This is not a variable assignment, don't remove spaces!
+  _values = "${(ps:\n:)completions}"
+}
+
+compdef _dotnet_zsh_complete dotnet
+
+# Add mason binaries
+PATH="$HOME/.local/share/nvim/mason/bin:$PATH"

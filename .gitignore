@@ -1,1 +1,5 @@
-.config
+.config/lazygit/state.yml
+.remote_ssh
+
+.config/spotify-tui/.spotify_token_cache.json
+.config/spotify-tui/client.yml
