@@ -117,10 +117,6 @@ export FZF_DEFAULT_OPTS='--layout=reverse'
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# add npm binaries
-PATH="$HOME/.node_modules/bin:$PATH"
-export npm_config_prefix=~/.node_modules
-
 # kubectl autocompletion
 command -v kubectl &> /dev/null && kubectl completion zsh > "${fpath[1]}/_kubectl"
 
@@ -159,8 +155,6 @@ fi
 
 command -v switch.sh &> /dev/null && source switch.sh && switch minikube &> /dev/null
 
-export PATH="${PATH}:${HOME}/.krew/bin"
-
 export GPG_TTY=$(tty)
 
 export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
@@ -187,6 +181,3 @@ _dotnet_zsh_complete()
 }
 
 compdef _dotnet_zsh_complete dotnet
-
-# Add mason binaries
-PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
