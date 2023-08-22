@@ -1,8 +1,9 @@
 #! /bin/sh
 
-pgrep -x sxhkd > /dev/null || sxhkd &
+pgrep -x 'rhkd' > /dev/null || /home/me/.cargo/bin/rhkd &
+pgrep -x 'rhkd-whichkey' > /dev/null || /home/me/.cargo/bin/rhkd-whichkey &
 
-bspc monitor -d 1 2 3 4 5 6 7 8 9 0 
+bspc monitor -d 1 2 3 4 5 6 7 8 9 0
 
 bspc config border_width         2
 bspc config window_gap           6
