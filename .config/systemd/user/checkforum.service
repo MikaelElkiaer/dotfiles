@@ -1,0 +1,10 @@
+[Unit]
+Description=Check for important forum posts and save them to temporary file
+Wants=checkupdates.timer
+
+[Service]
+Type=oneshot
+ExecStart=bash -c "/$HOME/bin/checkforum.hsh > /tmp/checkforum.json"
+
+[Install]
+WantedBy=multi-user.target

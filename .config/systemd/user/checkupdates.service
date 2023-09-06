@@ -1,0 +1,10 @@
+[Unit]
+Description=Check for OS updates and save them to temporary file
+Wants=checkupdates.timer
+
+[Service]
+Type=oneshot
+ExecStart=bash -c "/usr/bin/checkupdates > /tmp/checkupdates.txt"
+
+[Install]
+WantedBy=multi-user.target
