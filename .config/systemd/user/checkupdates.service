@@ -4,7 +4,7 @@ Wants=checkupdates.timer
 
 [Service]
 Type=oneshot
-ExecStart=bash -c "/usr/bin/checkupdates > /tmp/checkupdates.txt"
+ExecStart=bash -c "/usr/bin/checkupdates > /tmp/checkupdates.txt || true"
 
 [Install]
 WantedBy=multi-user.target
