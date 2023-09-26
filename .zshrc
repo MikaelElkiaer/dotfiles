@@ -147,9 +147,9 @@ complete -C 'aws_completer' aws
 # don't nest nvim
 if [ -n "$NVIM" ]; then
   if command -v nvr &> /dev/null; then
-    alias nvim="nvr -l"
-    export MANPAGER='nvr -l +Man! -'
-    export EDITOR='nvr -l'
+    alias nvim="nvr -l -s"
+    export MANPAGER='nvr -l -s +Man! -'
+    export EDITOR='nvr -l -s'
   fi
 fi
 
