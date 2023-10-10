@@ -181,3 +181,12 @@ _dotnet_zsh_complete()
 }
 
 compdef _dotnet_zsh_complete dotnet
+
+[[ "$PATH" == *"$HOME/bin"* ]] || PATH="$HOME/bin:$PATH"
+[[ "$PATH" == *"$HOME/.dotnet/tools"* ]] || PATH="$HOME/.dotnet/tools:$PATH"
+[[ "$PATH" == *"$HOME/.cargo/bin"* ]] || PATH="$HOME/.cargo/bin:$PATH"
+[[ "$PATH" == *"$HOME/go/bin"* ]] || PATH="$HOME/go/bin:$PATH"
+[[ "$PATH" == *"$HOME/.krew/bin"* ]] || PATH="${HOME}/.krew/bin:$PATH"
+[[ "$PATH" == *"$HOME/.local/share/nvim/mason/bin"* ]] || PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
+[[ "$PATH" == *"$HOME/.node_modules/bin"* ]] || PATH="$HOME/.node_modules/bin:$PATH"
+export npm_config_prefix=~/.node_modules
