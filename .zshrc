@@ -153,7 +153,7 @@ if [ -n "$NVIM" ]; then
   fi
 fi
 
-command -v switch.sh &> /dev/null && source switch.sh && switch minikube &> /dev/null
+command -v switch.sh &> /dev/null && source switch.sh && switch default &> /dev/null
 
 export GPG_TTY=$(tty)
 
