@@ -52,5 +52,7 @@ xsetroot -cursor_name left_ptr &
 # Low battery notifier
 ~/.config/bspwm/scripts/low_bat_notifier.sh
 
+# Disable power saving features (fix Nvidia sleep issues)
 xset -dpms
+# Disable screensaver
 xset s 0 0
