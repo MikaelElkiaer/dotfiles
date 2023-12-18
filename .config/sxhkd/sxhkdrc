@@ -171,15 +171,15 @@ XF86MonBrightnessDown
 
 # Next track
 XF86AudioNext
-  spt playback -n
+  spotify_player playback next
 
 # Previous track
 XF86AudioPrev
-  spt playback -p
+  spotify_player playback previous
 
 # Toggle play/pause
 XF86AudioPlay
-  spt playback -t
+  spotify_player playback play-pause
 
 # Screenshot
 Print
