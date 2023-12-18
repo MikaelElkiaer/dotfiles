@@ -153,7 +153,12 @@ if [ -n "$NVIM" ]; then
   fi
 fi
 
-command -v switch.sh &> /dev/null && source switch.sh
+if command -v switch.sh &> /dev/null; then
+  source <(switcher init zsh)
+  # use alias `s` instead of `switch`
+  alias s=switch
+  compdef _switcher switch
+fi
 
 export GPG_TTY=$(tty)
 
