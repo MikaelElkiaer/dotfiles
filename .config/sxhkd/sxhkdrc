@@ -198,4 +198,4 @@ super + F1
 
 # Set bsp layout
 super + w
-  rofi-bsp-layout
+  $HOME/bin/rofi-bsp-layout
