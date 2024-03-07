@@ -195,3 +195,5 @@ compdef _dotnet_zsh_complete dotnet
 [[ "$PATH" == *"$HOME/.local/share/nvim/mason/bin"* ]] || PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
 [[ "$PATH" == *"$HOME/.node_modules/bin"* ]] || PATH="$HOME/.node_modules/bin:$PATH"
 export npm_config_prefix=~/.node_modules
+
+eval "$(atuin init zsh --disable-up-arrow)"
