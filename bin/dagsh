@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+set -ex
+
+TMP="$(mktemp -d)"
+# shellcheck disable=SC2064
+trap "rm -rf $TMP" EXIT
+cd "$TMP"
+
+echo "{\"name\":\"$1\", \"sdk\":\"go\"}" >dagger.json
+echo 'package main' >main.go
+shift
+dagger call "$@"
