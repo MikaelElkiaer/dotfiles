@@ -164,7 +164,7 @@ export GPG_TTY=$(tty)
 
 export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
 
-autoload -U compinit; compinit
+autoload -U compinit; compinit -i
 autoload -U +X bashcompinit && bashcompinit
 
 # source: https://learn.microsoft.com/en-us/dotnet/core/tools/enable-tab-autocomplete#zsh
