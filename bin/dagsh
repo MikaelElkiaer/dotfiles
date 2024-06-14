@@ -1,13 +1,37 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-set -ex
+set -euo pipefail
 
-TMP="$(mktemp -d)"
-# shellcheck disable=SC2064
-trap "rm -rf $TMP" EXIT
-cd "$TMP"
+main() {
+	if [ "$#" -eq 0 ]; then
+		run_help
+	elif [ "$1" = "-c" ]; then
+		shift
+		run_command "$@"
+	elif [ -n "$1" ]; then
+		run_file "$@"
+	fi
+}
 
-echo "{\"name\":\"$1\", \"sdk\":\"go\"}" >dagger.json
-echo 'package main' >main.go
-shift
-dagger call "$@"
+run_command() {
+	TMP="$(mktemp -d)"
+	# shellcheck disable=SC2064
+	trap "rm -rf $TMP" EXIT
+	cd "$TMP"
+
+	echo "{\"name\":\"$1\", \"sdk\":\"go\"}" >dagger.json
+	echo 'package main' >main.go
+	shift
+	dagger call "$@"
+}
+
+run_file() {
+	sh "$@" | dagger query
+}
+
+run_help() {
+	echo "Usage: dagsh [-c COMMAND|FILE]"
+	exit 1
+}
+
+main "$@"
