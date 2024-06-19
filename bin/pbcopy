@@ -1,0 +1,5 @@
+#!/bin/bash
+# pbcopy for wsl
+tee <&0 | clip.exe
+exit 0
+

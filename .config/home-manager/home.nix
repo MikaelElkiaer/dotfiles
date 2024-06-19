@@ -1,0 +1,101 @@
+{ config, pkgs, ... }:
+
+{
+  home.username = "me";
+  home.homeDirectory = "/home/me";
+
+  home.stateVersion = "24.05"; # WARN: Do not change
+
+  home.packages = [
+    pkgs.atuin
+    pkgs.awscli2
+    pkgs.cargo
+    pkgs.delta
+		pkgs.dotnet-sdk_8
+    pkgs.file
+    pkgs.fluxcd
+		pkgs.gcc
+    pkgs.gh
+    pkgs.gitmux
+    pkgs.gnumake
+    pkgs.kubernetes-helm
+    pkgs.kubectl
+		pkgs.kubeseal
+		pkgs.kubeswitch
+		pkgs.k9s
+		pkgs.lazygit
+    pkgs.navi
+    pkgs.neovim
+		pkgs.nodejs
+		pkgs.python3
+		pkgs.ripgrep
+    pkgs.skopeo
+    pkgs.tmux
+		pkgs.unzip
+		pkgs.yq-go
+    pkgs.wget
+    pkgs.wslu
+    pkgs.z-lua
+  ];
+
+  home.file = {
+    ".config/home-manager" = {
+      recursive = true;
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.config/home-manager";
+    };
+    ".config/navi" = {
+      recursive = true;
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.config/navi";
+    };
+    ".config/nvim" = {
+      recursive = true;
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/nvim-config";
+    };
+    # ".docker/config.json" = {
+    #   text = ''
+    #     {
+    #       "credsStore": "secretservice"
+    #     }
+    #   '';
+    # };
+    ".bashrc_extra" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.bashrc";
+    };
+    ".gitconfig" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.gitconfig";
+    };
+  };
+
+  home.sessionVariables = {
+  };
+
+  programs.home-manager.enable = true;
+
+  programs.bash = {
+    enable = true;
+    bashrcExtra = ''
+      . ~/.bashrc_extra
+    '';
+  };
+  programs.git.enable = true;
+  programs.gpg.enable = true;
+  programs.ssh.enable = true;
+  # services.git-sync = {
+  #   enable = true;
+  #   repositories = {
+  #     navi = {
+  #       path = "${config.home.homeDirectory}/Repositories/GitHub/navi-cheats";
+  #       uri = "git+ssh://github.com/mikaelelkiaer/navi-cheats.git";
+  #     };
+  #     nvim-config = {
+  #       path = "${config.home.homeDirectory}/Repositories/GitHub/nvim-config";
+  #       uri = "git+ssh://github.com/mikaelelkiaer/nvim-config.git";
+  #     };
+  #   };
+  # };
+  # services.gnome-keyring = {
+  #   components = [ "pkcs11" "secrets" "ssh" ];
+  #   enable = true;
+  # };
+  services.gpg-agent.enable = true;
+}
