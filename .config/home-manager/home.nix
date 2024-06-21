@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ./wsl.nix ];
+
   home.username = "me";
   home.homeDirectory = "/home/me";
 
@@ -11,30 +13,30 @@
     pkgs.awscli2
     pkgs.cargo
     pkgs.delta
-		pkgs.dotnet-sdk_8
+    pkgs.dotnet-sdk_8
     pkgs.file
     pkgs.fluxcd
-		pkgs.gcc
+    pkgs.gcc
     pkgs.gh
     pkgs.gitmux
     pkgs.gnumake
-    pkgs.kubernetes-helm
+    pkgs.k9s
     pkgs.kubectl
-		pkgs.kubeseal
-		pkgs.kubeswitch
-		pkgs.k9s
-		pkgs.lazygit
+    pkgs.kubernetes-helm
+    pkgs.kubeseal
+    pkgs.kubeswitch
+    pkgs.lazygit
     pkgs.navi
     pkgs.neovim
-		pkgs.nodejs
-		pkgs.python3
-		pkgs.ripgrep
+    pkgs.nodejs
+    pkgs.python3
+    pkgs.ripgrep
     pkgs.skopeo
     pkgs.tmux
-		pkgs.unzip
-		pkgs.yq-go
+    pkgs.unzip
+    pkgs.vault
     pkgs.wget
-    pkgs.wslu
+    pkgs.yq-go
     pkgs.z-lua
   ];
 
@@ -69,6 +71,8 @@
   home.sessionVariables = {
   };
 
+  nixpkgs.config.allowUnfree = true;
+
   programs.home-manager.enable = true;
 
   programs.bash = {
@@ -80,22 +84,5 @@
   programs.git.enable = true;
   programs.gpg.enable = true;
   programs.ssh.enable = true;
-  # services.git-sync = {
-  #   enable = true;
-  #   repositories = {
-  #     navi = {
-  #       path = "${config.home.homeDirectory}/Repositories/GitHub/navi-cheats";
-  #       uri = "git+ssh://github.com/mikaelelkiaer/navi-cheats.git";
-  #     };
-  #     nvim-config = {
-  #       path = "${config.home.homeDirectory}/Repositories/GitHub/nvim-config";
-  #       uri = "git+ssh://github.com/mikaelelkiaer/nvim-config.git";
-  #     };
-  #   };
-  # };
-  # services.gnome-keyring = {
-  #   components = [ "pkcs11" "secrets" "ssh" ];
-  #   enable = true;
-  # };
   services.gpg-agent.enable = true;
 }
