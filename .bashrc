@@ -134,6 +134,7 @@ fi
 
 if [ "$(command -v nvim)" ]; then
 	export EDITOR=nvim
+	export MANPAGER='nvim +Man!'
 elif [ "$(command -v vim)" ]; then
 	export EDITOR=vim
 elif [ "$(command -v vi)" ]; then
