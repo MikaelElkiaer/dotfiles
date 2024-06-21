@@ -79,7 +79,7 @@ fi
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
-  # shellcheck source=/dev/null
+	# shellcheck source=/dev/null
 	. ~/.bash_aliases
 fi
 
@@ -96,7 +96,7 @@ export PATH="$PATH:$HOME/bin/"
 
 # [kubeswitch](https://github.com/danielfoehrKn/kubeswitch)
 if [ "$(command -v switcher)" ]; then
-  # shellcheck source=/dev/null
+	# shellcheck source=/dev/null
 	source <(switcher init bash)
 	alias s=switch
 	# TODO: Figure out and fix
@@ -104,7 +104,7 @@ if [ "$(command -v switcher)" ]; then
 fi
 
 if [ "$(command -v kubectl)" ]; then
-  # shellcheck source=/dev/null
+	# shellcheck source=/dev/null
 	source <(kubectl completion bash)
 fi
 
@@ -122,13 +122,13 @@ if [ "$(command -v navi)" ]; then
 fi
 
 if [ -n "$WSL_DISTRO_NAME" ]; then
-  # [wslu](https://github.com/wslutilities/wslu)
+	# [wslu](https://github.com/wslutilities/wslu)
 	export BROWSER=wslview
 fi
 
 # [atuin](https://github.com/atuinsh/atuin)
 if [ "$(command -v atuin)" ]; then
-  # shellcheck source=/dev/null
+	# shellcheck source=/dev/null
 	source <(atuin init bash --disable-up-arrow)
 fi
 
