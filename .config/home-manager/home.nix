@@ -32,6 +32,7 @@
     pkgs.python3
     pkgs.ripgrep
     pkgs.skopeo
+    pkgs.tree
     pkgs.tmux
     pkgs.unzip
     pkgs.vault
