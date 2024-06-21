@@ -1,0 +1,4 @@
+# vim: set ft=conf
+# ~/.wslconfig
+[wsl2]
+networkingMode=mirrored
