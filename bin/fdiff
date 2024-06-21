@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [[ $* == *-X* ]]
 	then diff $1 $2 -rwuBq | grep "^Only in" --color=never | sort | grep -E "dev|production|$"
