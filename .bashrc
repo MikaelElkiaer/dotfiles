@@ -28,12 +28,7 @@ shopt -s checkwinsize
 shopt -s globstar
 
 # make less more friendly for non-text input files, see lesspipe(1)
-#[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-	debian_chroot=$(cat /etc/debian_chroot)
-fi
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
@@ -43,7 +38,7 @@ esac
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
 	if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -57,7 +52,6 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-	# PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 	PS1='\[\033[01;34m\]\w\[\033[00m\]\nλ '
 else
 	PS1='\w\n\λ '
@@ -66,7 +60,11 @@ unset color_prompt force_color_prompt
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+	if [ -r ~/.dircolors ]; then
+		eval "$(dircolors -b ~/.dircolors)"
+	else
+		eval "$(dircolors -b)"
+	fi
 	alias ls='ls --color=auto'
 	alias dir='dir --color=auto'
 	alias vdir='vdir --color=auto'
@@ -81,45 +79,68 @@ fi
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
+  # shellcheck source=/dev/null
 	. ~/.bash_aliases
 fi
 
-#
-# Non-defaults
-#
+####
+# me
+####
+
+# Nix and Home-Manager
 export PATH="$PATH:$HOME/.nix-profile/bin/"
+# Mason (for Neovim)
 export PATH="$PATH:$HOME/.local/share/nvim/mason/bin/"
+# Dotfiles
 export PATH="$PATH:$HOME/bin/"
 
-if [ $(command -v switcher) ]; then
+# [kubeswitch](https://github.com/danielfoehrKn/kubeswitch)
+if [ "$(command -v switcher)" ]; then
+  # shellcheck source=/dev/null
 	source <(switcher init bash)
 	alias s=switch
-	complete -o default -F _switcher s
+	# TODO: Figure out and fix
+	# complete -o default -F _switcher s
 fi
 
-if [ $(command -v kubectl) ]; then
+if [ "$(command -v kubectl)" ]; then
+  # shellcheck source=/dev/null
 	source <(kubectl completion bash)
 fi
 
-# INFO: `delta` also uses this
+# `delta` also uses this
 export BAT_THEME=base16
 
-if [ $(command -v z) ]; then
+# [z.lua](https://github.com/skywind3000/z.lua)
+if [ "$(command -v z)" ]; then
 	eval "$(z --init bash)"
 fi
 
-if [ $(command -v navi) ]; then
+# [navi](https://github.com/denisidoro/navi)
+if [ "$(command -v navi)" ]; then
 	eval "$(navi widget bash)"
 fi
 
-if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-	exec tmux
-fi
-
 if [ -n "$WSL_DISTRO_NAME" ]; then
+  # [wslu](https://github.com/wslutilities/wslu)
 	export BROWSER=wslview
 fi
 
-if [ $(command -v atuin) ]; then
+# [atuin](https://github.com/atuinsh/atuin)
+if [ "$(command -v atuin)" ]; then
+  # shellcheck source=/dev/null
 	source <(atuin init bash --disable-up-arrow)
+fi
+
+if [ "$(command -v nvim)" ]; then
+	export EDITOR=nvim
+elif [ "$(command -v vim)" ]; then
+	export EDITOR=vim
+elif [ "$(command -v vi)" ]; then
+	export EDITOR=vi
+fi
+
+# Keep this at the bottom
+if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+	exec tmux
 fi
