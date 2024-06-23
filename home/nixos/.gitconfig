@@ -14,8 +14,6 @@
 	diffFilter = delta --dark --color-only
 [rebase]
 	autosquash = true
-[credential]
-	helper = cache
 [pull]
 	rebase = true
 [merge]
@@ -58,3 +56,9 @@
   addIgnoredFile = false
 [init]
 	defaultBranch = main
+[credential "https://github.com"]
+	helper = 
+	helper = !/home/nixos/.nix-profile/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/home/nixos/.nix-profile/bin/gh auth git-credential
