@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+let
+  dotHome = "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/home/nixos";
+in
 {
   home.username = "nixos";
   home.homeDirectory = "/home/nixos";
@@ -44,11 +47,11 @@
   home.file = {
     ".config/home-manager" = {
       recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.config/home-manager";
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/home-manager";
     };
     ".config/navi" = {
       recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.config/navi";
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/navi";
     };
     ".config/nvim" = {
       recursive = true;
@@ -56,19 +59,23 @@
     };
     ".config/tmux" = {
       recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.config/tmux";
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/tmux";
     };
     ".bash_aliases" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.bash_aliases";
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.bash_aliases";
     };
     ".bashrc_extra" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.bashrc";
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.bashrc";
     };
     ".gitconfig" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.gitconfig";
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.gitconfig";
     };
     ".inputrc" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.inputrc";
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.inputrc";
+    };
+    "bin" = {
+      recursive = true;
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/bin";
     };
   };
 

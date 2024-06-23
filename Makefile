@@ -6,4 +6,4 @@ switch:		## Apply current home-manager configuration
 	home-manager switch
 
 bootstrap:	## Bootstrap Nix home-manager
-	home-manager --file $$PWD/.config/home-manager/home.nix switch
+	home-manager --file $$PWD/home/nixos/.config/home-manager/home.nix switch
