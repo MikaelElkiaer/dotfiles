@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@angular/cli": "^11.2.9",
-    "jira-cli": "^2.4.0",
-    "vim-language-server": "^2.2.2"
-  }
-}

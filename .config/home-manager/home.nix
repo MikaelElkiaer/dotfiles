@@ -1,10 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./wsl.nix ];
-
-  home.username = "me";
-  home.homeDirectory = "/home/me";
+  home.username = "nixos";
+  home.homeDirectory = "/home/nixos";
 
   home.stateVersion = "24.05"; # WARN: Do not change
 
@@ -32,11 +30,13 @@
     pkgs.python3
     pkgs.ripgrep
     pkgs.skopeo
-    pkgs.tree
     pkgs.tmux
+    pkgs.tree
     pkgs.unzip
     pkgs.vault
     pkgs.wget
+    pkgs.wslu
+    pkgs.xclip
     pkgs.yq-go
     pkgs.z-lua
   ];
@@ -54,18 +54,21 @@
       recursive = true;
       source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/nvim-config";
     };
-    # ".docker/config.json" = {
-    #   text = ''
-    #     {
-    #       "credsStore": "secretservice"
-    #     }
-    #   '';
-    # };
+    ".config/tmux" = {
+      recursive = true;
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.config/tmux";
+    };
+    ".bash_aliases" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.bash_aliases";
+    };
     ".bashrc_extra" = {
       source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.bashrc";
     };
     ".gitconfig" = {
       source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.gitconfig";
+    };
+    ".inputrc" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/.inputrc";
     };
   };
 

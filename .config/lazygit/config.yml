@@ -6,4 +6,4 @@ git:
     colorArg: always
     pager: delta --dark --paging=never --true-color=never
 os:
-  edit: nvr -l -s {{filename}}
+  edit: nvim {{filename}}

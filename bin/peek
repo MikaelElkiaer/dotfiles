@@ -1,4 +1,0 @@
-#!/bin/sh
-
-bat -f $1 | less
-

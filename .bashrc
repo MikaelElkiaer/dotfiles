@@ -54,7 +54,7 @@ fi
 if [ "$color_prompt" = yes ]; then
 	PS1='\[\033[01;34m\]\w\[\033[00m\]\nλ '
 else
-	PS1='\w\n\λ '
+	PS1='\w\nλ '
 fi
 unset color_prompt force_color_prompt
 
