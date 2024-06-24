@@ -54,6 +54,10 @@ in
       recursive = true;
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/home-manager";
     };
+    ".config/lazygit" = {
+      recursive = true;
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/lazygit";
+    };
     ".config/navi" = {
       recursive = true;
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/navi";
