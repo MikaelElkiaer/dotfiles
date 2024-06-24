@@ -7,3 +7,4 @@ args = ["-d", "NixOS"]
 
 [window]
 dynamic_title = false
+decorations = "None"
