@@ -89,8 +89,6 @@ fi
 
 # Nix and Home-Manager
 export PATH="$PATH:$HOME/.nix-profile/bin/"
-# Mason (for Neovim)
-export PATH="$PATH:$HOME/.local/share/nvim/mason/bin/"
 # Dotfiles
 export PATH="$PATH:$HOME/bin/"
 

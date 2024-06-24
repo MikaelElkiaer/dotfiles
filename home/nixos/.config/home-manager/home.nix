@@ -4,6 +4,10 @@ let
   dotHome = "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/home/nixos";
 in
 {
+  imports = [
+    ./neovim.nix
+  ];
+
   home.username = "nixos";
   home.homeDirectory = "/home/nixos";
 
@@ -19,6 +23,7 @@ in
     pkgs.fluxcd
     pkgs.gcc
     pkgs.gh
+    pkgs.go
     pkgs.gitmux
     pkgs.gnumake
     pkgs.k9s
@@ -28,7 +33,6 @@ in
     pkgs.kubeswitch
     pkgs.lazygit
     pkgs.navi
-    pkgs.neovim
     pkgs.nodejs
     pkgs.python3
     pkgs.ripgrep
@@ -52,10 +56,6 @@ in
     ".config/navi" = {
       recursive = true;
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/navi";
-    };
-    ".config/nvim" = {
-      recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Repositories/GitHub/nvim-config";
     };
     ".config/tmux" = {
       recursive = true;
