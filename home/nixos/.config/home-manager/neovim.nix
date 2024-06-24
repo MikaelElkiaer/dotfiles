@@ -27,6 +27,7 @@
     pkgs.mdformat
     pkgs.shfmt
     pkgs.stylua
+    pkgs.taplo
     pkgs.xmlformat
     # Treesitter
     pkgs.tree-sitter
