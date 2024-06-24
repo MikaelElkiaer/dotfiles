@@ -56,6 +56,9 @@
   addIgnoredFile = false
 [init]
 	defaultBranch = main
+[credential]
+	helper = 
+	helper = store
 [credential "https://github.com"]
 	helper = 
 	helper = !/home/nixos/.nix-profile/bin/gh auth git-credential
