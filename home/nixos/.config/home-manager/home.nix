@@ -23,6 +23,7 @@ in
     pkgs.fluxcd
     pkgs.gcc
     pkgs.gh
+    pkgs.git
     pkgs.go
     pkgs.gitmux
     pkgs.gnumake
@@ -92,8 +93,6 @@ in
       . ~/.bashrc_extra
     '';
   };
-  programs.git.enable = true;
   programs.gpg.enable = true;
-  programs.ssh.enable = true;
   services.gpg-agent.enable = true;
 }
