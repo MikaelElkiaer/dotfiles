@@ -130,6 +130,9 @@ fi
 
 # [atuin](https://github.com/atuinsh/atuin)
 if [ "$(command -v atuin)" ]; then
+	if ! [ -d "$HOME/.local/share/atuin" ]; then
+		atuin import auto
+	fi
 	# shellcheck source=/dev/null
 	source <(atuin init bash --disable-up-arrow)
 fi
