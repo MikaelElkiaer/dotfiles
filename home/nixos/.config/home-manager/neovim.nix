@@ -15,7 +15,7 @@
     pkgs.dockerfile-language-server-nodejs
     pkgs.gopls
     pkgs.helm-ls
-    # pkgs.json-lsp
+    pkgs.vscode-langservers-extracted
     pkgs.lua-language-server
     pkgs.omnisharp-roslyn
     pkgs.yaml-language-server
