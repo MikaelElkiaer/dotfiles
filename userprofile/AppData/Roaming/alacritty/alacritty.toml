@@ -1,6 +1,12 @@
 import = ["~/AppData/Roaming/alacritty/gruvbox_dark.toml"]
 working_directory = "\\\\wsl$\\NixOS\\home\\nixos"
 
+[font]
+size = 10.0
+
+[font.normal]
+family = "NotoMono Nerd Font"
+
 [shell]
 program = "wsl.exe"
 args = ["-d", "NixOS"]
