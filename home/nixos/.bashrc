@@ -88,9 +88,13 @@ fi
 ####
 
 # Nix and Home-Manager
-export PATH="$PATH:$HOME/.nix-profile/bin/"
+if ! [[ "$PATH" == *"$HOME/.nix-profile/bin/"* ]]; then
+	export PATH="$PATH:$HOME/.nix-profile/bin/"
+fi
 # Dotfiles
-export PATH="$PATH:$HOME/bin/"
+if ! [[ "$PATH" == *"$HOME/bin/"* ]]; then
+	export PATH="$PATH:$HOME/bin/"
+fi
 
 # [kubeswitch](https://github.com/danielfoehrKn/kubeswitch)
 if [ "$(command -v switcher)" ]; then
