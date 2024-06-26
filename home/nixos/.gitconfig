@@ -58,7 +58,7 @@
 	defaultBranch = main
 [credential]
 	helper = 
-	helper = store
+	helper = libsecret
 [credential "https://github.com"]
 	helper = 
 	helper = !/home/nixos/.nix-profile/bin/gh auth git-credential
