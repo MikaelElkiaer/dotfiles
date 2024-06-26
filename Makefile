@@ -3,6 +3,7 @@ help:		## Show this help
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
 
 bootstrap:	## Bootstrap Nix home-manager
+	@make rebuild
 	home-manager --file $$PWD/home/nixos/.config/home-manager/home.nix switch
 
 gh-login:	## Log in to GitHub CLI
