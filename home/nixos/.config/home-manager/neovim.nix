@@ -20,6 +20,7 @@
     pkgs.omnisharp-roslyn
     pkgs.yaml-language-server
     # Linter
+    pkgs.actionlint
     pkgs.hadolint
     pkgs.nodePackages.jsonlint
     pkgs.vale
