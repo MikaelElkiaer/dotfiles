@@ -17,6 +17,10 @@
     pkgs.home-manager
   ];
 
+  # INFO: Should be set by wsl module, but is deprecated
+  # - see https://github.com/nix-community/NixOS-WSL/issues/498
+  hardware.graphics.enable = true;
+
   security.pki.certificateFiles = builtins.map (x: /etc/nixos/certs + ("/" +x)) (builtins.attrNames (builtins.readDir /etc/nixos/certs));
 
   virtualisation.docker = {
