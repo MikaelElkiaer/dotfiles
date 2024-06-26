@@ -11,13 +11,13 @@
   imports = [
     # include NixOS-WSL modules
     <nixos-wsl/modules>
-    # include home-manager module
-    <home-manager/nixos>
   ];
 
   environment.systemPackages = [
     pkgs.home-manager
   ];
+
+  security.pki.certificateFiles = builtins.map (x: /etc/nixos/certs + ("/" +x)) (builtins.attrNames (builtins.readDir /etc/nixos/certs));
 
   virtualisation.docker = {
     enable = true;
