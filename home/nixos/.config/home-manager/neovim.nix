@@ -20,17 +20,18 @@
     pkgs.omnisharp-roslyn
     pkgs.yaml-language-server
     # Linter
-    pkgs.actionlint
-    pkgs.hadolint
+    pkgs.actionlint # GitHub Actions
+    pkgs.hadolint # Dockerfile
     pkgs.nodePackages.jsonlint
-    pkgs.vale
+    pkgs.vale # markdown
     # Formatter
     pkgs.mdformat
     pkgs.shfmt
     pkgs.stylua
-    pkgs.taplo
+    pkgs.taplo # TOML
     pkgs.xmlformat
     # Treesitter
+    pkgs.gcc # needed for auto install
     pkgs.tree-sitter
   ];
 }

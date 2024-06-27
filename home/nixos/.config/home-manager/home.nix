@@ -21,7 +21,6 @@ in
     pkgs.dotnet-sdk_8
     pkgs.file
     pkgs.fluxcd
-    pkgs.gcc
     pkgs.gh
     pkgs.gitFull
     pkgs.go
