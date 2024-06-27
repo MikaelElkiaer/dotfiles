@@ -86,6 +86,12 @@ in
   home.sessionVariables = {
   };
 
+  nix = {
+    package = pkgs.nixFlakes;
+
+    settings.experimental-features = [ "nix-command" "flakes" ];
+  };
+
   nixpkgs.config.allowUnfree = true;
 
   programs.home-manager.enable = true;
