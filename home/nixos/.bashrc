@@ -123,7 +123,8 @@ if [ "$(command -v navi)" ]; then
 	eval "$(navi widget bash)"
 fi
 
-if [ -n "$WSL_DISTRO_NAME" ]; then
+# detect WSL
+if [[ "$(uname --kernel-release)" =~ -WSL2$ ]]; then
 	# [wslu](https://github.com/wslutilities/wslu)
 	export BROWSER=wslview
 fi
