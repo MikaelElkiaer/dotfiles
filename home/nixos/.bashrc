@@ -131,11 +131,12 @@ fi
 
 # [atuin](https://github.com/atuinsh/atuin)
 if [ "$(command -v atuin)" ]; then
+	# shellcheck source=/dev/null
+	eval "$(atuin init bash --disable-up-arrow)"
+
 	if ! [ -d "$HOME/.local/share/atuin" ]; then
 		atuin import auto
 	fi
-	# shellcheck source=/dev/null
-	source <(atuin init bash --disable-up-arrow)
 fi
 
 # [dagger](https://github.com/dagger/dagger)
