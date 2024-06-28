@@ -23,7 +23,7 @@ in
     pkgs.file
     pkgs.fluxcd
     pkgs.gh
-    pkgs.gitFull
+    pkgs.git
     pkgs.go
     pkgs.gitmux
     pkgs.gnumake
