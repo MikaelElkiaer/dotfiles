@@ -138,6 +138,12 @@ if [ "$(command -v atuin)" ]; then
 	source <(atuin init bash --disable-up-arrow)
 fi
 
+# [dagger](https://github.com/dagger/dagger)
+if [ "$(command -v dagger)" ]; then
+	# shellcheck source=/dev/null
+	source <(dagger completion bash --silent)
+fi
+
 if [ "$(command -v nvim)" ]; then
 	export EDITOR=nvim
 	export MANPAGER='nvim +Man!'
