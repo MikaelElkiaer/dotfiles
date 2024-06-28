@@ -6,13 +6,8 @@
 REPO="$(gh repo view --json name,owner -q '"\(.owner.login)/\(.name)"')"
 STATUS="$?"
 if [ "$STATUS" = 0 ] && [ -n "$REPO" ]; then
-	DEFAULT_CONFIG="$HOME/.config/gh-dash/config.yml"
-	if ! [ -s "$DEFAULT_CONFIG" ]; then
-		echo "Unable to find default config - run \`gh dash\` to generate one" >&2
-		exit 1
-	fi
 	export REPO
-	gh dash --config <(yq '(.prSections,.issuesSections).[].filters = "repo:env(REPO)"' "$HOME/.config/gh-dash/config.yml")
+	gh dash --config <(yq --null-input '(.prSections,.issuesSections) = [{ "filters": "repo:\(env(REPO)) is:open", "title": "All" }]')
 else
 	echo "Not in a git repository - defaulting to global config" >&2
 	gh dash
