@@ -23,12 +23,10 @@
 
   security.pki.certificateFiles = builtins.map (x: /etc/nixos/certs + ("/" +x)) (builtins.attrNames (builtins.readDir /etc/nixos/certs));
 
+  users.users.nixos.extraGroups = [ "docker" ];
+
   virtualisation.docker = {
     enable = true;
-    rootless = {
-      enable = true;
-      setSocketVariable = true;
-    };
   };
 
   wsl.enable = true;
