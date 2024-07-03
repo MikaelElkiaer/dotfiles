@@ -5,7 +5,12 @@
 # NixOS-WSL specific options are documented on the NixOS-WSL repository:
 # https://github.com/nix-community/NixOS-WSL
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -13,15 +18,15 @@
     <nixos-wsl/modules>
   ];
 
-  environment.systemPackages = [
-    pkgs.home-manager
-  ];
+  environment.systemPackages = [ pkgs.home-manager ];
 
   # INFO: Should be set by wsl module, but is deprecated
   # - see https://github.com/nix-community/NixOS-WSL/issues/498
   hardware.graphics.enable = true;
 
-  security.pki.certificateFiles = builtins.map (x: /etc/nixos/certs + ("/" +x)) (builtins.attrNames (builtins.readDir /etc/nixos/certs));
+  security.pki.certificateFiles = builtins.map (x: /etc/nixos/certs + ("/" + x)) (
+    builtins.attrNames (builtins.readDir /etc/nixos/certs)
+  );
 
   users.users.nixos.extraGroups = [ "docker" ];
 
@@ -31,7 +36,6 @@
 
   wsl.enable = true;
   wsl.defaultUser = "nixos";
-  
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

@@ -4,9 +4,7 @@ let
   dotHome = "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/home/nixos";
 in
 {
-  imports = [
-    ./neovim.nix
-  ];
+  imports = [ ./neovim.nix ];
 
   home.username = "nixos";
   home.homeDirectory = "/home/nixos";
@@ -17,7 +15,8 @@ in
     pkgs.atuin
     pkgs.awscli2
     pkgs.cargo
-    (builtins.getFlake "github:dagger/nix/08aa7a30f2cd6ae56a02f6a489485cd15a92313e").packages.${pkgs.system}.dagger
+    (builtins.getFlake "github:dagger/nix/08aa7a30f2cd6ae56a02f6a489485cd15a92313e")
+    .packages.${pkgs.system}.dagger
     pkgs.delta
     pkgs.dotnet-sdk_8
     pkgs.file
@@ -85,13 +84,15 @@ in
     };
   };
 
-  home.sessionVariables = {
-  };
+  home.sessionVariables = { };
 
   nix = {
     package = pkgs.nixFlakes;
 
-    settings.experimental-features = [ "nix-command" "flakes" ];
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 
   nixpkgs.config.allowUnfree = true;
