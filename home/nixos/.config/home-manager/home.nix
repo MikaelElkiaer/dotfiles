@@ -21,6 +21,7 @@ in
     pkgs.dotnet-sdk_8
     pkgs.file
     pkgs.fluxcd
+    pkgs.fzf
     pkgs.gh
     pkgs.git
     pkgs.go
@@ -39,6 +40,7 @@ in
     pkgs.nodejs
     pkgs.python3
     pkgs.ripgrep
+    pkgs.sesh
     pkgs.skopeo
     pkgs.tmux
     pkgs.tree
@@ -48,7 +50,7 @@ in
     pkgs.wslu
     pkgs.xclip
     pkgs.yq-go
-    pkgs.z-lua
+    pkgs.zoxide
   ];
 
   home.file = {
@@ -63,6 +65,10 @@ in
     ".config/navi" = {
       recursive = true;
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/navi";
+    };
+    ".config/sesh" = {
+      recursive = true;
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/sesh";
     };
     ".config/tmux" = {
       recursive = true;
