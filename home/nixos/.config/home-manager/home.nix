@@ -32,6 +32,7 @@ in
     pkgs.kubernetes-helm
     pkgs.kubeseal
     pkgs.kubeswitch
+    pkgs.lazydocker
     pkgs.lazygit
     pkgs.navi
     pkgs.nodejs
