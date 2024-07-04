@@ -131,7 +131,11 @@ fi
 
 # [atuin](https://github.com/atuinsh/atuin)
 if [ "$(command -v atuin)" ]; then
+  if ! [ -s ~/.bash-preexec.sh ]; then
+    curl https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh -o ~/.bash-preexec.sh
+  fi
   # shellcheck source=/dev/null
+  source ~/.bash-preexec.sh
   eval "$(atuin init bash --disable-up-arrow)"
 
   if ! [ -d "$HOME/.local/share/atuin" ]; then
