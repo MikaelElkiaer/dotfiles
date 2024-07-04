@@ -96,31 +96,32 @@ if ! [[ "$PATH" == *"$HOME/bin/"* ]]; then
   export PATH="$PATH:$HOME/bin/"
 fi
 
+COMPLETION_PATH=~/.local/share/bash-completion/completions
+mkdir --parents "$COMPLETION_PATH"
+function _add_completion() {
+  if ! [ -s "$COMPLETION_PATH/$1" ]; then
+    eval "$2" >"$COMPLETION_PATH/$1"
+  fi
+}
+
 # [kubeswitch](https://github.com/danielfoehrKn/kubeswitch)
 if [ "$(command -v switcher)" ]; then
-  # shellcheck source=/dev/null
-  source <(switcher init bash)
+  _add_completion _kubeswitch "switcher init bash"
   alias s=switch
   # TODO: Figure out and fix
   # complete -o default -F _switcher s
 fi
 
 if [ "$(command -v kubectl)" ]; then
-  # shellcheck source=/dev/null
-  source <(kubectl completion bash)
+  _add_completion _kubectl "kubectl completion bash"
 fi
 
 # `delta` also uses this
 export BAT_THEME=base16
 
-# [z.lua](https://github.com/skywind3000/z.lua)
-if [ "$(command -v z)" ]; then
-  eval "$(z --init bash)"
-fi
-
 # [navi](https://github.com/denisidoro/navi)
 if [ "$(command -v navi)" ]; then
-  eval "$(navi widget bash)"
+  _add_completion _navi "navi widget bash"
 fi
 
 # detect WSL
@@ -136,7 +137,7 @@ if [ "$(command -v atuin)" ]; then
   fi
   # shellcheck source=/dev/null
   source ~/.bash-preexec.sh
-  eval "$(atuin init bash --disable-up-arrow)"
+  _add_completion _atuin "atuin init bash --disable-up-arrow"
 
   if ! [ -d "$HOME/.local/share/atuin" ]; then
     atuin import auto
@@ -145,8 +146,7 @@ fi
 
 # [dagger](https://github.com/dagger/dagger)
 if [ "$(command -v dagger)" ]; then
-  # shellcheck source=/dev/null
-  source <(dagger completion bash --silent)
+  _add_completion _dagger "dagger completion bash --silent"
 fi
 
 if [ "$(command -v nvim)" ]; then
@@ -162,3 +162,5 @@ fi
 if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   exec tmux
 fi
+
+unset -f _add_completion
