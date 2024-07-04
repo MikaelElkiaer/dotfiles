@@ -17,15 +17,17 @@
     pkgs.helm-ls
     pkgs.vscode-langservers-extracted
     pkgs.lua-language-server
+    pkgs.nil # Nix
     pkgs.omnisharp-roslyn
     pkgs.yaml-language-server
     # Linter
-    pkgs.actionlint # GitHub Actions
+    pkgs.actionlint # .github/workflows/
     pkgs.hadolint # Dockerfile
     pkgs.nodePackages.jsonlint
     pkgs.vale # markdown
     # Formatter
     pkgs.mdformat
+    pkgs.nixfmt-rfc-style
     pkgs.shfmt
     pkgs.stylua
     pkgs.taplo # TOML

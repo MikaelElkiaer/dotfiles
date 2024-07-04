@@ -35,8 +35,6 @@ in
     pkgs.lazydocker
     pkgs.lazygit
     pkgs.navi
-    pkgs.nil
-    pkgs.nixfmt-rfc-style
     pkgs.nodejs
     pkgs.python3
     pkgs.ripgrep
