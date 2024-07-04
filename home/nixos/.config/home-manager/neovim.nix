@@ -22,10 +22,7 @@
     pkgs.omnisharp-roslyn
     pkgs.yaml-language-server
     # Linter
-    pkgs.actionlint # .github/workflows/
-    pkgs.hadolint # Dockerfile
     pkgs.markdownlint-cli2
-    pkgs.nodePackages.jsonlint
     # Formatter
     pkgs.mdformat
     pkgs.nixfmt-rfc-style
