@@ -137,7 +137,7 @@ if [ "$(command -v atuin)" ]; then
   fi
   # shellcheck source=/dev/null
   source ~/.bash-preexec.sh
-  _add_completion _atuin "atuin init bash --disable-up-arrow"
+  eval "$(atuin init bash --disable-up-arrow)"
 
   if ! [ -d "$HOME/.local/share/atuin" ]; then
     atuin import auto
