@@ -41,36 +41,36 @@ esac
 # force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
-	if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-		# We have color support; assume it's compliant with Ecma-48
-		# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-		# a case would tend to support setf rather than setaf.)
-		color_prompt=yes
-	else
-		color_prompt=
-	fi
+  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+    # a case would tend to support setf rather than setaf.)
+    color_prompt=yes
+  else
+    color_prompt=
+  fi
 fi
 
 if [ "$color_prompt" = yes ]; then
-	PS1='\[\033[01;34m\]\w\[\033[00m\]\nλ '
+  PS1='\[\033[01;34m\]\w\[\033[00m\]\nλ '
 else
-	PS1='\w\nλ '
+  PS1='\w\nλ '
 fi
 unset color_prompt force_color_prompt
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-	if [ -r ~/.dircolors ]; then
-		eval "$(dircolors -b ~/.dircolors)"
-	else
-		eval "$(dircolors -b)"
-	fi
-	alias ls='ls --color=auto'
-	alias dir='dir --color=auto'
-	alias vdir='vdir --color=auto'
-	alias grep='grep --color=auto'
-	alias fgrep='fgrep --color=auto'
-	alias egrep='egrep --color=auto'
+  if [ -r ~/.dircolors ]; then
+    eval "$(dircolors -b ~/.dircolors)"
+  else
+    eval "$(dircolors -b)"
+  fi
+  alias ls='ls --color=auto'
+  alias dir='dir --color=auto'
+  alias vdir='vdir --color=auto'
+  alias grep='grep --color=auto'
+  alias fgrep='fgrep --color=auto'
+  alias egrep='egrep --color=auto'
 fi
 
 # Alias definitions.
@@ -79,8 +79,8 @@ fi
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
-	# shellcheck source=/dev/null
-	. ~/.bash_aliases
+  # shellcheck source=/dev/null
+  . ~/.bash_aliases
 fi
 
 ####
@@ -89,25 +89,25 @@ fi
 
 # Nix and Home-Manager
 if ! [[ "$PATH" == *"$HOME/.nix-profile/bin/"* ]]; then
-	export PATH="$PATH:$HOME/.nix-profile/bin/"
+  export PATH="$PATH:$HOME/.nix-profile/bin/"
 fi
 # Dotfiles
 if ! [[ "$PATH" == *"$HOME/bin/"* ]]; then
-	export PATH="$PATH:$HOME/bin/"
+  export PATH="$PATH:$HOME/bin/"
 fi
 
 # [kubeswitch](https://github.com/danielfoehrKn/kubeswitch)
 if [ "$(command -v switcher)" ]; then
-	# shellcheck source=/dev/null
-	source <(switcher init bash)
-	alias s=switch
-	# TODO: Figure out and fix
-	# complete -o default -F _switcher s
+  # shellcheck source=/dev/null
+  source <(switcher init bash)
+  alias s=switch
+  # TODO: Figure out and fix
+  # complete -o default -F _switcher s
 fi
 
 if [ "$(command -v kubectl)" ]; then
-	# shellcheck source=/dev/null
-	source <(kubectl completion bash)
+  # shellcheck source=/dev/null
+  source <(kubectl completion bash)
 fi
 
 # `delta` also uses this
@@ -115,46 +115,46 @@ export BAT_THEME=base16
 
 # [z.lua](https://github.com/skywind3000/z.lua)
 if [ "$(command -v z)" ]; then
-	eval "$(z --init bash)"
+  eval "$(z --init bash)"
 fi
 
 # [navi](https://github.com/denisidoro/navi)
 if [ "$(command -v navi)" ]; then
-	eval "$(navi widget bash)"
+  eval "$(navi widget bash)"
 fi
 
 # detect WSL
 if [[ "$(uname --kernel-release)" =~ -WSL2$ ]]; then
-	# [wslu](https://github.com/wslutilities/wslu)
-	export BROWSER=wslview
+  # [wslu](https://github.com/wslutilities/wslu)
+  export BROWSER=wslview
 fi
 
 # [atuin](https://github.com/atuinsh/atuin)
 if [ "$(command -v atuin)" ]; then
-	# shellcheck source=/dev/null
-	eval "$(atuin init bash --disable-up-arrow)"
+  # shellcheck source=/dev/null
+  eval "$(atuin init bash --disable-up-arrow)"
 
-	if ! [ -d "$HOME/.local/share/atuin" ]; then
-		atuin import auto
-	fi
+  if ! [ -d "$HOME/.local/share/atuin" ]; then
+    atuin import auto
+  fi
 fi
 
 # [dagger](https://github.com/dagger/dagger)
 if [ "$(command -v dagger)" ]; then
-	# shellcheck source=/dev/null
-	source <(dagger completion bash --silent)
+  # shellcheck source=/dev/null
+  source <(dagger completion bash --silent)
 fi
 
 if [ "$(command -v nvim)" ]; then
-	export EDITOR=nvim
-	export MANPAGER='nvim +Man!'
+  export EDITOR=nvim
+  export MANPAGER='nvim +Man!'
 elif [ "$(command -v vim)" ]; then
-	export EDITOR=vim
+  export EDITOR=vim
 elif [ "$(command -v vi)" ]; then
-	export EDITOR=vi
+  export EDITOR=vi
 fi
 
 # Keep this at the bottom
 if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-	exec tmux
+  exec tmux
 fi
