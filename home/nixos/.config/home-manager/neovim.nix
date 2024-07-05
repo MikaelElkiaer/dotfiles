@@ -12,6 +12,7 @@
     pkgs.neovim
     # LSP
     pkgs.bash-language-server
+    pkgs.csharp-ls
     pkgs.dockerfile-language-server-nodejs
     pkgs.gopls
     pkgs.helm-ls
@@ -24,6 +25,7 @@
     # Linter
     pkgs.markdownlint-cli2
     # Formatter
+    pkgs.csharpier
     pkgs.mdformat
     pkgs.nixfmt-rfc-style
     pkgs.shfmt

@@ -18,7 +18,13 @@ in
     (builtins.getFlake "github:dagger/nix/08aa7a30f2cd6ae56a02f6a489485cd15a92313e")
     .packages.${pkgs.system}.dagger
     pkgs.delta
-    pkgs.dotnet-sdk_8
+    (
+      with pkgs.dotnetCorePackages;
+      combinePackages [
+        dotnet_8.sdk
+        sdk_6_0_1xx
+      ]
+    )
     pkgs.file
     pkgs.fluxcd
     pkgs.fzf
