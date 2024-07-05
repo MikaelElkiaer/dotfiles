@@ -158,9 +158,14 @@ elif [ "$(command -v vi)" ]; then
   export EDITOR=vi
 fi
 
+# [zoxide](https://github.com/ajeetdsouza/zoxide)
+if [ "$(command -v zoxide)" ]; then
+  eval "$(zoxide init bash)"
+fi
+
+unset -f _add_completion
+
 # Keep this at the bottom
 if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   exec tmux
 fi
-
-unset -f _add_completion
