@@ -162,9 +162,10 @@ if [ "$(command -v zoxide)" ]; then
   eval "$(zoxide init bash)"
 fi
 
+# Clear function only needed for init
 unset -f _add_completion
 
-# Keep this at the bottom
+# WARN: Keep this at the bottom
 if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   exec tmux
 fi
