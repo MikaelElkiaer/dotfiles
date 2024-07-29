@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
   dotHome = "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/home/nixos";
@@ -15,8 +20,7 @@ in
     pkgs.atuin
     pkgs.awscli2
     pkgs.cargo
-    (builtins.getFlake "github:dagger/nix/08aa7a30f2cd6ae56a02f6a489485cd15a92313e")
-    .packages.${pkgs.system}.dagger
+    inputs.dagger.packages.${pkgs.system}.dagger
     pkgs.delta
     (
       with pkgs.dotnetCorePackages;
