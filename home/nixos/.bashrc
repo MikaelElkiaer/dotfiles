@@ -106,10 +106,9 @@ function _add_completion() {
 
 # [kubeswitch](https://github.com/danielfoehrKn/kubeswitch)
 if [ "$(command -v switcher)" ]; then
-  _add_completion _kubeswitch "switcher init bash"
+  # shellcheck source=/dev/null
+  source <(switcher init bash)
   alias s=switch
-  # TODO: Figure out and fix
-  # complete -o default -F _switcher s
 fi
 
 if [ "$(command -v kubectl)" ]; then
