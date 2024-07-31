@@ -120,7 +120,8 @@ export BAT_THEME=base16
 
 # [navi](https://github.com/denisidoro/navi)
 if [ "$(command -v navi)" ]; then
-  _add_completion _navi "navi widget bash"
+  # shellcheck source=/dev/null
+  source <(navi widget bash)
 fi
 
 # detect WSL
