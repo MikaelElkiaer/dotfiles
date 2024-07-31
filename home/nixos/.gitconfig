@@ -9,9 +9,9 @@
 	path = ~/.aur.gitconfig
 [core]
 	autocrlf = input 
-	pager = delta --dark
+	pager = delta
 [interactive]
-	diffFilter = delta --dark --color-only
+	diffFilter = delta --color-only
 [rebase]
 	autosquash = true
 [pull]

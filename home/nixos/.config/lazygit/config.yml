@@ -4,6 +4,6 @@ git:
   overrideGpg: true
   paging:
     colorArg: always
-    pager: delta --dark --paging=never --true-color=never
+    pager: delta --paging=never --true-color=never
 os:
   edit: nvim {{filename}}
