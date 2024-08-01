@@ -1,3 +1,5 @@
+# Avoid accidentally quitting - use ^C instead
+confirmOnQuit: true
 git:
   commit:
     signOff: false
