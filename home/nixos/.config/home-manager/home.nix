@@ -55,8 +55,8 @@ in
     pkgs.unzip
     pkgs.vault
     pkgs.wget
-    pkgs.wslu
     pkgs.xclip
+    pkgs.xdg-utils
     pkgs.yq-go
     pkgs.zoxide
   ];

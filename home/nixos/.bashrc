@@ -127,7 +127,7 @@ fi
 # detect WSL
 if [[ "$(uname --kernel-release)" =~ -WSL2$ ]]; then
   # [wslu](https://github.com/wslutilities/wslu)
-  export BROWSER=wslview
+  export BROWSER=explorer.exe
 fi
 
 # [atuin](https://github.com/atuinsh/atuin)
