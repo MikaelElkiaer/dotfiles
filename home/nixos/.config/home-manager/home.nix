@@ -33,6 +33,8 @@ in
     pkgs.fluxcd
     pkgs.fzf
     pkgs.gh
+    pkgs.gh-copilot
+    pkgs.gh-markdown-preview
     pkgs.git
     pkgs.go
     pkgs.gitmux
