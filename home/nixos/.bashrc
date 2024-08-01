@@ -163,6 +163,13 @@ if [ "$(command -v zoxide)" ]; then
   eval "$(zoxide init bash)"
 fi
 
+# Load additional profiles
+# - These are not supposed to be source-controlled
+for f in ~/.bash_profile_*; do
+  # shellcheck source=/dev/null
+  source "$f"
+done
+
 # Clear function only needed for init
 unset -f _add_completion
 
