@@ -163,6 +163,11 @@ if [ "$(command -v zoxide)" ]; then
   eval "$(zoxide init bash)"
 fi
 
+# [fzf](https://github.com/junegunn/fzf)
+if [ "$(command -v fzf)" ]; then
+  _add_completion _fzf "fzf --bash"
+fi
+
 # Load additional profiles
 # - These are not supposed to be source-controlled
 for f in ~/.bash_profile_*; do
