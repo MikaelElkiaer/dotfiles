@@ -1,2 +1,0 @@
-[default_session]
-startup_command = "nvim -c ':lua require(\"persistence\").load()'"

@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+
+trap 'unset -f _query' EXIT
+
+set -euo pipefail
+
+DEFAULT_CLONE_DIR="${HOME}/Repositories/GitHub"
+
+function main() {
+  init_args "$@"
+
+  ARG_SOURCE="${ARG_SOURCE:-tmux}"
+  case "${ARG_SOURCE}" in
+  kubeswitch)
+    exec fzf \
+      --ansi --border-label ' session-picker ' --prompt '󱃾 ' \
+      --header="^g github ^t tmux ^x zoxide" \
+      --bind="ctrl-g:become(session-picker --source=github)" \
+      --bind="ctrl-t:become(session-picker --source=tmux)" \
+      --bind="ctrl-x:become(session-picker --source=zoxide)" \
+      < <(switcher list-contexts) |
+      {
+        read -r CHOICE
+
+        if tmux has-session -t "$CHOICE" 2>/dev/null; then
+          tmux switch-client -t "$CHOICE"
+        else
+          echo "Loading Kubernetes context..." >&2
+          read -r KUBECONFIG NAME <<<"$(switcher set-context "$CHOICE" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
+          tmux new-session -d -e "KUBECONFIG=$KUBECONFIG" -s "$NAME" k9s
+          # TODO: Does not work as expected
+          tmux set-hook -t "$NAME" session-closed "run-shell 'rm -f $KUBECONFIG'"
+          tmux switch-client -t "$NAME"
+        fi
+      }
+    ;;
+  github)
+    USERNAME="$(yq '.["github.com"].user' <~/.config/gh/hosts.yml)"
+    function _query() {
+      pkill -f session-picker-query || true
+      exec -a session-picker-query bash -c "
+        [ -n \"$1\" ] \
+          && sleep 1 \
+          && gh search repos --json=name,owner --jq='map(\"\(.owner.login)/\(.name)\")[]' --match=name \"$1\" || true;
+        "
+    }
+    export -f _query
+    exec fzf \
+      --ansi --border-label ' session-picker ' --prompt ' search> ' \
+      --header="^s kubeswitch ^t tmux ^x zoxide" \
+      --bind="change:reload-sync:_query {q}" \
+      --bind="ctrl-s:become(session-picker --source=kubeswitch)" \
+      --bind="ctrl-t:become(session-picker --source=tmux)" \
+      --bind="ctrl-x:become(session-picker --source=zoxide)" \
+      --preview "sed -E 's,repo:(.*)$,\1,' <<<\"{}\" | xargs gh repo view | glow --style auto -" \
+      --query="" \
+      < <(echo -n) |
+      {
+        read -r NAME
+        OWNER="$(dirname "$NAME")"
+        NAME="$(basename "$NAME")"
+        if [ "$USERNAME" = "$OWNER" ]; then
+          SUBPATH="$NAME"
+        else
+          SUBPATH="$OWNER/$NAME"
+        fi
+
+        if ! [ -d "$DEFAULT_CLONE_DIR/$SUBPATH" ]; then
+          gh repo clone "$NAME" "$DEFAULT_CLONE_DIR/${SUBPATH}"
+        fi
+
+        if tmux has-session -t "$NAME"; then
+          tmux switch-client -t "$NAME"
+        else
+          tmux new-session -c "$DEFAULT_CLONE_DIR/${ORG:+/$ORG}$NAME" -d -s "$NAME" nvim -c ':lua require("persistence").load()'
+          tmux switch-client -t "$NAME"
+        fi
+      }
+    ;;
+  zoxide)
+    exec fzf \
+      --ansi --border-label ' session-picker ' --prompt ' ' \
+      --header="^g github ^s kubeswitch ^t tmux" \
+      --bind="ctrl-g:become(session-picker --source=github)" \
+      --bind="ctrl-s:become(session-picker --source=kubeswitch)" \
+      --bind="ctrl-t:become(session-picker --source=tmux)" \
+      --preview="tree -C {}" < <(zoxide query --list) |
+      {
+        read -r CHOICE
+        NAME="$(basename "$CHOICE")"
+        if tmux has-session -t "$NAME"; then
+          tmux switch-client -t "$NAME"
+        else
+          tmux new-session -c "$CHOICE" -d -s "$NAME" nvim -c ':lua require("persistence").load()'
+          tmux switch-client -t "$NAME"
+        fi
+      }
+    ;;
+  tmux)
+    exec fzf \
+      --ansi --border-label ' session-picker ' --prompt ' ' \
+      --header="^g github ^s kubeswitch ^x zoxide" --header-first \
+      --bind="ctrl-g:become:session-picker --source=github" \
+      --bind="ctrl-s:become:session-picker --source=kubeswitch" \
+      --bind="ctrl-x:become:session-picker --source=zoxide" \
+      --preview="tmux lsw -F \" #{window_name}\" -t {}" \
+      < <(tmux list-sessions -F "#{session_name}") |
+      {
+        read -r NAME
+        tmux switch-client -t "$NAME"
+      }
+    ;;
+  *)
+    echo "Unknown source: $ARG_SOURCE" >&2
+    ;;
+  esac
+}
+
+function init_args() {
+  optspec="s:-:"
+  while getopts "$optspec" optchar; do
+    case "${optchar}" in
+    -)
+      case "${OPTARG}" in
+      source)
+        ARG_SOURCE="${!OPTIND}"
+        OPTIND=$((OPTIND + 1))
+        ;;
+      source=*)
+        ARG_SOURCE=${OPTARG#*=}
+        ;;
+      *)
+        if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then
+          echo "Unknown option --${OPTARG}" >&2
+        fi
+        ;;
+      esac
+      ;;
+    s)
+      ARG_SOURCE="${OPTARG}"
+      ;;
+    *)
+      if [ "$OPTERR" != 1 ] || [ "${optspec:0:1}" = ":" ]; then
+        echo "Non-option argument: '-${OPTARG}'" >&2
+      fi
+      ;;
+    esac
+  done
+}
+
+main "$@"

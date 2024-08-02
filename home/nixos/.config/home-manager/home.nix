@@ -52,7 +52,6 @@ in
     pkgs.nodejs
     pkgs.python3
     pkgs.ripgrep
-    pkgs.sesh
     pkgs.skopeo
     pkgs.tmux
     pkgs.tree
@@ -77,10 +76,6 @@ in
     ".config/navi" = {
       recursive = true;
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/navi";
-    };
-    ".config/sesh" = {
-      recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/sesh";
     };
     ".config/tmux" = {
       recursive = true;
