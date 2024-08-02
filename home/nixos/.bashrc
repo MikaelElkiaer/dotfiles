@@ -166,6 +166,7 @@ fi
 # [fzf](https://github.com/junegunn/fzf)
 if [ "$(command -v fzf)" ]; then
   _add_completion _fzf "fzf --bash"
+  export FZF_DEFAULT_OPTS="--bind=\"ctrl-d:preview-page-down,ctrl-u:preview-page-up\""
 fi
 
 # Load additional profiles
