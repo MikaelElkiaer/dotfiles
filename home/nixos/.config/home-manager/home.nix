@@ -36,9 +36,11 @@ in
     pkgs.gh-copilot
     pkgs.gh-markdown-preview
     pkgs.git
+    pkgs.glow
     pkgs.go
     pkgs.gitmux
     pkgs.gnumake
+    pkgs.hyperfine
     pkgs.k9s
     pkgs.kubectl
     pkgs.kubernetes-helm
