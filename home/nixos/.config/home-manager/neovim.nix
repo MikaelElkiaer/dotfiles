@@ -23,6 +23,7 @@
     pkgs.omnisharp-roslyn
     pkgs.yaml-language-server
     # Linter
+    pkgs.hadolint
     pkgs.markdownlint-cli2
     # Formatter
     pkgs.csharpier
