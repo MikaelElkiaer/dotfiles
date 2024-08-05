@@ -14,7 +14,7 @@ function main() {
   kubeswitch)
     exec fzf \
       --ansi --border-label ' session-picker ' --prompt '󱃾 ' \
-      --header="^g github ^t tmux ^x zoxide" \
+      --header="^g github ^t tmux ^x zoxide" --header-first \
       --bind="ctrl-g:become(session-picker --source=github)" \
       --bind="ctrl-t:become(session-picker --source=tmux)" \
       --bind="ctrl-x:become(session-picker --source=zoxide)" \
@@ -47,7 +47,7 @@ function main() {
     export -f _query
     exec fzf \
       --ansi --border-label ' session-picker ' --prompt ' search> ' \
-      --header="^s kubeswitch ^t tmux ^x zoxide" \
+      --header="^s kubeswitch ^t tmux ^x zoxide" --header-first \
       --bind="change:reload-sync:_query {q}" \
       --bind="ctrl-s:become(session-picker --source=kubeswitch)" \
       --bind="ctrl-t:become(session-picker --source=tmux)" \
@@ -69,7 +69,7 @@ function main() {
           gh repo clone "$NAME" "$DEFAULT_CLONE_DIR/${SUBPATH}"
         fi
 
-        if tmux has-session -t "$NAME"; then
+        if tmux has-session -t "$NAME" 2>/dev/null; then
           tmux switch-client -t "$NAME"
         else
           tmux new-session -c "$DEFAULT_CLONE_DIR/${ORG:+/$ORG}$NAME" -d -s "$NAME" nvim -c ':lua require("persistence").load()'
@@ -80,7 +80,7 @@ function main() {
   zoxide)
     exec fzf \
       --ansi --border-label ' session-picker ' --prompt ' ' \
-      --header="^g github ^s kubeswitch ^t tmux" \
+      --header="^g github ^s kubeswitch ^t tmux" --header-first \
       --bind="ctrl-g:become(session-picker --source=github)" \
       --bind="ctrl-s:become(session-picker --source=kubeswitch)" \
       --bind="ctrl-t:become(session-picker --source=tmux)" \
@@ -88,7 +88,7 @@ function main() {
       {
         read -r CHOICE
         NAME="$(basename "$CHOICE")"
-        if tmux has-session -t "$NAME"; then
+        if tmux has-session -t "$NAME" 2>/dev/null; then
           tmux switch-client -t "$NAME"
         else
           tmux new-session -c "$CHOICE" -d -s "$NAME" nvim -c ':lua require("persistence").load()'
