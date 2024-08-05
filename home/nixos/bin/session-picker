@@ -104,7 +104,7 @@ function main() {
       --bind="ctrl-s:become:session-picker --source=kubeswitch" \
       --bind="ctrl-x:become:session-picker --source=zoxide" \
       --preview="tmux lsw -F \" #{window_name}\" -t {}" \
-      < <(tmux list-sessions -F "#{session_name}") |
+      < <(tmux list-sessions -f "#{!=:#{session_attached},1}" -F "#{session_name} #{session_activity} #{session_attached}" | sort -k2,2r | awk '{print $1}') |
       {
         read -r NAME
         tmux switch-client -t "$NAME"
