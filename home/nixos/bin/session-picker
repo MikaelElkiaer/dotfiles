@@ -27,7 +27,7 @@ function main() {
         else
           echo "Loading Kubernetes context..." >&2
           read -r KUBECONFIG NAME <<<"$(switcher set-context "$CHOICE" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
-          tmux new-session -d -e "KUBECONFIG=$KUBECONFIG" -s "$NAME" k9s
+          tmux new-session -d -e "KUBECONFIG=$KUBECONFIG" -s "$NAME" bash -c 'k9s;exec bash'
           # TODO: Does not work as expected
           tmux set-hook -t "$NAME" session-closed "run-shell 'rm -f $KUBECONFIG'"
           tmux switch-client -t "$NAME"
@@ -72,7 +72,7 @@ function main() {
         if tmux has-session -t "$NAME" 2>/dev/null; then
           tmux switch-client -t "$NAME"
         else
-          tmux new-session -c "$DEFAULT_CLONE_DIR/${ORG:+/$ORG}$NAME" -d -s "$NAME" nvim -c ':lua require("persistence").load()'
+          tmux new-session -c "$DEFAULT_CLONE_DIR/${ORG:+/$ORG}$NAME" -d -s "$NAME" bash -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
           tmux switch-client -t "$NAME"
         fi
       }
@@ -91,7 +91,7 @@ function main() {
         if tmux has-session -t "$NAME" 2>/dev/null; then
           tmux switch-client -t "$NAME"
         else
-          tmux new-session -c "$CHOICE" -d -s "$NAME" nvim -c ':lua require("persistence").load()'
+          tmux new-session -c "$CHOICE" -d -s "$NAME" bash -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
           tmux switch-client -t "$NAME"
         fi
       }
