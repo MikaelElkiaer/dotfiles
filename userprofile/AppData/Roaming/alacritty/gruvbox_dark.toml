@@ -5,13 +5,13 @@
 [colors.primary]
 # normal contrast background = '#282828'
 # soft contrast background = = '#32302f'
-background = = '#1d2021'
+background = '#1c1c1c'
 foreground = '#ebdbb2'
 
 # Normal colors
 
 [colors.normal]
-black   = '#282828'
+black   = '#1c1c1c'
 red     = '#cc241d'
 green   = '#98971a'
 yellow  = '#d79921'
@@ -25,7 +25,6 @@ white   = '#a89984'
 black   = '#928374'
 red     = '#fb4934'
 green   = '#b8bb26'
-
 yellow  = '#fabd2f'
 blue    = '#83a598'
 magenta = '#d3869b'
