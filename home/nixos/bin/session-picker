@@ -27,7 +27,9 @@ function main() {
         else
           echo "Loading Kubernetes context..." >&2
           read -r KUBECONFIG NAME <<<"$(switcher set-context "$CHOICE" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
-          tmux new-session -d -e "KUBECONFIG=$KUBECONFIG" -s "$NAME" bash -c 'k9s;exec bash'
+          # TODO: Remove once fixed
+          # - see https://github.com/derailed/k9s/issues/1895
+          tmux new-session -c "$HOME" -d -e "KUBECONFIG=$KUBECONFIG" -e "KUBECACHEDIR=$HOME/.kube/cache" -s "$NAME" bash -c 'k9s;exec bash'
           # TODO: Does not work as expected
           tmux set-hook -t "$NAME" session-closed "run-shell 'rm -f $KUBECONFIG'"
           tmux switch-client -t "$NAME"
