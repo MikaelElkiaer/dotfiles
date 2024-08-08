@@ -68,13 +68,13 @@ function main() {
         fi
 
         if ! [ -d "$DEFAULT_CLONE_DIR/$SUBPATH" ]; then
-          gh repo clone "$NAME" "$DEFAULT_CLONE_DIR/${SUBPATH}"
+          gh repo clone "$SUBPATH" "$DEFAULT_CLONE_DIR/${SUBPATH}"
         fi
 
         if tmux has-session -t "$NAME" 2>/dev/null; then
           tmux switch-client -t "$NAME"
         else
-          tmux new-session -c "$DEFAULT_CLONE_DIR/${ORG:+/$ORG}$NAME" -d -s "$NAME" bash -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
+          tmux new-session -c "$DEFAULT_CLONE_DIR/$SUBPATH" -d -s "$NAME" bash -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
           tmux switch-client -t "$NAME"
         fi
       }
