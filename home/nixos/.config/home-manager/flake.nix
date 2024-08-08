@@ -24,7 +24,8 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      homeConfigurations."nixos" = home-manager.lib.homeManagerConfiguration {
+      # Debian 12
+      homeConfigurations."mikaelki@me-ks-workstation" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
         # Specify your home configuration modules here, for example,
@@ -36,6 +37,25 @@
           {
             _module.args = {
               inherit inputs;
+              username = "mikaelki";
+            };
+          }
+        ];
+      };
+      # WSL2
+      homeConfigurations."nixos@nixos" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+
+        # Specify your home configuration modules here, for example,
+        # the path to your home.nix.
+        modules = [
+          ./home.nix
+          # Optionally use extraSpecialArgs
+          # to pass through arguments to home.nix
+          {
+            _module.args = {
+              inherit inputs;
+              username = "nixos";
             };
           }
         ];

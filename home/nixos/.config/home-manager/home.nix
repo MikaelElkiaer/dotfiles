@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  username,
   ...
 }:
 
@@ -11,8 +12,8 @@ in
 {
   imports = [ ./neovim.nix ];
 
-  home.username = "nixos";
-  home.homeDirectory = "/home/nixos";
+  home.username = username;
+  home.homeDirectory = "/home/${username}";
 
   home.stateVersion = "24.05"; # WARN: Do not change
 
