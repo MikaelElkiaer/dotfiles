@@ -171,7 +171,7 @@ fi
 
 # Load additional profiles
 # - These are not supposed to be source-controlled
-for f in ~/.bash_profile_*; do
+for f in $(find ~ -name '.bash_profile_*'); do
   # shellcheck source=/dev/null
   source "$f"
 done
