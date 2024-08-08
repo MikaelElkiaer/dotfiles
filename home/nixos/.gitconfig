@@ -61,7 +61,7 @@
 	helper = store
 [credential "https://github.com"]
 	helper = 
-	helper = !/home/nixos/.nix-profile/bin/gh auth git-credential
+	helper = !$HOME/.nix-profile/bin/gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
-	helper = !/home/nixos/.nix-profile/bin/gh auth git-credential
+	helper = !$HOME/.nix-profile/bin/gh auth git-credential
