@@ -25,7 +25,7 @@
     in
     {
       # Debian 12
-      homeConfigurations."mikaelki@me-ks-workstation" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."mikaelki@AD.KEYSIGHT.COM@me-ks-workstation" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
         # Specify your home configuration modules here, for example,
@@ -37,7 +37,8 @@
           {
             _module.args = {
               inherit inputs;
-              username = "mikaelki";
+              username = "mikaelki@AD.KEYSIGHT.COM";
+              homeDirectory = "/home/mikaelki";
             };
           }
         ];
@@ -56,6 +57,7 @@
             _module.args = {
               inherit inputs;
               username = "nixos";
+              homeDirectory = "/home/nixos";
             };
           }
         ];
