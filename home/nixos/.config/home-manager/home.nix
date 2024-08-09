@@ -31,6 +31,7 @@ in
         sdk_6_0_1xx
       ]
     )
+    pkgs.docker-credential-helpers
     pkgs.file
     pkgs.fluxcd
     pkgs.fzf
