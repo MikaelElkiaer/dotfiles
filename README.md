@@ -3,11 +3,12 @@
 ## Non-NixOS
 
 ```bash
-nix-shell -p git gnumake
-mkdir --parents ~/Repositories/GitHub \
-  && git clone --branch nix-wsl2 https://github.com/MikaelElkiaer/dotfiles ~/Repositories/GitHub/dotfiles \
-  && cd ~/Repositories/GitHub/dotfiles
-  && make hm-bootstrap
+cat <<EOF | xargs nix-shell --packages git gnumake --run
+"mkdir --parents ~/Repositories/GitHub \
+&& git clone https://github.com/MikaelElkiaer/dotfiles ~/Repositories/GitHub/dotfiles \
+&& cd ~/Repositories/GitHub/dotfiles \
+&& make hm-bootstrap"
+EOF
 ```
 
 ## NixOS (WSL)
@@ -27,9 +28,10 @@ bash ./02-nixos-upgrade.bash
 ### 3. Bootstrap config from this repository
 
 ```bash
-nix-shell -p git gnumake
-mkdir --parents ~/Repositories/GitHub \
-  && git clone --branch nix-wsl2 https://github.com/MikaelElkiaer/dotfiles ~/Repositories/GitHub/dotfiles \
-  && cd ~/Repositories/GitHub/dotfiles
-  && make nix-bootstrap
+cat <<-EOF | xargs nix-shell --packages git gnumake --run
+"mkdir --parents ~/Repositories/GitHub \
+&& git clone https://github.com/MikaelElkiaer/dotfiles ~/Repositories/GitHub/dotfiles \
+&& cd ~/Repositories/GitHub/dotfiles \
+&& make nix-bootstrap"
+EOF
 ```
