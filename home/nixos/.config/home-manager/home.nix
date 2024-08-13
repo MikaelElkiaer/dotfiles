@@ -37,6 +37,7 @@ in
     pkgs.fzf
     pkgs.gh
     pkgs.gh-copilot
+    pkgs.gh-dash
     pkgs.gh-markdown-preview
     pkgs.git
     pkgs.glow
