@@ -61,6 +61,7 @@ in
     pkgs.skopeo
     pkgs.tmux
     pkgs.tree
+    pkgs.trivy
     pkgs.unzip
     pkgs.vault
     pkgs.wget
