@@ -55,6 +55,7 @@ in
     pkgs.lazygit
     pkgs.navi
     pkgs.nodejs
+    pkgs.minikube
     pkgs.python3
     pkgs.ripgrep
     pkgs.skopeo
