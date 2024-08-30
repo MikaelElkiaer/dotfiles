@@ -21,6 +21,7 @@ in
   home.packages = [
     pkgs.atuin
     pkgs.awscli2
+    pkgs.bats
     pkgs.cargo
     inputs.dagger.packages.${pkgs.system}.dagger
     pkgs.delta
