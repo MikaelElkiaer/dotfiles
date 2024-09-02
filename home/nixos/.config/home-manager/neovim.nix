@@ -12,7 +12,6 @@
     pkgs.neovim
     # LSP
     pkgs.bash-language-server
-    pkgs.csharp-ls
     pkgs.dockerfile-language-server-nodejs
     pkgs.gopls
     pkgs.helm-ls
@@ -20,7 +19,7 @@
     pkgs.lua-language-server
     pkgs.marksman # Markdown
     pkgs.nil # Nix
-    pkgs.omnisharp-roslyn
+    pkgs.roslyn-ls
     pkgs.yaml-language-server
     # Linter
     pkgs.hadolint
