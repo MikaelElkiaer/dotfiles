@@ -56,6 +56,7 @@ in
     pkgs.navi
     pkgs.nodejs
     pkgs.minikube
+    pkgs.pigz
     pkgs.python3
     pkgs.ripgrep
     pkgs.skopeo
