@@ -16,14 +16,33 @@ EOF
 
 ### 1. Install NixOS WSL Distro
 
-```pwsh
-powershell -noexit ./01-wsl-install.ps1
+In PowerShell:
+
+```powershell
+# Go to home
+cd $env:USERPROFILE\
+# Download latest NixOS WSL release
+Invoke-WebRequest https://github.com/nix-community/NixOS-WSL/releases/download/2311.5.3/nixos-wsl.tar.gz
+# Import distro
+wsl --import NixOS NixOS\ nixos-wsl.tar.gz
+# Start distro
+wsl -d NixOS
 ```
 
 ### 2. Apply fixes to NixOS
 
+In WSL:
+
 ```bash
-bash ./02-nixos-upgrade.bash
+# Switch channel to unstable
+# - Alternatively, switch to latest stable:
+#   `sudo nix-channel --add  https://nixos.org/channels/nixos-24.05 nixos`
+sudo nix-channel --add  https://nixos.org/channels/nixos-unstable nixos
+sudo sed -i -E 's/(system\.stateVersion = ")(.*)(")/\124.05\3/g' /etc/nixos/configuration.nix
+# Get updates from channel
+sudo nix-channel --update
+# Rebuild and upgrade packages using channel
+sudo nixos-rebuild switch --upgrade
 ```
 
 ### 3. Bootstrap config from this repository
