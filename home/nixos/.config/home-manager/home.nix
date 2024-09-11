@@ -43,8 +43,10 @@ in
     pkgs.git
     pkgs.glow
     pkgs.go
+    pkgs.gotop
     pkgs.gitmux
     pkgs.gnumake
+    pkgs.htop
     pkgs.hyperfine
     pkgs.k9s
     pkgs.kubectl
