@@ -181,5 +181,9 @@ unset -f _add_completion
 
 # WARN: Keep this at the bottom
 if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  exec tmux new-session -A -c "$HOME" -s "$(basename "$HOME")"
+  DIR="$HOME/Repositories/GitHub/dotfiles"
+  if ! [ -d "$DIR" ]; then
+    DIR="$HOME"
+  fi
+  exec tmux new-session -A -c "$DIR" -s "$(basename "$DIR")" -D -X
 fi
