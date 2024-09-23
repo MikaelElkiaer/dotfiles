@@ -8,18 +8,15 @@ login-gh:		## Log in to GitHub CLI
 login-ghcr:		## Log in to ghcr container registry
 	gh auth token | docker login ghcr.io --username username --password-stdin
 
-build-hm:		## Build current home-manager configuration
-	home-manager build --no-out-link
-
-diff-hm:		## See diff between home-manager generations
-	nix profile diff-closures --profile ~/.local/state/nix/profiles/home-manager
-
-switch-hm:		## Apply current home-manager configuration
-	home-manager switch
-
 switch-nix:		## Apply current NixOS configuration
 	@sudo cp etc/nixos/configuration.nix /etc/nixos/configuration.nix
 	sudo nixos-rebuild switch
 
-update-flake-hm:	## Update home-manager flake
+update-hm:	## Update home-manager flake
 	nix flake update --flake $$PWD/home/nixos/.config/home-manager/
+	home-manager build
+	DIFF="$$(nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result)"
+	rm ./result
+	home-manager switch
+	git add home/nixos/.config/home-manager/
+	git commit --file=<(echo "hm: Update flake"; echo "$$DIFF")
