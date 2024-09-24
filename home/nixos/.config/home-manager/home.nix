@@ -55,6 +55,7 @@ in
     pkgs.kubeswitch
     pkgs.lazydocker
     pkgs.lazygit
+    pkgs.lnav
     pkgs.navi
     pkgs.nodejs
     pkgs.minikube
