@@ -13,10 +13,12 @@ switch-nix:		## Apply current NixOS configuration
 	sudo nixos-rebuild switch
 
 update-hm:	## Update home-manager flake
-	nix flake update --flake $$PWD/home/nixos/.config/home-manager/
-	home-manager build
-	DIFF="$$(nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result)"
-	rm ./result
-	home-manager switch
-	git add home/nixos/.config/home-manager/
-	git commit --file=<(echo "hm: Update flake"; echo "$$DIFF")
+	(\
+		set -e
+		trap 'rm --force ./result ./diff' EXIT;\
+		nix flake update --flake $$PWD/home/nixos/.config/home-manager/;\
+		home-manager build;\
+		nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result > ./diff;\
+		git add home/nixos/.config/home-manager/;\
+		git commit --file=<(echo "hm: Update flake"; echo; cat ./diff);\
+	)
