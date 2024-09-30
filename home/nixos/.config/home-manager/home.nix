@@ -57,6 +57,7 @@ in
     pkgs.lazygit
     pkgs.lnav
     pkgs.navi
+    pkgs.ncurses
     pkgs.nodejs
     pkgs.minikube
     pkgs.pigz
@@ -71,6 +72,7 @@ in
     pkgs.wget
     pkgs.xclip
     pkgs.xdg-utils
+    pkgs.xsel
     pkgs.yq-go
     pkgs.zoxide
   ];
