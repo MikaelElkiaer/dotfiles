@@ -14,7 +14,7 @@ switch-nix:		## Apply current NixOS configuration
 
 update-hm:	## Update home-manager flake
 	(\
-		set -e
+		set -e;\
 		trap 'rm --force ./result ./diff' EXIT;\
 		nix flake update --flake $$PWD/home/nixos/.config/home-manager/;\
 		home-manager build;\
