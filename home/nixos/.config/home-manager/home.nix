@@ -72,7 +72,6 @@ in
     pkgs.wget
     pkgs.xclip
     pkgs.xdg-utils
-    pkgs.xsel
     pkgs.yq-go
     pkgs.zoxide
   ];
