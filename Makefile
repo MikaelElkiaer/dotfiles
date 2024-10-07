@@ -12,7 +12,7 @@ switch-nix:		## Apply current NixOS configuration
 	@sudo cp etc/nixos/configuration.nix /etc/nixos/configuration.nix
 	sudo nixos-rebuild switch
 
-update-hm:	## Update home-manager flake
+update-hm:		## Update home-manager flake
 	@(\
 		set -e;\
 		trap 'rm --force ./result ./diff' EXIT;\
