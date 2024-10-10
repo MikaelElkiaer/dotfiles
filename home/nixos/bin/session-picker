@@ -22,7 +22,7 @@ function main() {
       {
         read -r CHOICE
 
-        if tmux has-session -t "$CHOICE" 2>/dev/null; then
+        if tmux has-session -t "=$CHOICE" 2>/dev/null; then
           tmux switch-client -t "$CHOICE"
         else
           echo "Loading Kubernetes context..." >&2
@@ -74,7 +74,7 @@ function main() {
           fi
         fi
 
-        if tmux has-session -t "$NAME" 2>/dev/null; then
+        if tmux has-session -t "=$NAME" 2>/dev/null; then
           tmux switch-client -t "$NAME"
         else
           tmux new-session -c "$DEFAULT_CLONE_DIR/$SUBPATH" -d -s "$NAME" bash -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
@@ -93,7 +93,7 @@ function main() {
       {
         read -r CHOICE
         NAME="$(basename "$CHOICE")"
-        if tmux has-session -t "$NAME" 2>/dev/null; then
+        if tmux has-session -t "=$NAME" 2>/dev/null; then
           tmux switch-client -t "$NAME"
         else
           tmux new-session -c "$CHOICE" -d -s "$NAME" bash -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
