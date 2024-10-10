@@ -8,11 +8,10 @@ login-gh:		## Log in to GitHub CLI
 login-ghcr:		## Log in to ghcr container registry
 	gh auth token | docker login ghcr.io --username username --password-stdin
 
-switch-nix:		## Apply current NixOS configuration
-	@sudo cp etc/nixos/configuration.nix /etc/nixos/configuration.nix
-	sudo nixos-rebuild switch
+hm-switch:		## Apply home-manager config
+	home-manager switch
 
-update-hm:		## Update home-manager flake
+hm-update:		## Update home-manager flake
 	@(\
 		set -e;\
 		trap 'rm --force ./result ./diff' EXIT;\
@@ -24,3 +23,10 @@ update-hm:		## Update home-manager flake
 		git diff --cached --exit-code &>/dev/null && exit 0;\
 		git commit --file=<(echo "hm: Update flake"; echo; cat ./diff) $${UNPUSHED+ --amend};\
 	)
+
+nix-switch:		## Apply current NixOS configuration
+	@sudo cp etc/nixos/configuration.nix /etc/nixos/configuration.nix
+	sudo nixos-rebuild switch
+
+nix-update:		## Update nix packages
+	nix-channel --update
