@@ -18,10 +18,12 @@ hm-update:		## Update home-manager flake
 		nix flake update --flake $$PWD/home/nixos/.config/home-manager/;\
 		home-manager build;\
 		nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result > ./diff;\
-		git log --exit-code origin/main..main &>/dev/null || UNPUSHED="";\
+		if [ "$$(git show --format=format:%s --quiet)" = "chore(hm): Update flake" ] && ! git log --exit-code origin/main..main &>/dev/null; then\
+		  UNPUSHED="";\
+		fi;\
 		git add home/nixos/.config/home-manager/;\
 		git diff --cached --exit-code &>/dev/null && exit 0;\
-		git commit --file=<(echo "hm: Update flake"; echo; cat ./diff) $${UNPUSHED+ --amend};\
+		git commit --file=<(echo "chore(hm): Update flake"; echo; cat ./diff) $${UNPUSHED+ --amend};\
 	)
 
 nix-switch:		## Apply current NixOS configuration
