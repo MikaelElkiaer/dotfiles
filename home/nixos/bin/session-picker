@@ -29,7 +29,7 @@ function main() {
           read -r KUBECONFIG NAME <<<"$(switcher set-context "$CHOICE" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
           # TODO: Remove once fixed
           # - see https://github.com/derailed/k9s/issues/1895
-          tmux new-session -c "$HOME" -d -e "KUBECONFIG=$KUBECONFIG" -e "KUBECACHEDIR=$HOME/.kube/cache" -s "$NAME" bash -c 'k9s;exec bash'
+          tmux new-session -c "$HOME" -d -e "KUBECONFIG=$KUBECONFIG" -e "KUBECACHEDIR=$HOME/.kube/cache" -s "$NAME" bash -i -c 'k9s;exec bash'
           # TODO: Does not work as expected
           tmux set-hook -t "$NAME" session-closed "run-shell 'rm -f $KUBECONFIG'"
           tmux switch-client -t "$NAME"
@@ -77,7 +77,7 @@ function main() {
         if tmux has-session -t "=$NAME" 2>/dev/null; then
           tmux switch-client -t "$NAME"
         else
-          tmux new-session -c "$DEFAULT_CLONE_DIR/$SUBPATH" -d -s "$NAME" bash -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
+          tmux new-session -c "$DEFAULT_CLONE_DIR/$SUBPATH" -d -s "$NAME" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
           tmux switch-client -t "$NAME"
         fi
       }
@@ -96,7 +96,7 @@ function main() {
         if tmux has-session -t "=$NAME" 2>/dev/null; then
           tmux switch-client -t "$NAME"
         else
-          tmux new-session -c "$CHOICE" -d -s "$NAME" bash -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
+          tmux new-session -c "$CHOICE" -d -s "$NAME" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
           tmux switch-client -t "$NAME"
         fi
       }
