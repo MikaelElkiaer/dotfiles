@@ -118,7 +118,7 @@ in
   home.sessionVariables = { };
 
   nix = {
-    package = pkgs.nixFlakes;
+    package = pkgs.nixVersions.git;
 
     settings.experimental-features = [
       "nix-command"
