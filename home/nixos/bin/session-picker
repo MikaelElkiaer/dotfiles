@@ -9,15 +9,18 @@ DEFAULT_CLONE_DIR="${HOME}/Repositories/GitHub"
 function main() {
   init_args "$@"
 
+  ARG_QUERY="${ARG_QUERY:-}"
   ARG_SOURCE="${ARG_SOURCE:-tmux}"
+
   case "${ARG_SOURCE}" in
   kubeswitch)
     exec fzf \
       --ansi --border-label ' session-picker ' --prompt '󱃾 ' \
       --header="^g github ^t tmux ^x zoxide" --header-first \
-      --bind="ctrl-g:become(session-picker --source=github)" \
-      --bind="ctrl-t:become(session-picker --source=tmux)" \
-      --bind="ctrl-x:become(session-picker --source=zoxide)" \
+      --bind="ctrl-g:become(session-picker --source=github --query={q})" \
+      --bind="ctrl-t:become(session-picker --source=tmux --query={q})" \
+      --bind="ctrl-x:become(session-picker --source=zoxide --query={q})" \
+      --query="${ARG_QUERY}" \
       < <(switcher list-contexts) |
       {
         read -r CHOICE
@@ -50,12 +53,13 @@ function main() {
     exec fzf \
       --ansi --border-label ' session-picker ' --prompt ' search> ' \
       --header="^s kubeswitch ^t tmux ^x zoxide" --header-first \
-      --bind="change:reload-sync:_query {q}" \
-      --bind="ctrl-s:become(session-picker --source=kubeswitch)" \
-      --bind="ctrl-t:become(session-picker --source=tmux)" \
-      --bind="ctrl-x:become(session-picker --source=zoxide)" \
+      --bind="load:reload-sync(_query {q})+unbind(load)" \
+      --bind="change:reload-sync(_query {q})" \
       --preview "sed -E 's,repo:(.*)$,\1,' <<<\"{}\" | xargs gh repo view | glow --style auto -" \
-      --query="" \
+      --bind="ctrl-s:become(session-picker --source=kubeswitch --query={q})" \
+      --bind="ctrl-t:become(session-picker --source=tmux --query={q})" \
+      --bind="ctrl-x:become(session-picker --source=zoxide --query={q})" \
+      --query="${ARG_QUERY}" \
       < <(echo -n) |
       {
         read -r NAME
@@ -86,9 +90,10 @@ function main() {
     exec fzf \
       --ansi --border-label ' session-picker ' --prompt ' ' \
       --header="^g github ^s kubeswitch ^t tmux" --header-first \
-      --bind="ctrl-g:become(session-picker --source=github)" \
-      --bind="ctrl-s:become(session-picker --source=kubeswitch)" \
-      --bind="ctrl-t:become(session-picker --source=tmux)" \
+      --bind="ctrl-g:become(session-picker --source=github --query={q})" \
+      --bind="ctrl-s:become(session-picker --source=kubeswitch --query={q})" \
+      --bind="ctrl-t:become(session-picker --source=tmux --query={q})" \
+      --query="${ARG_QUERY}" \
       --preview="tree -C {}" < <(zoxide query --list) |
       {
         read -r CHOICE
@@ -105,10 +110,11 @@ function main() {
     exec fzf \
       --ansi --border-label ' session-picker ' --prompt ' ' \
       --header="^g github ^s kubeswitch ^x zoxide" --header-first \
-      --bind="ctrl-g:become:session-picker --source=github" \
-      --bind="ctrl-s:become:session-picker --source=kubeswitch" \
-      --bind="ctrl-x:become:session-picker --source=zoxide" \
+      --bind="ctrl-g:become:session-picker --source=github --query={q}" \
+      --bind="ctrl-s:become:session-picker --source=kubeswitch --query={q}" \
+      --bind="ctrl-x:become:session-picker --source=zoxide --query={q}" \
       --preview="tmux lsw -F \" #{window_name}\" -t {}" \
+      --query="${ARG_QUERY}" \
       < <(tmux list-sessions -f "#{!=:#{session_attached},1}" -F "#{session_name} #{session_activity} #{session_attached}" | sort -k2,2r | awk '{print $1}') |
       {
         read -r NAME
@@ -127,6 +133,13 @@ function init_args() {
     case "${optchar}" in
     -)
       case "${OPTARG}" in
+      query)
+        ARG_QUERY="${!OPTIND}"
+        OPTIND=$((OPTIND + 1))
+        ;;
+      query=*)
+        ARG_QUERY=${OPTARG#*=}
+        ;;
       source)
         ARG_SOURCE="${!OPTIND}"
         OPTIND=$((OPTIND + 1))
@@ -140,6 +153,9 @@ function init_args() {
         fi
         ;;
       esac
+      ;;
+    q)
+      ARG_QUERY="${OPTARG}"
       ;;
     s)
       ARG_SOURCE="${OPTARG}"
