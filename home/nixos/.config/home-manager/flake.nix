@@ -10,10 +10,12 @@
     };
     dagger.url = "github:dagger/nix";
     dagger.inputs.nixpkgs.follows = "nixpkgs";
+    nixgl.url = "github:nix-community/nixGL";
   };
 
   outputs =
     inputs@{
+      nixgl,
       nixpkgs,
       home-manager,
       dagger,
@@ -25,13 +27,14 @@
     in
     {
       # Debian 12
-      homeConfigurations."mikaelki@AD.KEYSIGHT.COM@me-ks-workstation" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."mikaelki@AD.KEYSIGHT.COM@czc2208rnd" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
         modules = [
           ./home.nix
+          ./czc2208rnd.nix
           # Optionally use extraSpecialArgs
           # to pass through arguments to home.nix
           {
@@ -39,6 +42,7 @@
               inherit inputs;
               username = "mikaelki@AD.KEYSIGHT.COM";
               homeDirectory = "/home/mikaelki";
+              nixgl = nixgl;
             };
           }
         ];
