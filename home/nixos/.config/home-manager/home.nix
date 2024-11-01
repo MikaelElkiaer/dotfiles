@@ -68,7 +68,7 @@ in
     pkgs.tree
     pkgs.trivy
     pkgs.unzip
-    pkgs.vault
+    pkgs.vault-bin
     pkgs.wget
     pkgs.xclip
     pkgs.xdg-utils
