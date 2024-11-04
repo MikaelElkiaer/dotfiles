@@ -59,7 +59,6 @@ in
     pkgs.navi
     pkgs.ncurses
     pkgs.nodejs
-    pkgs.minikube
     pkgs.pigz
     pkgs.python3
     pkgs.ripgrep
@@ -138,4 +137,5 @@ in
   };
   programs.gpg.enable = true;
   services.gpg-agent.enable = true;
+  services.ssh-agent.enable = true;
 }

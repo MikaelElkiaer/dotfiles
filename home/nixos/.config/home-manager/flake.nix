@@ -27,26 +27,47 @@
     in
     {
       # Debian 12
-      homeConfigurations."mikaelki@AD.KEYSIGHT.COM@czc2208rnd" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."me@twr" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
         modules = [
           ./home.nix
-          ./czc2208rnd.nix
           # Optionally use extraSpecialArgs
           # to pass through arguments to home.nix
           {
             _module.args = {
               inherit inputs;
-              username = "mikaelki@AD.KEYSIGHT.COM";
-              homeDirectory = "/home/mikaelki";
-              nixgl = nixgl;
+              username = "me";
+              homeDirectory = "/home/me";
             };
           }
         ];
       };
+      # Debian 12
+      homeConfigurations."mikaelki@AD.KEYSIGHT.COM@czc2208rnd" =
+        home-manager.lib.homeManagerConfiguration
+          {
+            inherit pkgs;
+
+            # Specify your home configuration modules here, for example,
+            # the path to your home.nix.
+            modules = [
+              ./home.nix
+              ./czc2208rnd.nix
+              # Optionally use extraSpecialArgs
+              # to pass through arguments to home.nix
+              {
+                _module.args = {
+                  inherit inputs;
+                  username = "mikaelki@AD.KEYSIGHT.COM";
+                  homeDirectory = "/home/mikaelki";
+                  nixgl = nixgl;
+                };
+              }
+            ];
+          };
       # WSL2
       homeConfigurations."nixos@nixos" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
