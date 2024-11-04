@@ -8,3 +8,12 @@ echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-edge.gpg] https://
 sudo apt-get update
 sudo apt-get install microsoft-edge-stable
 ```
+
+## Install font
+
+```bash
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/DejaVuSansMono.zip
+unzip ~/Downloads/DejaVuSansMono.zip DejaVuSansMNerdFontMono-Regular.ttf
+mv DejaVuSansMNerdFontMono-Regular.ttf ~/.local/share/fonts
+fc-cache ~/.local/share/fonts
+```
