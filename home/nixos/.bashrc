@@ -179,6 +179,12 @@ done
 # Clear function only needed for init
 unset -f _add_completion
 
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+  if command -v tmux &>/dev/null; then
+    export BROWSER='tmux display-popup -T Browser -w 50% -h 10% echo'
+  fi
+fi
+
 # WARN: Keep this at the bottom
 if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   DIR="$HOME/Repositories/GitHub/dotfiles"
