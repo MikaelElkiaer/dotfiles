@@ -2,9 +2,17 @@
 
 ## Non-NixOS
 
+### 1. [Install Nix](https://nixos.org/download/)
+
+```bash
+sh <(curl -L https://nixos.org/nix/install) --daemon
+```
+
+### 2. Clone repo and apply Home-Manager config
+
 ```bash
 CLONE_LOCATION="~/Repositories/GitHub"
-cat <<EOF | xargs nix-shell --packages git gnumake --run
+cat <<EOF | xargs nix-shell --packages git --run
 "mkdir --parents $CLONE_LOCATION \
 && git clone https://github.com/MikaelElkiaer/dotfiles $CLONE_LOCATION/dotfiles \
 && cd $CLONE_LOCATION/dotfiles \
