@@ -2,7 +2,6 @@
 
 {
   home.packages = [
-    pkgs.microsoft-edge
     (config.lib.nixGL.wrap pkgs.alacritty)
   ];
   nixGL.packages = nixgl.packages;
