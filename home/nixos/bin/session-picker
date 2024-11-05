@@ -73,7 +73,7 @@ function main() {
 
         if ! [ -d "$DEFAULT_CLONE_DIR/$SUBPATH" ]; then
           gh repo clone "$SUBPATH" "$DEFAULT_CLONE_DIR/${SUBPATH}"
-          if command -v zoxide; then
+          if command -v zoxide &>/dev/null; then
             zoxide add "$DEFAULT_CLONE_DIR/$SUBPATH"
           fi
         fi
