@@ -7,8 +7,8 @@ REPO="$(gh repo view --json name,owner -q '"\(.owner.login)/\(.name)"')"
 STATUS="$?"
 if [ "$STATUS" = 0 ] && [ -n "$REPO" ]; then
 	export REPO
-	gh dash --config <(yq --null-input '(.prSections,.issuesSections) = [{ "filters": "repo:\(env(REPO)) is:open", "title": "All" }]')
+	gh-dash --config <(yq --null-input '(.prSections,.issuesSections) = [{ "filters": "repo:\(env(REPO)) is:open", "title": "All" }]')
 else
 	echo "Not in a git repository - defaulting to global config" >&2
-	gh dash
+	gh-dash
 fi
