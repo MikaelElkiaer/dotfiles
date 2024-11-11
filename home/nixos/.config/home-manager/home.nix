@@ -61,6 +61,7 @@ in
     pkgs.nodejs
     pkgs.pigz
     pkgs.python3
+    pkgs.renovate
     pkgs.ripgrep
     pkgs.skopeo
     pkgs.tmux
