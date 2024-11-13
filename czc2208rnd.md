@@ -12,9 +12,9 @@ sudo apt-get install microsoft-edge-stable
 ## Install font
 
 ```bash
-wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/DejaVuSansMono.zip
-unzip ~/Downloads/DejaVuSansMono.zip DejaVuSansMNerdFontMono-Regular.ttf
-mv DejaVuSansMNerdFontMono-Regular.ttf ~/.local/share/fonts
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Noto.zip -O ~/Downloads/Noto.zip
+unzip ~/Downloads/Noto.zip NotoSansMNerdFontMono-Regular.ttf
+mv NotoSansMNerdFontMono-Regular.ttf ~/.local/share/fonts
 fc-cache ~/.local/share/fonts
 ```
 
