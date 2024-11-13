@@ -1,0 +1,12 @@
+[general]
+  import = ["./gruvbox_dark.toml"]
+
+[font]
+size = 10.0
+
+[font.normal]
+family = "NotoSansM Nerd Font Mono"
+
+[window]
+dynamic_title = false
+decorations = "None"
