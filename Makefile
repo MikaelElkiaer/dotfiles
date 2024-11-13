@@ -9,7 +9,7 @@ login-ghcr:		## Log in to ghcr container registry
 	gh auth token | docker login ghcr.io --username username --password-stdin
 
 hm-switch:		## Apply home-manager config
-	home-manager switch
+	home-manager switch -b bak
 
 hm-update:		## Update home-manager flake
 	@(\
