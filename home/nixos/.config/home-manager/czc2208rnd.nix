@@ -17,6 +17,7 @@ in
   };
   home.packages = [
     (config.lib.nixGL.wrap pkgs.alacritty)
+    pkgs.keepassxc
     pkgs.minikube
   ];
   nixGL.packages = nixgl.packages;
