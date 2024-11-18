@@ -71,6 +71,7 @@ in
     pkgs.vault-bin
     pkgs.wget
     pkgs.xclip
+    pkgs.xsel
     pkgs.xdg-utils
     pkgs.yq-go
     pkgs.zoxide
