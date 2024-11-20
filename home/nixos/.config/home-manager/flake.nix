@@ -87,6 +87,5 @@
           }
         ];
       };
-      devShells.default = pkgs.mkShell { buildInputs = [ dagger.packages.${system}.dagger ]; };
     };
 }
