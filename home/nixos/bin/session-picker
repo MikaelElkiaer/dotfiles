@@ -30,11 +30,12 @@ function main() {
         else
           echo "Loading Kubernetes context..." >&2
           read -r KUBECONFIG NAME <<<"$(switcher set-context "$CHOICE" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
+          # INFO: Create symlink based on session name
+          # - so that session can be cleaned up by a hook
+          ln --symbolic --force "$KUBECONFIG" "/tmp/TMUX_${CHOICE}_KUBECONFIG"
           # TODO: Remove once fixed
           # - see https://github.com/derailed/k9s/issues/1895
           tmux new-session -c "$HOME" -d -e "KUBECONFIG=$KUBECONFIG" -e "KUBECACHEDIR=$HOME/.kube/cache" -s "$NAME" bash -i -c 'k9s;exec bash'
-          # TODO: Does not work as expected
-          tmux set-hook -t "$NAME" session-closed "run-shell 'rm -f $KUBECONFIG'"
           tmux switch-client -t "$NAME"
         fi
       }
