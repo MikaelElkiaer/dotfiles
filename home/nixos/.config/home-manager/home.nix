@@ -28,7 +28,8 @@ in
     (
       with pkgs.dotnetCorePackages;
       combinePackages [
-        dotnet_8.sdk
+        sdk_9_0
+        sdk_8_0_3xx
         sdk_6_0_1xx
       ]
     )
