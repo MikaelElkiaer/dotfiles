@@ -95,10 +95,6 @@ in
       recursive = true;
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/tmux";
     };
-    ".docker" = {
-      recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.docker";
-    };
     ".bash_aliases" = {
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.bash_aliases";
     };
