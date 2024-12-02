@@ -33,7 +33,7 @@ hm-update:		## Update home-manager flake
 		if [ "$$(git show --format=format:%s --quiet)" = "chore(hm): Update flake" ] && ! git log --exit-code origin/main..main &>/dev/null; then\
 		  UNPUSHED="";\
 		fi;\
-		git add home/nixos/.config/home-manager/flake.nix;\
+		git add home/nixos/.config/home-manager/flake.lock;\
 		# Determine if there are changes\
 		git diff --cached --exit-code &>/dev/null && exit 0;\
 		# Create commit - if latest commit is unpushed, then amend the changes\
