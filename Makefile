@@ -16,7 +16,7 @@ docker-credhelper:	## Set credential helper
 	yq --inplace '.auths as $$auths | .credHelpers = ($$auths | to_entries | map(.value="secretservice") | from_entries)' ~/.docker/config.json
 
 hm-switch:		## Apply home-manager config
-	home-manager switch -b bak
+	NIXPKGS_ALLOW_INSECURE=$${FORCE:+1} home-manager switch -b bak $${FORCE:+--impure}
 
 hm-update:		## Update home-manager flake
 	@(\
@@ -26,7 +26,7 @@ hm-update:		## Update home-manager flake
 		# Update flake\
 		nix flake update --flake $$PWD/home/nixos/.config/home-manager/;\
 		# Create new revision based on current flake\
-		home-manager build;\
+		NIXPKGS_ALLOW_INSECURE=$${FORCE:+1} home-manager build $${FORCE:+--impure};\
 		# Compare new revision with currently applied\
 		nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result > ./diff;\
 		# Determine whether latest commit is a hm-update, and whether it is unpushed\
