@@ -30,7 +30,6 @@ in
       combinePackages [
         sdk_9_0
         sdk_8_0_3xx
-        sdk_6_0_1xx
       ]
     )
     pkgs.docker-credential-helpers
