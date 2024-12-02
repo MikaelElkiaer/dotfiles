@@ -21,22 +21,22 @@ hm-switch:		## Apply home-manager config
 hm-update:		## Update home-manager flake
 	@(\
 		set -e;\
-		# Clean up
+		# Clean up\
 		trap 'rm --force ./result ./diff' EXIT;\
-		# Update flake
+		# Update flake\
 		nix flake update --flake $$PWD/home/nixos/.config/home-manager/;\
-		# Create new revision based on current flake
+		# Create new revision based on current flake\
 		home-manager build;\
-		# Compare new revision with currently applied
+		# Compare new revision with currently applied\
 		nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result > ./diff;\
-		# Determine whether latest commit is a hm-update, and whether it is unpushed
+		# Determine whether latest commit is a hm-update, and whether it is unpushed\
 		if [ "$$(git show --format=format:%s --quiet)" = "chore(hm): Update flake" ] && ! git log --exit-code origin/main..main &>/dev/null; then\
 		  UNPUSHED="";\
 		fi;\
 		git add home/nixos/.config/home-manager/flake.nix;\
-		# Determine if there are changes
+		# Determine if there are changes\
 		git diff --cached --exit-code &>/dev/null && exit 0;\
-		# Create commit - if latest commit is unpushed, then amend the changes
+		# Create commit - if latest commit is unpushed, then amend the changes\
 		git commit --file=<(echo "chore(hm): Update flake"; echo; cat ./diff) $${UNPUSHED+ --amend};\
 	)
 
