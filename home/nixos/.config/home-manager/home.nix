@@ -30,7 +30,6 @@ in
       combinePackages [
         sdk_9_0
         sdk_8_0_3xx
-        sdk_6_0_1xx
       ]
     )
     pkgs.docker-credential-helpers
@@ -124,7 +123,17 @@ in
     ];
   };
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    # WARN: Need to permit these in order to use dotnetCorePackages
+    # - even to install newer SDKs
+    permittedInsecurePackages = [
+      "dotnet-core-combined"
+      "dotnet-sdk-6.0.428"
+      "dotnet-sdk-7.0.410"
+      "dotnet-sdk-wrapped-6.0.428"
+    ];
+  };
 
   programs.home-manager.enable = true;
 
