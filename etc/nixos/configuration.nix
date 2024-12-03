@@ -18,7 +18,7 @@
     <nixos-wsl/modules>
   ];
 
-  environment.systemPackages = [ pkgs.home-manager ];
+  environment.systemPackages = with pkgs; [ home-manager ];
 
   # INFO: Should be set by wsl module, but is deprecated
   # - see https://github.com/nix-community/NixOS-WSL/issues/498

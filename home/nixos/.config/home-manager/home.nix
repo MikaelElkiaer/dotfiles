@@ -18,63 +18,63 @@ in
 
   home.stateVersion = "24.05"; # WARN: Do not change
 
-  home.packages = [
-    pkgs.atuin
-    pkgs.awscli2
-    pkgs.bats
-    pkgs.cargo
-    inputs.dagger.packages.${pkgs.system}.dagger
-    pkgs.delta
+  home.packages = with pkgs; [
+    atuin
+    awscli2
+    bats
+    cargo
+    inputs.dagger.packages.${system}.dagger
+    delta
     (
-      with pkgs.dotnetCorePackages;
+      with dotnetCorePackages;
       combinePackages [
         sdk_9_0
         sdk_8_0_3xx
       ]
     )
-    pkgs.docker-credential-helpers
-    pkgs.file
-    pkgs.fluxcd
-    pkgs.fzf
-    pkgs.gh
-    pkgs.gh-copilot
-    pkgs.gh-dash
-    pkgs.gh-markdown-preview
-    pkgs.git
-    pkgs.glow
-    pkgs.go
-    pkgs.gotop
-    pkgs.gitmux
-    pkgs.gnumake
-    pkgs.htop
-    pkgs.hyperfine
-    pkgs.k9s
-    pkgs.kubectl
-    pkgs.kubernetes-helm
-    pkgs.kubeseal
-    pkgs.kubeswitch
-    pkgs.lazydocker
-    pkgs.lazygit
-    pkgs.lnav
-    pkgs.navi
-    pkgs.ncurses
-    pkgs.nodejs
-    pkgs.pigz
-    pkgs.python3
-    pkgs.renovate
-    pkgs.ripgrep
-    pkgs.skopeo
-    pkgs.tmux
-    pkgs.tree
-    pkgs.trivy
-    pkgs.unzip
-    pkgs.vault-bin
-    pkgs.wget
-    pkgs.xclip
-    pkgs.xsel
-    pkgs.xdg-utils
-    pkgs.yq-go
-    pkgs.zoxide
+    docker-credential-helpers
+    file
+    fluxcd
+    fzf
+    gh
+    gh-copilot
+    gh-dash
+    gh-markdown-preview
+    git
+    glow
+    go
+    gotop
+    gitmux
+    gnumake
+    htop
+    hyperfine
+    k9s
+    kubectl
+    kubernetes-helm
+    kubeseal
+    kubeswitch
+    lazydocker
+    lazygit
+    lnav
+    navi
+    ncurses
+    nodejs
+    pigz
+    python3
+    renovate
+    ripgrep
+    skopeo
+    tmux
+    tree
+    trivy
+    unzip
+    vault-bin
+    wget
+    xclip
+    xsel
+    xdg-utils
+    yq-go
+    zoxide
   ];
 
   home.file = {

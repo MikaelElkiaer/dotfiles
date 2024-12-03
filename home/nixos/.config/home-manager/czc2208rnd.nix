@@ -15,10 +15,10 @@ in
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/alacritty";
     };
   };
-  home.packages = [
-    (config.lib.nixGL.wrap pkgs.alacritty)
-    pkgs.keepassxc
-    pkgs.minikube
+  home.packages = with pkgs; [
+    (config.lib.nixGL.wrap alacritty)
+    keepassxc
+    minikube
   ];
   nixGL.packages = nixgl.packages;
   targets.genericLinux.enable = true;
