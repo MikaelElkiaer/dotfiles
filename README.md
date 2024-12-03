@@ -16,7 +16,7 @@ cat <<EOF | xargs nix-shell --packages git --run
 "mkdir --parents $CLONE_LOCATION \
 && git clone https://github.com/MikaelElkiaer/dotfiles $CLONE_LOCATION/dotfiles \
 && cd $CLONE_LOCATION/dotfiles \
-&& nix run home-manager/release-24.05 -- switch -b bak --flake $PWD/home/nixos/.config/home-manager/"
+&& nix run home-manager/release-24.11 -- switch -b bak --flake $PWD/home/nixos/.config/home-manager/"
 EOF
 ```
 
@@ -44,9 +44,9 @@ In WSL:
 ```bash
 # Switch channel to unstable
 # - Alternatively, switch to latest stable:
-#   `sudo nix-channel --add  https://nixos.org/channels/nixos-24.05 nixos`
+#   `sudo nix-channel --add  https://nixos.org/channels/nixos-24.11 nixos`
 sudo nix-channel --add  https://nixos.org/channels/nixos-unstable nixos
-sudo sed -i -E 's/(system\.stateVersion = ")(.*)(")/\124.05\3/g' /etc/nixos/configuration.nix
+sudo sed -i -E 's/(system\.stateVersion = ")(.*)(")/\124.11\3/g' /etc/nixos/configuration.nix
 # Get updates from channel
 sudo nix-channel --update
 # Rebuild and upgrade packages using channel
