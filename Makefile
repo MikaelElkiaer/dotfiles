@@ -6,7 +6,7 @@ login-gh:		## Log in to GitHub CLI
 	gh auth login --hostname=github.com --git-protocol=https --scopes=read:packages,read:org,read:project
 
 login-ghcr:		## Log in to ghcr container registry
-	gh auth token | docker login ghcr.io --username username --password-stdin
+	gh auth token | docker login ghcr.io --username "$$(gh api user --jq='.login')" --password-stdin
 
 # INFO: This is currently needed for skopeo
 # - to properly use login credentials
