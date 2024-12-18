@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+touch /tmp/gh-notifications
+
+COUNT=
+NOW=$(date +%s)
+RESET=$(sed -n '1p' /tmp/gh-notifications)
+
+if [ -n "$RESET" ] && [ "$RESET" -gt "$NOW" ]; then
+  echo "Polling blocked - resets in $((RESET - NOW))s" >&2
+  COUNT=$(sed -n '2p' /tmp/gh-notifications)
+elif RESPONSE="$(gh api --verbose notifications)"; then
+  COUNT="$(sed -e '/^[<>*]/d' -e '/^$/d' <<<"$RESPONSE" | yq 'length')"
+  INTERVAL="$(sed -n 's/^< X-Poll-Interval: \(.*\)$/\1/p' <<<"$RESPONSE")"
+
+  echo "Polled notifications - count: $COUNT, next interval: ${INTERVAL}s" >&2
+
+  truncate --size 0 /tmp/gh-notifications
+  echo "$((NOW + INTERVAL))" >>/tmp/gh-notifications
+  echo "$COUNT" >>/tmp/gh-notifications
+fi
+
+if [ -n "$COUNT" ]; then
+  echo " $COUNT"
+fi
