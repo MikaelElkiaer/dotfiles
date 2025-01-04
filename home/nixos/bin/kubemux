@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-if ENV="$(tmux show-environment ${1+-t $1} KUBECONFIG)"; then
-  eval "export $ENV"
+KUBECONFIG_LINK="/tmp/TMUX_${1}_KUBECONFIG"
+if [ -e "$KUBECONFIG_LINK" ]; then
+  export KUBECONFIG="$KUBECONFIG_LINK"
   RESULT=""
   if CONTEXT="$(kubectl config current-context)"; then
-    RESULT="#[fg=colour13]󱃾 $CONTEXT"
+    RESULT="#[fg=colour13] 󱃾 $CONTEXT"
   fi
   if NAMESPACE="$(
     kubectl config view --minify --output jsonpath='{..namespace}'

@@ -187,9 +187,5 @@ fi
 
 # WARN: Keep this at the bottom
 if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  DIR="$HOME/Repositories/GitHub/dotfiles"
-  if ! [ -d "$DIR" ]; then
-    DIR="$HOME"
-  fi
-  exec tmux new-session -A -c "$DIR" -s "$(basename "$DIR")" -D -X
+  exec tmux new-session -A -D -X
 fi

@@ -15,36 +15,32 @@ function main() {
   case "${ARG_SOURCE}" in
   kubeswitch)
     exec fzf \
-      --ansi --border-label ' session-picker ' --prompt '󱃾 ' \
+      --ansi --border-label ' workspace-picker ' --prompt '󱃾 ' \
       --header="^g github ^t tmux ^x zoxide" --header-first \
-      --bind="ctrl-g:become(session-picker --source=github --query={q})" \
-      --bind="ctrl-t:become(session-picker --source=tmux --query={q})" \
-      --bind="ctrl-x:become(session-picker --source=zoxide --query={q})" \
+      --bind="ctrl-g:become(workspace-picker --source=github --query={q})" \
+      --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
+      --bind="ctrl-x:become(workspace-picker --source=zoxide --query={q})" \
       --query="${ARG_QUERY}" \
       < <(switcher list-contexts) |
       {
         read -r CHOICE
 
-        if tmux has-session -t "=$CHOICE" 2>/dev/null; then
-          tmux switch-client -t "$CHOICE"
-        else
-          echo "Loading Kubernetes context..." >&2
-          read -r KUBECONFIG NAME <<<"$(switcher set-context "$CHOICE" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
-          # INFO: Create symlink based on session name
-          # - so that session can be cleaned up by a hook
-          ln --symbolic --force "$KUBECONFIG" "/tmp/TMUX_${CHOICE}_KUBECONFIG"
-          # TODO: Remove once fixed
-          # - see https://github.com/derailed/k9s/issues/1895
-          tmux new-session -c "$HOME" -d -e "KUBECONFIG=$KUBECONFIG" -e "KUBECACHEDIR=$HOME/.kube/cache" -s "$NAME" bash -i -c 'k9s;exec bash'
-          tmux switch-client -t "$NAME"
-        fi
+        echo "Loading Kubernetes context..." >&2
+        read -r KUBECONFIG NAME <<<"$(switcher set-context "$CHOICE" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
+        # TODO: Remove KUBECACHEDIR once fixed
+        # - see https://github.com/derailed/k9s/issues/1895
+        NEW_PANE_ID="$(tmux new-window -c "$HOME" -d -e "KUBECONFIG=$KUBECONFIG" -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{pane_id}' bash -i -c 'k9s;exec bash')"
+        # INFO: Create symlink so temporary config can be cleaned up by a hook
+        ln --symbolic --force "$KUBECONFIG" "/tmp/TMUX_${NEW_PANE_ID}_KUBECONFIG"
+        tmux set-hook -p -t "$NEW_PANE_ID" pane-exited "run-shell 'rm --force \"$(readlink --canonicalize /tmp/TMUX_#{hook_pane}_KUBECONFIG)\" /tmp/TMUX_#{hook_pane}_KUBECONFIG'"
+        tmux switch-client -t "$NEW_PANE_ID"
       }
     ;;
   github)
     USERNAME="$(yq '.["github.com"].user' <~/.config/gh/hosts.yml)"
     function _query() {
-      pkill -f session-picker-query || true
-      exec -a session-picker-query bash -c "
+      pkill -f workspace-picker-query || true
+      exec -a workspace-picker-query bash -c "
         [ -n \"$1\" ] \
           && sleep 1 \
           && gh search repos --json=name,owner --jq='map(\"\(.owner.login)/\(.name)\")[]' --match=name \"$1\" || true;
@@ -52,14 +48,14 @@ function main() {
     }
     export -f _query
     exec fzf \
-      --ansi --border-label ' session-picker ' --prompt ' search> ' \
+      --ansi --border-label ' workspace-picker ' --prompt ' search> ' \
       --header="^s kubeswitch ^t tmux ^x zoxide" --header-first \
       --bind="load:reload-sync(_query {q})+unbind(load)" \
       --bind="change:reload-sync(_query {q})" \
       --preview "sed -E 's,repo:(.*)$,\1,' <<<\"{}\" | xargs gh repo view | glow --style auto -" \
-      --bind="ctrl-s:become(session-picker --source=kubeswitch --query={q})" \
-      --bind="ctrl-t:become(session-picker --source=tmux --query={q})" \
-      --bind="ctrl-x:become(session-picker --source=zoxide --query={q})" \
+      --bind="ctrl-s:become(workspace-picker --source=kubeswitch --query={q})" \
+      --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
+      --bind="ctrl-x:become(workspace-picker --source=zoxide --query={q})" \
       --query="${ARG_QUERY}" \
       < <(echo -n) |
       {
@@ -79,21 +75,16 @@ function main() {
           fi
         fi
 
-        if tmux has-session -t "=$NAME" 2>/dev/null; then
-          tmux switch-client -t "$NAME"
-        else
-          tmux new-session -c "$DEFAULT_CLONE_DIR/$SUBPATH" -d -s "$NAME" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
-          tmux switch-client -t "$NAME"
-        fi
+        tmux new-window -c "$DEFAULT_CLONE_DIR/$SUBPATH" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
       }
     ;;
   zoxide)
     exec fzf \
-      --ansi --border-label ' session-picker ' --prompt ' ' \
+      --ansi --border-label ' workspace-picker ' --prompt ' ' \
       --header="^g github ^s kubeswitch ^t tmux" --header-first \
-      --bind="ctrl-g:become(session-picker --source=github --query={q})" \
-      --bind="ctrl-s:become(session-picker --source=kubeswitch --query={q})" \
-      --bind="ctrl-t:become(session-picker --source=tmux --query={q})" \
+      --bind="ctrl-g:become(workspace-picker --source=github --query={q})" \
+      --bind="ctrl-s:become(workspace-picker --source=kubeswitch --query={q})" \
+      --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
       --query="${ARG_QUERY}" \
       --preview="tree -C {}" < <(zoxide query --list) |
       {
@@ -102,21 +93,20 @@ function main() {
         if tmux has-session -t "=$NAME" 2>/dev/null; then
           tmux switch-client -t "$NAME"
         else
-          tmux new-session -c "$CHOICE" -d -s "$NAME" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
-          tmux switch-client -t "$NAME"
+          tmux new-window -c "$CHOICE" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
         fi
       }
     ;;
   tmux)
     exec fzf \
-      --ansi --border-label ' session-picker ' --prompt ' ' \
+      --ansi --border-label ' workspace-picker ' --prompt ' ' \
       --header="^g github ^s kubeswitch ^x zoxide" --header-first \
-      --bind="ctrl-g:become:session-picker --source=github --query={q}" \
-      --bind="ctrl-s:become:session-picker --source=kubeswitch --query={q}" \
-      --bind="ctrl-x:become:session-picker --source=zoxide --query={q}" \
-      --preview="tmux lsw -F \" #{window_name}\" -t {}" \
+      --bind="ctrl-g:become:workspace-picker --source=github --query={q}" \
+      --bind="ctrl-s:become:workspace-picker --source=kubeswitch --query={q}" \
+      --bind="ctrl-x:become:workspace-picker --source=zoxide --query={q}" \
+      --preview="tmux lsp -F \" #{pane_current_command}\" -t {}" \
       --query="${ARG_QUERY}" \
-      < <(tmux list-sessions -f "#{!=:#{session_attached},1}" -F "#{session_name} #{session_activity} #{session_attached}" | sort -k2,2r | awk '{print $1}') |
+      < <(tmux list-windows -f "#{!=:#{window_active},1}" -F "#{window_name} #{window_activity} #{window_active}" | sort -k2,2r | awk '{print $1}') |
       {
         read -r NAME
         tmux switch-client -t "$NAME"
