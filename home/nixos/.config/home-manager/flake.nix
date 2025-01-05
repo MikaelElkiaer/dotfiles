@@ -34,6 +34,7 @@
         # the path to your home.nix.
         modules = [
           ./home.nix
+          ./twr.nix
           # Optionally use extraSpecialArgs
           # to pass through arguments to home.nix
           {
