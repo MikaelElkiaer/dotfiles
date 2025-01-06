@@ -110,7 +110,7 @@ function main() {
       < <(tmux list-windows -f "#{!=:#{window_active},1}" -F "#{pane_current_command} #{b:pane_current_path} #{window_id}" | sort -k2,2r) |
       {
         read -r NAME
-        tmux switch-client -t "$NAME"
+        awk '{print $3}' <<<"$NAME" | xargs tmux switch-client -t
       }
     ;;
   *)
