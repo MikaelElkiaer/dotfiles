@@ -47,12 +47,13 @@ function main() {
         "
     }
     export -f _query
+    #TODO: Force colors in preview
     exec fzf \
       --ansi --border-label ' workspace-picker ' --prompt ' search> ' \
       --header="^s kubeswitch ^t tmux ^x zoxide" --header-first \
       --bind="load:reload-sync(_query {q})+unbind(load)" \
       --bind="change:reload-sync(_query {q})" \
-      --preview "sed -E 's,repo:(.*)$,\1,' <<<\"{}\" | xargs gh repo view | glow --style auto -" \
+      --preview "gh repo view {}" \
       --bind="ctrl-s:become(workspace-picker --source=kubeswitch --query={q})" \
       --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
       --bind="ctrl-x:become(workspace-picker --source=zoxide --query={q})" \
