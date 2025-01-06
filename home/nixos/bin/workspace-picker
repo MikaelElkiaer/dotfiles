@@ -108,7 +108,11 @@ function main() {
       --bind="ctrl-x:become:workspace-picker --source=zoxide --query={q}" \
       --preview="echo {} | awk '{print \$3}' | xargs tmux capture-pane -p -e -t" \
       --query="${ARG_QUERY}" \
-      < <(tmux list-windows -f "#{!=:#{window_active},1}" -F "#{pane_current_command} #{b:pane_current_path} #{window_id}" | sort -k2,2r) |
+      < <(
+        tmux list-windows -f "#{!=:#{window_active},1}" -F "#{pane_current_command} #{b:pane_current_path} #{window_id} #{window_activity}" |
+          sort -k4r |                    # Sort by latest window activity
+          awk '{print $1 " " $2 " " $3}' # Exclude window activity
+      ) |
       {
         read -r NAME
         awk '{print $3}' <<<"$NAME" | xargs tmux switch-client -t
