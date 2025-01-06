@@ -12,7 +12,8 @@ if [ -n "$RESET" ] && [ "$RESET" -gt "$NOW" ]; then
   echo "Polling blocked - resets in $((RESET - NOW))s" >&2
   COUNT=$(sed -n '2p' /tmp/gh-notifications)
 elif RESPONSE="$(gh api --verbose notifications)"; then
-  COUNT="$(sed -e '/^[<>*]/d' -e '/^$/d' <<<"$RESPONSE" | yq 'length')"
+  PAYLOAD="$(sed -e '/^[<>*]/d' -e '/^$/d' <<<"$RESPONSE")"
+  COUNT="$(yq 'length' <<<"$PAYLOAD")"
   INTERVAL="$(sed -n 's/^< X-Poll-Interval: \(.*\)$/\1/p' <<<"$RESPONSE")"
 
   echo "Polled notifications - count: $COUNT, next interval: ${INTERVAL}s" >&2
@@ -20,6 +21,7 @@ elif RESPONSE="$(gh api --verbose notifications)"; then
   truncate --size 0 /tmp/gh-notifications
   echo "$((NOW + INTERVAL))" >>/tmp/gh-notifications
   echo "$COUNT" >>/tmp/gh-notifications
+  echo "$PAYLOAD" >>/tmp/gh-notifications
 fi
 
 if [ -n "$COUNT" ]; then
