@@ -81,10 +81,11 @@ function main() {
   zoxide)
     exec fzf \
       --ansi --border-label ' workspace-picker ' --prompt ' ' \
-      --header="^g github ^s kubeswitch ^t tmux" --header-first \
+      --header="^g github ^s kubeswitch ^t tmux ^x !remove" --header-first \
       --bind="ctrl-g:become(workspace-picker --source=github --query={q})" \
       --bind="ctrl-s:become(workspace-picker --source=kubeswitch --query={q})" \
       --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
+      --bind="ctrl-x:execute(zoxide remove {})+reload(zoxide query --list)" \
       --query="${ARG_QUERY}" \
       --preview="tree -C {}" < <(zoxide query --list) |
       {
