@@ -104,9 +104,9 @@ function main() {
       --bind="ctrl-g:become:workspace-picker --source=github --query={q}" \
       --bind="ctrl-s:become:workspace-picker --source=kubeswitch --query={q}" \
       --bind="ctrl-x:become:workspace-picker --source=zoxide --query={q}" \
-      --preview="tmux lsp -F \" #{pane_current_command}\" -t {}" \
+      --preview="echo {} | awk '{print \$3}' | xargs tmux capture-pane -p -e -t" \
       --query="${ARG_QUERY}" \
-      < <(tmux list-windows -f "#{!=:#{window_active},1}" -F "#{window_name} #{window_activity} #{window_active}" | sort -k2,2r | awk '{print $1}') |
+      < <(tmux list-windows -f "#{!=:#{window_active},1}" -F "#{pane_current_command} #{b:pane_current_path} #{window_id}" | sort -k2,2r) |
       {
         read -r NAME
         tmux switch-client -t "$NAME"
