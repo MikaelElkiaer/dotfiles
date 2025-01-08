@@ -5,15 +5,15 @@ if [ -e "$KUBECONFIG_LINK" ]; then
   export KUBECONFIG="$KUBECONFIG_LINK"
   RESULT=""
   if CONTEXT="$(kubectl config current-context)"; then
-    RESULT="#[fg=colour13] 󱃾 $CONTEXT"
+    RESULT="󱃾 $CONTEXT"
   fi
   if NAMESPACE="$(
     kubectl config view --minify --output jsonpath='{..namespace}'
     echo
-  )"; then
-    RESULT="$RESULT(${NAMESPACE:-default})"
+  )" && [ -n "$NAMESPACE" ]; then
+    RESULT="$RESULT(${NAMESPACE})"
   fi
   if [ -n "$RESULT" ]; then
-    echo "$RESULT#[fg=colour8]"
+    echo "$RESULT"
   fi
 fi
