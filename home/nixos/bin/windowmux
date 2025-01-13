@@ -25,7 +25,6 @@ function main() {
     ACTIVE_PATH="~"
   fi
   RESULT+="$(basename "$ACTIVE_PATH")"
-  RESULT+="$(get_superscript "$WINDOW_INDEX")"
   echo "$RESULT"
 }
 
