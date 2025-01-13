@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+function main() {
+  YAML="$(
+    cat <<EOF
+git:
+  key: g
+  menu:
+    hub:
+      action: "display-popup -EE gh notify"
+      key: h
+login:
+  key: l
+  menu:
+    aws:
+      action: "display-popup -EE aws sso login --no-browser --use-device-code"
+      key: a
+    vault:
+      action: "display-popup -EE vault login"
+      key: v
+shell:
+  key: s
+  menu:
+    gotop:
+      action: "display-popup -E -h 90% -w 90% gotop"
+      key: g
+    htop:
+      action: "display-popup -E -h 90% -w 90% htop"
+      key: h
+    shell:
+      action: "display-popup -d ~ -E -h 90% -w 90% bash"
+      key: s
+tmux:
+  key: t
+  menu:
+    kill_window:
+      action: "kill-window"
+      key: x
+    kill_session:
+      action: "kill-session"
+      key: X
+    kill_other_windows:
+      action: "kill-window -a"
+      key: o
+    kill_other_sessions:
+      action: "kill-session -a"
+      key: O
+EOF
+  )"
+  QUERY=
+  for s in "$@"; do
+    TITLE="$s"
+    export s
+    QUERY+=".$s.menu"
+  done
+  YAML="$(yq "$QUERY" <<<"$YAML")"
+
+  CMD="tmux display-menu -T ${TITLE:-menu}"
+
+  ITEMS="$(yq -r 'keys[]' <<<"$YAML")"
+  for i in $ITEMS; do
+    ACTION="$(yq -r ".$i.action" <<<"$YAML")"
+    KEY="$(yq -r ".$i.key" <<<"$YAML")"
+    MENU="$(yq ".$i.menu" <<<"$YAML")"
+    if [ -n "$*" ]; then
+      SELECTION="$* $i"
+    else
+      SELECTION="$i"
+    fi
+    if [ "$MENU" != "null" ]; then
+      CMD+=" \"+${i//_/ }\" $KEY \"run-shell \\\"menumux $SELECTION\\\"\""
+    else
+      CMD+=" \"${i//_/ }\" $KEY \"$ACTION\""
+    fi
+  done
+
+  eval "$CMD"
+}
+
+error_handler() {
+  tmux display-popup -E "echo 'Error: ($1) on line $2' | less"
+  exit 0
+}
+
+trap 'error_handler $? $LINENO' ERR
+
+main "$@"
