@@ -40,6 +40,9 @@ function get_app_icon() {
   "nvim")
     echo ""
     ;;
+  "ssh")
+    echo "󰍹"
+    ;;
   *)
     echo " "
     ;;
