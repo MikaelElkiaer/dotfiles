@@ -17,6 +17,7 @@ in
   };
   home.packages = with pkgs; [
     (config.lib.nixGL.wrap alacritty)
+    jfrog-cli
     keepassxc
     minikube
   ];
