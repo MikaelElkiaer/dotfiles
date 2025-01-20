@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+export SEARCH="${1}"
+
+if ! [ -f ~/.cache/nerdfonts.json ]; then
+  wget https://raw.githubusercontent.com/ryanoasis/nerd-fonts/master/glyphnames.json --output-document ~/.cache/nerdfonts.json
+fi
+
+yq -r 'with_entries(select(.key | test("(?i)\(env(SEARCH))"))) | to_entries | map(" \(.value.char)") | join("	")' < ~/.cache/nerdfonts.json
