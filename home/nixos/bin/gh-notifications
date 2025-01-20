@@ -205,8 +205,6 @@ function _preview() {
   MODE="${2:-view}"
 
   export GH_FORCE_TTY=1
-  # TODO: Figure out why width does not work
-  export GH_MDWIDTH="$FZF_PREVIEW_COLUMNS"
   case "$TYPE" in
   Issue)
     gh issue "${MODE}" "$URL"
@@ -233,7 +231,7 @@ function _exec_fzf() {
     --delimiter='\t' \
     --header-first \
     --no-sort \
-    --preview-window=hidden \
+    --preview-window=hidden,wrap \
     --with-nth=2..
 }
 
