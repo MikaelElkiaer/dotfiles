@@ -9,7 +9,7 @@ git:
   key: g
   menu:
     hub:
-      action: "display-popup -EE gh notify"
+      action: "display-popup -EE gh-notifications"
       key: h
 login:
   key: l

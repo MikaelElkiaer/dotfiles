@@ -181,7 +181,7 @@ unset -f _add_completion
 
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
   if command -v tmux &>/dev/null; then
-    export BROWSER='tmux display-popup -T Browser -w 50% -h 10% echo'
+    export BROWSER='tmux display-message -d 0'
   fi
 fi
 

@@ -8,6 +8,9 @@ COUNT=
 NOW=$(date +%s)
 RESET=$(sed -n '1p' /tmp/gh-notifications)
 
+# TODO: Consider using graphql
+# - gh api graphql -F query='query { viewer { notificationThreads(query: "is:unread") { totalCount } } }' --jq=".data.viewer.notificationThreads.totalCount"
+
 if [ -n "$RESET" ] && [ "$RESET" -gt "$NOW" ]; then
   echo "Polling blocked - resets in $((RESET - NOW))s" >&2
   COUNT=$(sed -n '2p' /tmp/gh-notifications)
