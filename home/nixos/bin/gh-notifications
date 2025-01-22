@@ -6,9 +6,10 @@ function main() {
   _init_args "$@"
 
   # Default values
-  MODE="${ARG__MODE:-fzf}"
+  local MODE="${ARG__MODE:-fzf}"
   UNREAD_ONLY="${ARG__UNREAD_ONLY:-"1"}"
-  
+  PREVIEW_DIFF="${ARG__PREVIEW_DIFF:-"0"}"
+
   case "$MODE" in
   fzf)
     _exec_fzf || error_code=$?
@@ -23,7 +24,7 @@ function main() {
     echo "Unknown mode: $MODE" >&2
     exit 1
     ;;
-esac
+  esac
 }
 
 function _init_args() {
@@ -32,6 +33,10 @@ function _init_args() {
     case "${optchar}" in
     -)
       case "${OPTARG}" in
+      preview-diff)
+        OPTIND=$((OPTIND + 1))
+        ARG__PREVIEW_DIFF="1"
+        ;;
       mode)
         OPTIND=$((OPTIND + 1))
         ARG__MODE="${!OPTIND}"
@@ -46,6 +51,9 @@ function _init_args() {
         fi
         ;;
       esac
+      ;;
+    d)
+      ARG__PREVIEW_DIFF="1"
       ;;
     m)
       ARG__MODE="${OPTARG}"
@@ -63,7 +71,7 @@ function _init_args() {
 }
 
 function _get_data() {
-  FILTER="-is:done"
+  local FILTER="-is:done"
   if [ "$(_get_option unread-only "$UNREAD_ONLY")" = "1" ]; then
     FILTER="$FILTER is:unread"
   fi
@@ -173,24 +181,25 @@ function _get() {
 }
 
 function _toggle_option() {
-  VALUE="$(_get_option "$1")"
+  local OPTION="$1"
+  local VALUE="$(_get_option "$OPTION")"
   if [ "$VALUE" = "1" ]; then
-    NEW_VALUE="0"
+    local NEW_VALUE="0"
   elif [ "$VALUE" = "0" ]; then
-    NEW_VALUE="1"
+    local NEW_VALUE="1"
   fi
   sed --regexp-extended "s/(${OPTION})\($VALUE\)/\1(${NEW_VALUE})/" <<<"$FZF_BORDER_LABEL"
 }
 
 function _get_option() {
   if [ -z "${FZF_BORDER_LABEL-}" ]; then
-    DEFAULT="$2"
+    local DEFAULT="$2"
     echo "$DEFAULT"
     return
   fi
 
-  OPTION="$1"
-  VALUE="$(sed --regexp-extended --silent "s/^.*${OPTION}\(([01])\).*\$/\1/p" <<<"$FZF_BORDER_LABEL")"
+  local OPTION="$1"
+  local VALUE="$(sed --regexp-extended --silent "s/^.*${OPTION}\(([01])\).*\$/\1/p" <<<"$FZF_BORDER_LABEL")"
 
   if [ -n "$VALUE" ]; then
     echo "$VALUE"
@@ -202,7 +211,11 @@ function _get_option() {
 
 function _preview() {
   read -r TYPE URL <<<"$(_get type url <<<"$1")"
-  MODE="${2:-view}"
+  if [ "$(_get_option preview-diff "${PREVIEW_DIFF}")" = "1" ]; then
+    local MODE="diff"
+  else
+    local MODE="view"
+  fi
 
   export GH_FORCE_TTY=1
   case "$TYPE" in
@@ -219,18 +232,20 @@ function _exec_fzf() {
   # TODO: Replace tmux command with something more generic
   echo -n "" | fzf \
     --ansi \
-    --bind="enter:become(tmux display-message -d 0 \$(_get url <<<{1}))" \
-    --bind="tab:preview(_preview {1})" \
-    --bind="shift-tab:preview(_preview {1} diff)" \
-    --bind="space:execute-silent(_get id <<<{1} | _mark_read)+reload(_get_data)" \
-    --bind="ctrl-space:execute-silent(_get id <<<{1} | _mark_done)+reload(_get_data)" \
+    --bind="d:execute-silent(_get id <<<{1} | _mark_done)+reload(_get_data)" \
+    --bind="o:become(tmux display-message -d 0 \$(_get url <<<{1}))" \
+    --bind="p:toggle-preview" \
+    --bind="r:execute-silent(_get id <<<{1} | _mark_read)+reload(_get_data)" \
+    --bind="ctrl-p:transform-border-label(_toggle_option preview-diff)+refresh-preview" \
     --bind="ctrl-r:transform-border-label(_toggle_option unread-only)+reload-sync(_get_data)" \
-    --bind 'load:disable-search+reload-sync(_get_data)+unbind(load)+enable-search' \
+    --bind='load:change-prompt($ )+disable-search+reload-sync(_get_data)+unbind(load)' \
+    --bind='change:change-header(search disabled)+clear-query' \
     --border=bottom \
-    --border-label=" 󱁐 read 󰘴󱁐 done 󰌒 preview 󰘶󰌒 preview diff 󰌑 view 󰘴r unread-only(${UNREAD_ONLY}) " \
+    --border-label=" (d)one (o)pen (p)review-toggle (r)ead 󰘴p preview-diff(${PREVIEW_DIFF}) 󰘴r unread-only(${UNREAD_ONLY}) " \
     --delimiter='\t' \
     --header-first \
     --no-sort \
+    --preview='(_preview {1})' \
     --preview-window=hidden,wrap \
     --with-nth=2..
 }
