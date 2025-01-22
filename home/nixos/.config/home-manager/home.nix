@@ -19,6 +19,7 @@ in
   home.stateVersion = "24.05"; # WARN: Do not change
 
   home.packages = with pkgs; [
+    amazon-ecr-credential-helper
     atuin
     awscli2
     bats
