@@ -11,6 +11,9 @@ git:
     hub:
       action: "display-popup -EE gh-notifications"
       key: h
+    pull:
+      action: "display-popup -d #{pane_current_path} -EE git pull"
+      key: p
 login:
   key: l
   menu:
@@ -32,23 +35,37 @@ shell:
     shell:
       action: "display-popup -d ~ -E -h 90% -w 90% bash"
       key: s
-tmux:
-  key: t
+window:
+  key: w
   menu:
-    kill_window:
+    clone:
+      action: "new-window -c '#{pane_current_path}'"
+      key: C
+    create:
+      action: "new-window"
+      key: c
+    kill:
       action: "kill-window"
       key: x
-    kill_session:
-      action: "kill-session"
-      key: X
-    kill_other_windows:
+    kill_other:
       action: "kill-window -a"
       key: o
-    kill_other_sessions:
-      action: "kill-session -a"
-      key: O
+    last:
+      action: "last-window"
+      key: l
+    next:
+      action: "next-window"
+      key: n
+    previous:
+      action: "previous-window"
+      key: p
+"_":
+workspaces:
+  action: "display-popup -w 90% -E workspace-picker"
+  key: W
 EOF
   )"
+
   QUERY=
   for s in "$@"; do
     TITLE="$s"
