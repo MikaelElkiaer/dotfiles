@@ -35,7 +35,7 @@ shell:
     shell:
       action: "display-popup -d ~ -E -h 90% -w 90% bash"
       key: s
-window:
+workspaces:
   key: w
   menu:
     clone:
@@ -59,10 +59,9 @@ window:
     previous:
       action: "previous-window"
       key: p
-"_":
-workspaces:
-  action: "display-popup -w 90% -E workspace-picker"
-  key: W
+    workspace-picker:
+      action: "display-popup -w 90% -E workspace-picker"
+      key: w
 EOF
   )"
 
