@@ -57,6 +57,7 @@ function main() {
       --bind="ctrl-s:become(workspace-picker --source=kubeswitch --query={q})" \
       --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
       --bind="ctrl-x:become(workspace-picker --source=zoxide --query={q})" \
+      --disabled \
       --query="${ARG_QUERY}" \
       < <(echo -n) |
       {
