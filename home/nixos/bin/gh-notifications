@@ -18,7 +18,7 @@ function main() {
     fi
     ;;
   print)
-    echo "$DATA"
+    _get_data
     ;;
   *)
     echo "Unknown mode: $MODE" >&2
