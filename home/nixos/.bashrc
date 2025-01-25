@@ -169,6 +169,11 @@ if [ "$(command -v fzf)" ]; then
   export FZF_DEFAULT_OPTS="--bind=\"ctrl-d:preview-page-down,ctrl-u:preview-page-up\""
 fi
 
+# [bws](https://bitwarden.com/products/secrets-manager/)
+if [ "$(command -v bws)" ]; then
+  _add_completion _bws "bws completions bash"
+fi
+
 # Load additional profiles
 # - These are not supposed to be source-controlled
 for f in $(find ~ -maxdepth 1 -name '.bash_profile_*'); do

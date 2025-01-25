@@ -23,6 +23,7 @@ in
     atuin
     awscli2
     bats
+    bws
     cargo
     inputs.dagger.packages.${system}.dagger
     delta
