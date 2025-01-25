@@ -15,6 +15,23 @@ docker-credhelper:	## Set credential helper
 	touch ~/.docker/config.json
 	yq --inplace '.auths as $$auths | .credHelpers = ($$auths | to_entries | map(.value="secretservice") | from_entries)' ~/.docker/config.json
 
+hm-build:		## Build home-manager config
+	@(\
+		set -e;\
+		# Clean up\
+		trap 'rm --force ./result ./diff' EXIT;\
+		# Build new revision\
+		home-manager build;\
+		# Compare new revision with current\
+		nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result > ./diff;\
+		# Add all changes to git\
+		git add home/nixos/.config/home-manager/;\
+		# Determine if there are changes\
+		git diff --cached --exit-code &>/dev/null && exit 0;\
+		# Create commit, with diff as message body\
+		git commit --template=<(echo; echo; cat ./diff);\
+	)
+
 hm-switch:		## Apply home-manager config
 	NIXPKGS_ALLOW_INSECURE=$${FORCE:+1} home-manager switch -b bak $${FORCE:+--impure}
 
