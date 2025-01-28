@@ -84,6 +84,9 @@ in
   ];
 
   home.file = {
+    ".config/containers/registries.conf" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/containers/registries.conf";
+    };
     ".config/home-manager" = {
       recursive = true;
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/home-manager";
