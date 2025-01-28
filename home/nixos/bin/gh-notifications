@@ -38,8 +38,8 @@ function _init_args() {
         ARG__PREVIEW_DIFF="1"
         ;;
       mode)
-        OPTIND=$((OPTIND + 1))
         ARG__MODE="${!OPTIND}"
+        OPTIND=$((OPTIND + 1))
         ;;
       unread-only)
         ARG__UNREAD_ONLY="1"
