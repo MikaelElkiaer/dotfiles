@@ -9,6 +9,8 @@
 
 let
   dotHome = "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/home/nixos";
+  docker-credential-magic = (pkgs.callPackage ./packages/docker-credential-magic.nix { });
+  docker-credential-ghcr-login = (pkgs.callPackage ./packages/docker-credential-ghcr-login.nix { });
 in
 {
   imports = [ ./neovim.nix ];
@@ -34,7 +36,9 @@ in
         sdk_8_0_3xx
       ]
     )
+    docker-credential-ghcr-login
     docker-credential-helpers
+    docker-credential-magic
     file
     fluxcd
     fzf
@@ -95,6 +99,9 @@ in
     ".config/tmux" = {
       recursive = true;
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/tmux";
+    };
+    ".docker/config.json" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.docker/config.json";
     };
     ".bash_aliases" = {
       source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.bash_aliases";

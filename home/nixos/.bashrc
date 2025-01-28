@@ -174,6 +174,21 @@ if [ "$(command -v bws)" ]; then
   _add_completion _bws "bws completions bash"
 fi
 
+# [docker-credential-magic](https://github.com/docker-credential-magic/docker-credential-magic)
+if [ "$(command -v docker-credential-magic)" ]; then
+  export DOCKER_CONFIG="$(docker-credential-magic home)"
+  if ! [ -d "$DOCKER_CONFIG" ]; then
+    docker-credential-magic init
+  fi
+  if [ "$(command -v docker-credential-ghcr-login)" ]; then
+    cat <<EOF >"$DOCKER_CONFIG/etc/ghcr.yml"
+helper: ghcr-login
+domains:
+  - ghcr.io
+EOF
+  fi
+fi
+
 # Load additional profiles
 # - These are not supposed to be source-controlled
 for f in $(find ~ -maxdepth 1 -name '.bash_profile_*'); do
