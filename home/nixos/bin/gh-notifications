@@ -154,7 +154,8 @@ function _get_data() {
           else ""
           end,
         title: (.title | . + (" " * (maxTitleLength - length)))
-      } | [ (.properties | tostring), .readIcon, .stateIcon, .title, .repository] | @tsv'
+      } | [ (.properties | tostring), .readIcon, .stateIcon, .title, .repository] | @tsv' |
+    sed -E 's,\\\\,\\,g'
 }
 
 function _mark_read() {
