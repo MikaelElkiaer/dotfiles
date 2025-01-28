@@ -8,9 +8,16 @@
 }:
 
 let
-  dotHome = "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/home/nixos";
+  dagger = inputs.dagger.packages.${pkgs.system}.dagger;
   docker-credential-magic = (pkgs.callPackage ./packages/docker-credential-magic.nix { });
   docker-credential-ghcr-login = (pkgs.callPackage ./packages/docker-credential-ghcr-login.nix { });
+  dotnet = (
+    with pkgs.dotnetCorePackages;
+    combinePackages [
+      sdk_9_0
+      sdk_8_0_3xx
+    ]
+  );
 in
 {
   imports = [ ./neovim.nix ];
@@ -27,15 +34,9 @@ in
     bats
     bws
     cargo
-    inputs.dagger.packages.${system}.dagger
+    dagger
     delta
-    (
-      with dotnetCorePackages;
-      combinePackages [
-        sdk_9_0
-        sdk_8_0_3xx
-      ]
-    )
+    dotnet
     docker-credential-ghcr-login
     docker-credential-helpers
     docker-credential-magic
@@ -83,46 +84,50 @@ in
     zoxide
   ];
 
-  home.file = {
-    ".config/containers/registries.conf" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/containers/registries.conf";
+  home.file =
+    let
+      dotfilesHome = "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/home/nixos";
+    in
+    {
+      ".config/containers/registries.conf" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/registries.conf";
+      };
+      ".config/home-manager" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/home-manager";
+      };
+      ".config/lazygit" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/lazygit";
+      };
+      ".config/navi" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/navi";
+      };
+      ".config/tmux" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/tmux";
+      };
+      ".docker/config.json" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.docker/config.json";
+      };
+      ".bash_aliases" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.bash_aliases";
+      };
+      ".bashrc_extra" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.bashrc";
+      };
+      ".gitconfig" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.gitconfig";
+      };
+      ".inputrc" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.inputrc";
+      };
+      "bin" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/bin";
+      };
     };
-    ".config/home-manager" = {
-      recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/home-manager";
-    };
-    ".config/lazygit" = {
-      recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/lazygit";
-    };
-    ".config/navi" = {
-      recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/navi";
-    };
-    ".config/tmux" = {
-      recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.config/tmux";
-    };
-    ".docker/config.json" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.docker/config.json";
-    };
-    ".bash_aliases" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.bash_aliases";
-    };
-    ".bashrc_extra" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.bashrc";
-    };
-    ".gitconfig" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.gitconfig";
-    };
-    ".inputrc" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/.inputrc";
-    };
-    "bin" = {
-      recursive = true;
-      source = config.lib.file.mkOutOfStoreSymlink "${dotHome}/bin";
-    };
-  };
 
   home.sessionVariables = { };
 
