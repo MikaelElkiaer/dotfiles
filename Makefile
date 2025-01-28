@@ -5,16 +5,6 @@ help:			## Show this help
 login-gh:		## Log in to GitHub CLI
 	gh auth login --hostname=github.com --git-protocol=https --scopes=notifications,read:packages,read:org,read:project
 
-login-ghcr:		## Log in to ghcr container registry
-	gh auth token | docker login ghcr.io --username "$$(gh api user --jq='.login')" --password-stdin
-
-# INFO: This is currently needed for skopeo
-# - to properly use login credentials
-docker-credhelper:	## Set credential helper
-	mkdir --parents ~/.docker/
-	touch ~/.docker/config.json
-	yq --inplace '.auths as $$auths | .credHelpers = ($$auths | to_entries | map(.value="secretservice") | from_entries)' ~/.docker/config.json
-
 hm-build:		## Build home-manager config
 	@(\
 		set -e;\
