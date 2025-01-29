@@ -23,7 +23,7 @@ hm-build:		## Build home-manager config
 	)
 
 hm-switch:		## Apply home-manager config
-	NIXPKGS_ALLOW_INSECURE=$${FORCE:+1} home-manager switch -b bak $${FORCE:+--impure}
+	home-manager switch -b bak
 
 hm-update:		## Update home-manager flake
 	@(\
@@ -33,7 +33,7 @@ hm-update:		## Update home-manager flake
 		# Update flake\
 		nix flake update --flake $$PWD/home/nixos/.config/home-manager/;\
 		# Create new revision based on current flake\
-		NIXPKGS_ALLOW_INSECURE=$${FORCE:+1} home-manager build $${FORCE:+--impure};\
+		home-manager build;\
 		# Compare new revision with currently applied\
 		nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result > ./diff;\
 		# Determine whether latest commit is a hm-update, and whether it is unpushed\
