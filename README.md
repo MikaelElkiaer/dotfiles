@@ -6,6 +6,8 @@
 
 ```bash
 sh <(curl -L https://nixos.org/nix/install) --daemon
+[ -f ~/.config/nix/nix.conf ] ||
+  echo 'extra-experimental-features = flakes nix-command' > ~/.config/nix/nix.conf
 ```
 
 ### 2. Clone repo and apply Home-Manager config
