@@ -4,15 +4,14 @@ set -Eeuo pipefail
 
 OUTPUT=""
 for f in ~/.local/state/logged-in-*; do
+  [ -e "$f" ] || continue
   STATUS=$(cat "$f")
   if [ "$STATUS" -eq 1 ]; then
     PROVIDER=$(basename "$f" | sed 's/logged-in-//')
-    # echo -n " #[fg=blue]#[fg=default] $PROVIDER"
-    OUTPUT+=" #[fg=blue]${PROVIDER}#[fg=default]"
+    OUTPUT+=" #[fg=green]${PROVIDER}#[fg=default]"
   elif [ "$STATUS" -eq 0 ]; then
     PROVIDER=$(basename "$f" | sed 's/logged-in-//')
-    # echo -n " #[fg=yellow]#[fg=default] $PROVIDER"
-    OUTPUT+=" #[fg=yellow]${PROVIDER}#[fg=default]"
+    OUTPUT+=" #[fg=red]${PROVIDER}#[fg=default]"
   fi
 done
 
