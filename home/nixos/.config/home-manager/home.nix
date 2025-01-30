@@ -71,6 +71,7 @@ in
     renovate
     ripgrep
     skopeo
+    tlrc
     tmux
     tree
     trivy
