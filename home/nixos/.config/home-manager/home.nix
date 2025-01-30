@@ -164,4 +164,70 @@ in
   programs.gpg.enable = true;
   services.gpg-agent.enable = true;
   services.ssh-agent.enable = true;
+
+  systemd.user.services = {
+    login-status-aws = {
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.writeShellScript "login-status-aws" ''
+          aws sts get-caller-identity &&
+            echo 1 > "$HOME/.local/state/logged-in-aws" ||
+            echo 0 > "$HOME/.local/state/logged-in-aws"
+        ''}";
+      };
+      Unit = {
+        Description = "Set login status for AWS";
+      };
+    };
+    login-status-vault = {
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.writeShellScript "login-status-vault" ''
+          # Load additional profiles
+          # - These are not supposed to be source-controlled
+          for f in $(find ~ -maxdepth 1 -name '.bash_profile_*'); do
+            # shellcheck source=/dev/null
+            source "$f"
+          done
+          vault token lookup &&
+            echo 1 > "$HOME/.local/state/logged-in-vault" ||
+            echo 0 > "$HOME/.local/state/logged-in-vault"
+        ''}";
+      };
+      Unit = {
+        Description = "Set login status for Vault";
+      };
+    };
+  };
+
+  systemd.user.timers = {
+    login-status-aws = {
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+      Timer = {
+        OnCalendar = "*-*-* *:*:00";
+        Persistent = true;
+      };
+      Unit = {
+        Description = "Run login status for AWS every minute";
+      };
+    };
+    login-status-vault = {
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+      Timer = {
+        OnCalendar = "*-*-* *:*:00";
+        Persistent = true;
+      };
+      Unit = {
+        Description = "Run login status for Vault every minute";
+      };
+    };
+  };
 }
