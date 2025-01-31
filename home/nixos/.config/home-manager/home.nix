@@ -166,6 +166,30 @@ in
   services.ssh-agent.enable = true;
 
   systemd.user.services = {
+    gh-notification-counter = {
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.writeShellScript "gh-notification-counter" ''
+          set -Eeuo pipefail
+
+          if ! gh auth status --active | grep '\- Token scopes:' | grep --silent "'notifications'"; then
+            echo "Ensure `gh` is installed, authenticated, and has scope 'notifications'" >&2
+            echo "Clearing state" >&2
+            rm --force "$HOME/.local/state/gh-notification-counter"
+            exit 0
+          fi
+
+          gh api graphql \
+            --field=query='query { viewer { notificationThreads(query: "is:unread") { totalCount } } }' \
+            --jq=".data.viewer.notificationThreads.totalCount" >"$HOME/.local/state/gh-notification-counter"
+        ''}";
+      };
+      Unit = {
+        Description = "Count GitHub notifications";
+      };
+    };
     login-status-aws = {
       Install = {
         WantedBy = [ "default.target" ];
@@ -205,6 +229,18 @@ in
   };
 
   systemd.user.timers = {
+    gh-notification-counter = {
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+      Timer = {
+        OnCalendar = "*-*-* *:*:00";
+        Persistent = true;
+      };
+      Unit = {
+        Description = "Count GitHub notifications every minute";
+      };
+    };
     login-status-aws = {
       Install = {
         WantedBy = [ "timers.target" ];
