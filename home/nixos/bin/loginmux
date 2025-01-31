@@ -3,14 +3,14 @@
 set -Eeuo pipefail
 
 OUTPUT=""
-for f in ~/.local/state/logged-in-*; do
+for f in ~/.local/state/login-status-*; do
   [ -e "$f" ] || continue
-  STATUS=$(cat "$f")
-  if [ "$STATUS" -eq 1 ]; then
-    PROVIDER=$(basename "$f" | sed 's/logged-in-//')
+  STATUS=$(<"$f")
+  if [ "$STATUS" -eq 0 ]; then
+    PROVIDER=$(basename "$f" | sed 's/login-status-//')
     OUTPUT+=" #[fg=green]${PROVIDER}#[fg=default]"
-  elif [ "$STATUS" -eq 0 ]; then
-    PROVIDER=$(basename "$f" | sed 's/logged-in-//')
+  else
+    PROVIDER=$(basename "$f" | sed 's/login-status-//')
     OUTPUT+=" #[fg=red]${PROVIDER}#[fg=default]"
   fi
 done

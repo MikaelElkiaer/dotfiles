@@ -196,9 +196,16 @@ in
       };
       Service = {
         ExecStart = "${pkgs.writeShellScript "login-status-aws" ''
-          aws sts get-caller-identity &&
-            echo 1 > "$HOME/.local/state/logged-in-aws" ||
-            echo 0 > "$HOME/.local/state/logged-in-aws"
+          set -Eeuo pipefail
+
+          if ! command -v aws > /dev/null; then
+            echo "Ensure `aws` is installed" >&2
+            echo "Clearing state" >&2
+            rm --force "$HOME/.local/state/login-status-aws"
+            exit 0
+          fi
+
+          (aws sts get-caller-identity >&2; echo $?) >"$HOME/.local/state/login-status-aws"
         ''}";
       };
       Unit = {
@@ -211,15 +218,22 @@ in
       };
       Service = {
         ExecStart = "${pkgs.writeShellScript "login-status-vault" ''
+          set -Eeuo pipefail
+
           # Load additional profiles
-          # - These are not supposed to be source-controlled
           for f in $(find ~ -maxdepth 1 -name '.bash_profile_*'); do
-            # shellcheck source=/dev/null
             source "$f"
           done
-          vault token lookup &&
-            echo 1 > "$HOME/.local/state/logged-in-vault" ||
-            echo 0 > "$HOME/.local/state/logged-in-vault"
+
+          if ! command -v vault > /dev/null || [ -z "$VAULT_ADDR" ]; then
+            echo "Ensure `vault` is installed and VAULT_ADDR is set" >&2
+            echo "Clearing state" >&2
+            rm --force "$HOME/.local/state/login-status-vault"
+            exit 0
+          fi
+
+          export VAULT_ADDR
+          (vault token lookup >&2; echo $?) >"$HOME/.local/state/login-status-vault"
         ''}";
       };
       Unit = {
