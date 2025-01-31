@@ -36,6 +36,12 @@ hm-update:		## Update home-manager flake
 		home-manager build;\
 		# Compare new revision with currently applied - remove hash change\
 		nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result | sed -E '/[ε∅] → [ε∅]/d' > ./diff;\
+		# Determine if there are updates\
+		if [ -n ./diff ]; then\
+			echo "[INF] No updates found" >&2;\
+			git restore home/nixos/.config/home-manager/flake.lock;\
+			exit 0;\
+		fi;\
 		# Determine whether latest commit is a hm-update, and whether it is unpushed\
 		if [ "$$(git show --format=format:%s --quiet)" = "chore(hm): Update flake" ] && ! git log --exit-code origin/main..main &>/dev/null; then\
 		  UNPUSHED="";\
