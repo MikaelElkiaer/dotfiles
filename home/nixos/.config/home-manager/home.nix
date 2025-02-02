@@ -174,8 +174,8 @@ in
         ExecStart = "${pkgs.writeShellScript "gh-notification-counter" ''
           set -Eeuo pipefail
 
-          if ! gh auth status --active | grep '\- Token scopes:' | grep --silent "'notifications'"; then
-            echo "Ensure `gh` is installed, authenticated, and has scope 'notifications'" >&2
+          if ! command -v gh > /dev/null || ! gh auth status --active | grep '\- Token scopes:' | grep --silent "'notifications'"; then
+            echo "Ensure gh is installed, authenticated, and has scope 'notifications'" >&2
             echo "Clearing state" >&2
             rm --force "$HOME/.local/state/gh-notification-counter"
             exit 0
@@ -199,7 +199,7 @@ in
           set -Eeuo pipefail
 
           if ! command -v aws > /dev/null; then
-            echo "Ensure `aws` is installed" >&2
+            echo "Ensure aws is installed" >&2
             echo "Clearing state" >&2
             rm --force "$HOME/.local/state/login-status-aws"
             exit 0
@@ -226,7 +226,7 @@ in
           done
 
           if ! command -v vault > /dev/null || [ -z "$VAULT_ADDR" ]; then
-            echo "Ensure `vault` is installed and VAULT_ADDR is set" >&2
+            echo "Ensure vault is installed and VAULT_ADDR is set" >&2
             echo "Clearing state" >&2
             rm --force "$HOME/.local/state/login-status-vault"
             exit 0
