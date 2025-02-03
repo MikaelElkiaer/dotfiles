@@ -197,8 +197,6 @@ in
       };
       Service = {
         ExecStart = "${pkgs.writeShellScript "login-status-aws" ''
-          set -Eeuo pipefail
-
           if ! command -v aws > /dev/null; then
             echo "Ensure aws is installed" >&2
             echo "Clearing state" >&2
@@ -219,8 +217,6 @@ in
       };
       Service = {
         ExecStart = "${pkgs.writeShellScript "login-status-vault" ''
-          set -Eeuo pipefail
-
           # Load additional profiles
           for f in $(find ~ -maxdepth 1 -name '.bash_profile_*'); do
             source "$f"
