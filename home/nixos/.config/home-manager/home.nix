@@ -55,6 +55,7 @@ in
     gnumake
     htop
     hyperfine
+    kind
     k9s
     kubectl
     kubernetes-helm
