@@ -183,9 +183,11 @@ in
             exit 0
           fi
 
+          TMP="$(mktemp)"
           gh api graphql \
             --field=query='query { viewer { notificationThreads(query: "is:unread") { totalCount } } }' \
-            --jq=".data.viewer.notificationThreads.totalCount" >"$HOME/.local/state/gh-notification-counter"
+            --jq=".data.viewer.notificationThreads.totalCount" >"$TMP"
+          mv "$TMP" "$HOME/.local/state/gh-notification-counter"
         ''}";
       };
       Unit = {
@@ -205,7 +207,9 @@ in
             exit 0
           fi
 
-          (aws sts get-caller-identity >&2; echo $?) >"$HOME/.local/state/login-status-aws"
+          TMP="$(mktemp)"
+          (aws sts get-caller-identity >&2; echo $?) >"$TMP"
+          mv "$TMP" "$HOME/.local/state/login-status-aws"
         ''}";
       };
       Unit = {
@@ -231,7 +235,9 @@ in
           fi
 
           export VAULT_ADDR
-          (vault token lookup >&2; echo $?) >"$HOME/.local/state/login-status-vault"
+          TMP="$(mktemp)"
+          (vault token lookup >&2; echo $?) >"$TMP"
+          mv "$TMP" "$HOME/.local/state/login-status-vault"
         ''}";
       };
       Unit = {
