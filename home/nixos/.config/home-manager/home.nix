@@ -78,6 +78,7 @@ in
     trivy
     unzip
     vault-bin
+    viddy
     wget
     xclip
     xsel
