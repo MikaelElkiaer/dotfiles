@@ -58,6 +58,7 @@ in
     kind
     k9s
     kubectl
+    kubectl-validate
     kubernetes-helm
     kubeseal
     kubeswitch
