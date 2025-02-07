@@ -34,7 +34,7 @@
         # the path to your home.nix.
         modules = [
           ./home.nix
-          ./twr.nix
+          ./hosts/twr.nix
           # Optionally use extraSpecialArgs
           # to pass through arguments to home.nix
           {
@@ -56,7 +56,7 @@
             # the path to your home.nix.
             modules = [
               ./home.nix
-              ./czc2208rnd.nix
+              ./hosts/czc2208rnd.nix
               # Optionally use extraSpecialArgs
               # to pass through arguments to home.nix
               {
