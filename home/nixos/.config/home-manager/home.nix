@@ -69,6 +69,7 @@ in
     ncurses
     nodejs
     pigz
+    pluto
     python3
     renovate
     ripgrep
