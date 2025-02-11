@@ -4,19 +4,20 @@ trap 'unset -f _query' EXIT
 
 set -euo pipefail
 
-DEFAULT_CLONE_DIR="${HOME}/Repositories/GitHub"
+DEFAULT_REPO_DIR="${HOME}/Repositories"
+DEFAULT_GITHUB_DIR="${DEFAULT_REPO_DIR}/GitHub"
 
 function main() {
   init_args "$@"
 
   ARG_QUERY="${ARG_QUERY:-}"
-  ARG_SOURCE="${ARG_SOURCE:-tmux}"
+  ARG_SOURCE="${ARG_SOURCE:-git}"
 
   case "${ARG_SOURCE}" in
   kubeswitch)
     exec fzf \
       --ansi --border-label ' workspace-picker ' --prompt '󱃾 ' \
-      --header="^g github ^t tmux ^x zoxide" --header-first \
+      --header="^g git ^h github ^t tmux ^x zoxide" --header-first \
       --bind="ctrl-g:become(workspace-picker --source=github --query={q})" \
       --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
       --bind="ctrl-x:become(workspace-picker --source=zoxide --query={q})" \
@@ -36,6 +37,33 @@ function main() {
         tmux switch-client -t "$NEW_PANE_ID"
       }
     ;;
+  git)
+    exec fzf \
+      --ansi --border-label ' workspace-picker ' --prompt ' ' \
+      --delimiter='\t' \
+      --header="^h github ^s kubeswitch ^t tmux ^x zoxide" --header-first \
+      --bind="ctrl-h:become(workspace-picker --source=github --query={q})" \
+      --bind="ctrl-s:become(workspace-picker --source=kubeswitch --query={q})" \
+      --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
+      --bind="ctrl-x:become(workspace-picker --source=zoxide --query={q})" \
+      --query="${ARG_QUERY}" \
+      --with-nth=2.. \
+      < <(
+        find "$DEFAULT_REPO_DIR" -maxdepth 5 -type d -name .git |
+          while read -r d; do
+            FULL="$(dirname "$d")"
+            DIR="$(dirname "$FULL")"
+            NAME="$(basename "$FULL")"
+            echo -e "${FULL}\t${NAME}\t${DIR}"
+          done |
+          column --output-separator $'\t' --separator $'\t' --table
+      ) |
+      awk -F $'\t' '{print $1}' |
+      {
+        read -r CHOICE
+        tmux new-window -c "$CHOICE" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
+      }
+    ;;
   github)
     USERNAME="$(yq '.["github.com"].user' <~/.config/gh/hosts.yml)"
     function _query() {
@@ -50,7 +78,7 @@ function main() {
     #TODO: Force colors in preview
     exec fzf \
       --ansi --border-label ' workspace-picker ' --prompt ' search> ' \
-      --header="^s kubeswitch ^t tmux ^x zoxide" --header-first \
+      --header="^g git ^s kubeswitch ^t tmux ^x zoxide" --header-first \
       --bind="load:reload-sync(_query {q})+unbind(load)" \
       --bind="change:reload-sync(_query {q})" \
       --preview "gh repo view {}" \
@@ -70,20 +98,20 @@ function main() {
           SUBPATH="$OWNER/$NAME"
         fi
 
-        if ! [ -d "$DEFAULT_CLONE_DIR/$SUBPATH" ]; then
-          gh repo clone "$SUBPATH" "$DEFAULT_CLONE_DIR/${SUBPATH}"
+        if ! [ -d "$DEFAULT_GITHUB_DIR/$SUBPATH" ]; then
+          gh repo clone "$SUBPATH" "$DEFAULT_GITHUB_DIR/${SUBPATH}"
           if command -v zoxide &>/dev/null; then
-            zoxide add "$DEFAULT_CLONE_DIR/$SUBPATH"
+            zoxide add "$DEFAULT_GITHUB_DIR/$SUBPATH"
           fi
         fi
 
-        tmux new-window -c "$DEFAULT_CLONE_DIR/$SUBPATH" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
+        tmux new-window -c "$DEFAULT_GITHUB_DIR/$SUBPATH" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
       }
     ;;
   zoxide)
     exec fzf \
       --ansi --border-label ' workspace-picker ' --prompt ' ' \
-      --header="^g github ^s kubeswitch ^t tmux ^x !remove" --header-first \
+      --header="^g git ^h github ^s kubeswitch ^t tmux ^x !remove" --header-first \
       --bind="ctrl-g:become(workspace-picker --source=github --query={q})" \
       --bind="ctrl-s:become(workspace-picker --source=kubeswitch --query={q})" \
       --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
@@ -103,7 +131,7 @@ function main() {
   tmux)
     exec fzf \
       --ansi --border-label ' workspace-picker ' --prompt ' ' \
-      --header="^g github ^s kubeswitch ^x zoxide" --header-first \
+      --header="^g git ^h github ^s kubeswitch ^x zoxide" --header-first \
       --bind="ctrl-g:become:workspace-picker --source=github --query={q}" \
       --bind="ctrl-s:become:workspace-picker --source=kubeswitch --query={q}" \
       --bind="ctrl-x:become:workspace-picker --source=zoxide --query={q}" \
