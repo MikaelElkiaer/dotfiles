@@ -18,7 +18,8 @@ function main() {
     exec fzf \
       --ansi --border-label ' workspace-picker ' --prompt '󱃾 ' \
       --header="^g git ^h github ^t tmux ^x zoxide" --header-first \
-      --bind="ctrl-g:become(workspace-picker --source=github --query={q})" \
+      --bind="ctrl-g:become(workspace-picker --source=git --query={q})" \
+      --bind="ctrl-h:become(workspace-picker --source=github --query={q})" \
       --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
       --bind="ctrl-x:become(workspace-picker --source=zoxide --query={q})" \
       --query="${ARG_QUERY}" \
@@ -82,6 +83,7 @@ function main() {
       --bind="load:reload-sync(_query {q})+unbind(load)" \
       --bind="change:reload-sync(_query {q})" \
       --preview "gh repo view {}" \
+      --bind="ctrl-g:become(workspace-picker --source=git --query={q})" \
       --bind="ctrl-s:become(workspace-picker --source=kubeswitch --query={q})" \
       --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
       --bind="ctrl-x:become(workspace-picker --source=zoxide --query={q})" \
@@ -112,7 +114,8 @@ function main() {
     exec fzf \
       --ansi --border-label ' workspace-picker ' --prompt ' ' \
       --header="^g git ^h github ^s kubeswitch ^t tmux ^x !remove" --header-first \
-      --bind="ctrl-g:become(workspace-picker --source=github --query={q})" \
+      --bind="ctrl-g:become(workspace-picker --source=git --query={q})" \
+      --bind="ctrl-h:become(workspace-picker --source=github --query={q})" \
       --bind="ctrl-s:become(workspace-picker --source=kubeswitch --query={q})" \
       --bind="ctrl-t:become(workspace-picker --source=tmux --query={q})" \
       --bind="ctrl-x:execute(zoxide remove {})+reload(zoxide query --list)" \
@@ -132,7 +135,8 @@ function main() {
     exec fzf \
       --ansi --border-label ' workspace-picker ' --prompt ' ' \
       --header="^g git ^h github ^s kubeswitch ^x zoxide" --header-first \
-      --bind="ctrl-g:become:workspace-picker --source=github --query={q}" \
+      --bind="ctrl-g:become(workspace-picker --source=git --query={q})" \
+      --bind="ctrl-h:become:workspace-picker --source=github --query={q}" \
       --bind="ctrl-s:become:workspace-picker --source=kubeswitch --query={q}" \
       --bind="ctrl-x:become:workspace-picker --source=zoxide --query={q}" \
       --preview="echo {} | awk '{print \$3}' | xargs tmux capture-pane -p -e -t" \
