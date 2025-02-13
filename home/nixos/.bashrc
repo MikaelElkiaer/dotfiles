@@ -168,7 +168,7 @@ fi
 # [fzf](https://github.com/junegunn/fzf)
 if [ "$(command -v fzf)" ]; then
   _add_completion _fzf "fzf --bash"
-  export FZF_DEFAULT_OPTS="--bind=\"ctrl-d:preview-page-down,ctrl-u:preview-page-up\""
+  export FZF_DEFAULT_OPTS="--ansi --border=bottom --header-first --bind=\"ctrl-d:preview-page-down,ctrl-u:preview-page-up\""
 fi
 
 # [bws](https://bitwarden.com/products/secrets-manager/)
