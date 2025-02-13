@@ -122,6 +122,8 @@ export BAT_THEME=base16
 if [ "$(command -v navi)" ]; then
   # shellcheck source=/dev/null
   source <(navi widget bash)
+
+  export NAVI_FZF_OVERRIDES_VAR='--no-select-1'
 fi
 
 # detect WSL
