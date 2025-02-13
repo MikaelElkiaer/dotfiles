@@ -2,7 +2,10 @@
 
 set -euo pipefail
 
+RESULT=" "
 if [ -s "$HOME/.local/state/gh-notification-counter" ]; then
   COUNT=$(<"$HOME/.local/state/gh-notification-counter")
-  echo " $COUNT"
+  RESULT+="$COUNT"
 fi
+
+echo "$RESULT"
