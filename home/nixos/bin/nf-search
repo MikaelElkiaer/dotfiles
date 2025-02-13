@@ -2,10 +2,12 @@
 
 set -Eeuo pipefail
 
-export SEARCH="${1}"
-
 if ! [ -f ~/.cache/nerdfonts.json ]; then
+  echo "[DBG] Downloading nerdfonts.json" >&2
   wget https://raw.githubusercontent.com/ryanoasis/nerd-fonts/master/glyphnames.json --output-document ~/.cache/nerdfonts.json
 fi
 
-yq -r 'with_entries(select(.key | test("(?i)\(env(SEARCH))"))) | to_entries | map(" \(.value.char)") | join("	")' < ~/.cache/nerdfonts.json
+jq --raw-output 'to_entries | .[1:] | map("\(.value.char) \(.key)") | .[]' <~/.cache/nerdfonts.json |
+  fzf --nth=2 --separator=$'\t' |
+  awk '{print $1}' |
+  tmux load-buffer -w -
