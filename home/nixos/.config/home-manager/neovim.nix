@@ -10,6 +10,7 @@
 
   home.packages = with pkgs; [
     neovim
+    nvimpager
     # LSP
     bash-language-server
     dockerfile-language-server-nodejs
