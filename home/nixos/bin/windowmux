@@ -4,7 +4,7 @@ set -euo pipefail
 
 function main() {
   WINDOW_ID="$1"
-  WINDOW_INDEX="$2"
+  WINDOW_INDEX="${2-}"
 
   mapfile -t PANES < <(tmux list-panes -F "#{pane_current_command} #{pane_current_path} #{pane_active}" -t "$WINDOW_ID")
 
@@ -14,18 +14,20 @@ function main() {
     read -r APP _PATH ACTIVE <<<"$P"
     if [ "$ACTIVE" == "1" ]; then
       ACTIVE_PATH=$_PATH
-      FORMAT+="#[fg=colour4]"
+      FORMAT+="${NOFORMAT-#[fg=blue]}"
     fi
     FORMAT+="$(get_app_icon "$APP")"
     FORMAT+=" "
-    FORMAT+="#[fg=default]"
+    FORMAT+="${NOFORMAT-#[fg=default]}"
     RESULT+="$FORMAT"
   done
   if [ "$ACTIVE_PATH" == "$HOME" ]; then
     ACTIVE_PATH="~"
   fi
   RESULT+="$(basename "$ACTIVE_PATH")"
-  RESULT+="$(get_superscript "$WINDOW_INDEX")"
+  if [ -n "$WINDOW_INDEX" ]; then
+    RESULT+="$(get_superscript "$WINDOW_INDEX")"
+  fi
   echo "$RESULT"
 }
 

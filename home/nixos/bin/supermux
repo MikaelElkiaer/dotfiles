@@ -1,0 +1,231 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+function _main {
+  _init_args "$@"
+  _export_functions
+  _exec_fzf || EXIT_CODE=$?
+  # Ignore escape and interrupts
+  if [ "${EXIT_CODE:-}" -ne 130 ]; then
+    exit "$EXIT_CODE"
+  fi
+}
+
+function _init_args {
+  optspec="x-:"
+  while getopts "$optspec" optchar; do
+    case "${optchar}" in
+    -)
+      case "${OPTARG}" in
+      *)
+        if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then
+          echo "Unknown option --${OPTARG}" >&2
+        fi
+        ;;
+      esac
+      ;;
+    *)
+      if [ "$OPTERR" != 1 ] || [ "${optspec:0:1}" = ":" ]; then
+        echo "Non-option argument: '-${OPTARG}'" >&2
+      fi
+      ;;
+    esac
+  done
+}
+
+function _export_functions {
+  functions=()
+  for f in $(declare -F | sed --quiet --regexp-extended 's/declare -f ([^_].*)/\1/p'); do
+    functions+=("$f")
+  done
+  eval export -f "${functions[*]}"
+}
+
+function _exec_fzf {
+  echo -n "" | fzf \
+    --bind='load:reload(load)+unbind(load)' \
+    --bind='enter:become(action_primary {1} {2})' \
+    --bind='tab:become(action_secondary {1} {2})' \
+    --border-label="" \
+    --delimiter='\t' \
+    --nth=2 \
+    --preview='(preview {1} {2} {3} {4})' \
+    --preview-window=up,wrap \
+    --with-nth=3,4
+}
+
+function load {
+  get_commands &
+  get_directories &
+  get_kube_contexts &
+  get_tmux_windows &
+  get_tmux_keys &
+  wait
+}
+
+function preview {
+  local TYPE="$1"
+  local FULL="$2"
+  local ICON="$3"
+  local NAME="$4"
+  case "$TYPE" in
+  c)
+    (man "$NAME" ||
+      eval "$NAME --help" ||
+      eval "$NAME -h" ||
+      eval "$NAME help") 2>/dev/null | nvimpager -c +"set ft=man"
+    ;;
+  d)
+    README="$(find "$FULL" -maxdepth 1 -type f -iname readme.md)"
+    if [ -n "$README" ]; then
+      nvimpager -c "$README" +"set ft=markdown"
+    else
+      tree -a -C -I '.git' -L 5 "$FULL"
+    fi
+    ;;
+  k)
+    tmux list-keys -Tprefix "${FULL//;/\\;}" | sed 's/bind-key\( -r\)\? -T prefix [^ ]\+ //'
+    ;;
+  t)
+    read -r ID _ <<<"$FULL"
+    tmux capture-pane -p -e -t "$ID"
+    ;;
+  esac
+}
+
+function action_primary {
+  local FULL TYPE
+  TYPE="$1"
+  FULL="$2"
+
+  case "$TYPE" in
+  c)
+    exec "$FULL"
+    ;;
+  d)
+    tmux new-window -c "$FULL" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
+    ;;
+  k)
+    eval "tmux $(tmux list-keys -Tprefix "${FULL//;/\\;}" | sed 's/bind-key\( -r\)\? -T prefix [^ ]\+ //')"
+    ;;
+  s)
+    echo "Loading Kubernetes context..." >&2
+    read -r KUBECONFIG NAME <<<"$(switcher set-context "$CHOICE" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
+    # TODO: Remove KUBECACHEDIR once fixed
+    # - see https://github.com/derailed/k9s/issues/1895
+    NEW_PANE_ID="$(tmux new-window -c "$HOME" -d -e "KUBECONFIG=$KUBECONFIG" -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{pane_id}' bash -i -c 'k9s;exec bash')"
+    tmux switch-client -t "$NEW_PANE_ID"
+    ;;
+  t)
+    tmux switch-client -t "$FULL"
+    ;;
+  esac
+}
+
+function action_secondary {
+  local FULL TYPE
+  TYPE="$1"
+  FULL="$2"
+
+  case "$TYPE" in
+  c)
+    exec bash -i --init-file <(echo "tmux send-keys \"$FULL\"")
+    ;;
+  d)
+    tmux new-window -c "$FULL" bash
+    ;;
+  esac
+}
+
+function get_commands {
+  local EXTRA_ICONS FULL ICON NAME TYPE
+  ICON="$(color magenta 󰘔)"
+  TYPE="c"
+  compgen -c |
+    sort --unique |
+    while read -r NAME; do
+      FULL="$(type -p "$NAME")"
+      if [ -z "$FULL" ]; then
+        continue
+      fi
+      local EXTRA_ICONS=""
+      if [ "$FULL" = "$HOME/.nix-profile/bin/$NAME" ]; then
+        EXTRA_ICONS+=" $(color cyan 󱄅)"
+      elif [ "$FULL" = "$HOME/bin/$NAME" ]; then
+        EXTRA_ICONS+=" $(color green )"
+      fi
+      echo -e "$TYPE\t$FULL\t$ICON$EXTRA_ICONS\t$NAME"
+    done
+}
+
+function get_directories {
+  local EXTRA_ICONS FULL ICON NAME TYPE
+  ICON="$(color blue )"
+  TYPE="d"
+  zoxide query --list |
+    while read -r NAME; do
+      EXTRA_ICONS=""
+      FULL="$NAME"
+      if [ -d "$NAME/.git" ]; then
+        EXTRA_ICONS+=" $(color yellow )"
+      fi
+      echo -e "$TYPE\t$FULL\t$ICON$EXTRA_ICONS\t$NAME"
+    done
+}
+
+function get_kube_contexts {
+  local FULL ICON NAME TYPE
+  ICON="$(color cyan 󱃾)"
+  TYPE="s"
+  switcher list-contexts |
+    while read -r NAME; do
+      FULL="$NAME"
+      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
+    done
+}
+
+function get_tmux_keys {
+  local FULL ICON NAME TYPE
+  ICON="$(color magenta )"
+  TYPE="k"
+  tmux list-keys -N -Tprefix |
+    while read -r FULL NAME; do
+      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
+    done
+}
+
+function get_tmux_windows {
+  local FULL ICON NAME TYPE
+  ICON="$(color green )"
+  TYPE="t"
+  tmux list-windows -F "#{window_id}" |
+    while read -r FULL; do
+      # TODO: Replace tmux styling format with ANSI escape codes
+      NAME="$(eval "NOFORMAT= windowmux $FULL")"
+      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
+    done
+}
+
+function color {
+  declare -x color_reset="\u001b[0m"
+  # TODO: Make it work with exported array
+  declare -xA colors
+  colors[black]="\u001b[30m"
+  colors[blue]="\u001b[34m"
+  colors[cyan]="\u001b[36m"
+  colors[default]="$color_reset"
+  colors[green]="\u001b[32m"
+  colors[magenta]="\u001b[35m"
+  colors[red]="\u001b[31m"
+  colors[yellow]="\u001b[33m"
+  colors[white]="\u001b[37m"
+
+  color="${colors[$1]-}"
+  if [ -z "$color" ]; then
+    echo "[WRN] Color must be one of: ${!colors[*]}" >&2
+  fi
+  echo -e "$color$2$color_reset"
+}
+
+_main "$@"
