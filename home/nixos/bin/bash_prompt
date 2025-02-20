@@ -1,0 +1,18 @@
+#!/usr/bin/env -S expect --
+
+# source: https://askubuntu.com/a/5378
+
+# Get a Bash shell
+spawn -noecho bash
+
+# Wait for a prompt
+expect "λ "
+
+# Type something
+send "$argv "
+
+# Hand over control to the user
+interact
+
+exit
+

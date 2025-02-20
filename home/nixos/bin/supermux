@@ -45,8 +45,8 @@ function _export_functions {
 function _exec_fzf {
   echo -n "" | fzf \
     --bind='load:reload(load)+unbind(load)' \
-    --bind='enter:become(action_primary {1} {2})' \
-    --bind='tab:become(action_secondary {1} {2})' \
+    --bind='enter:become(action_primary {1} {2} {3} {4})' \
+    --bind='tab:become(action_secondary {1} {2} {3} {4})' \
     --border-label="" \
     --delimiter='\t' \
     --nth=2 \
@@ -127,10 +127,11 @@ function action_secondary {
   local FULL TYPE
   TYPE="$1"
   FULL="$2"
+  NAME="$4"
 
   case "$TYPE" in
   c)
-    exec bash -i --init-file <(echo "tmux send-keys \"$FULL\"")
+    bash_prompt "$NAME"
     ;;
   d)
     tmux new-window -c "$FULL" bash
