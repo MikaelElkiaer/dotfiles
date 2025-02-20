@@ -48,6 +48,7 @@ in
     docker-credential-ghcr-login
     docker-credential-helpers
     docker-credential-magic
+    expect
     file
     fluxcd
     fzf
