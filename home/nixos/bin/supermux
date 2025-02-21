@@ -45,12 +45,11 @@ function _export_functions {
 function _exec_fzf {
   echo -n "" | fzf \
     --bind='load:reload(load)+unbind(load)' \
-    --bind='enter:become(action_primary {1} {2} {3} {4})' \
-    --bind='tab:become(action_secondary {1} {2} {3} {4})' \
-    --border-label="" \
+    --bind='enter:become(action_primary {})' \
+    --bind='tab:become(action_secondary {})' \
     --delimiter='\t' \
     --nth=2 \
-    --preview='(preview {1} {2} {3} {4})' \
+    --preview='(preview {})' \
     --preview-window=up,wrap \
     --with-nth=3,4
 }
@@ -65,10 +64,7 @@ function load {
 }
 
 function preview {
-  local TYPE="$1"
-  local FULL="$2"
-  local ICON="$3"
-  local NAME="$4"
+  IFS=$'\t' read -r TYPE FULL ICON NAME <<<"$1"
   case "$TYPE" in
   c)
     (man "$NAME" ||
@@ -95,9 +91,7 @@ function preview {
 }
 
 function action_primary {
-  local FULL TYPE
-  TYPE="$1"
-  FULL="$2"
+  IFS=$'\t' read -r TYPE FULL ICON NAME <<<"$1"
 
   case "$TYPE" in
   c)
@@ -124,10 +118,7 @@ function action_primary {
 }
 
 function action_secondary {
-  local FULL TYPE
-  TYPE="$1"
-  FULL="$2"
-  NAME="$4"
+  IFS=$'\t' read -r TYPE FULL ICON NAME <<<"$1"
 
   case "$TYPE" in
   c)
