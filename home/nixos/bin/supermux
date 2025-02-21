@@ -44,6 +44,7 @@ function _export_functions {
 
 function _exec_fzf {
   echo -n "" | fzf \
+    --bind='focus:transform-border-label(change_border_label {})' \
     --bind='load:reload(load)+unbind(load)' \
     --bind='enter:become(action_primary {})' \
     --bind='tab:become(action_secondary {})' \
@@ -61,6 +62,30 @@ function load {
   get_tmux_windows &
   get_tmux_keys &
   wait
+}
+
+function change_border_label {
+  read -r TYPE FULL ICON NAME <<<"$1"
+  case "$TYPE" in
+  c)
+    echo " 󰌑 run  prompt "
+    ;;
+  d)
+    echo " 󰌑 nvim  prompt "
+    ;;
+  k)
+    echo " 󰌑 run "
+    ;;
+  s)
+    echo " 󰌑 k9s  prompt "
+    ;;
+  t)
+    echo " 󰌑 tmux "
+    ;;
+  *)
+    echo ""
+    ;;
+  esac
 }
 
 function preview {
