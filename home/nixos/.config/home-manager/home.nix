@@ -231,12 +231,37 @@ in
         Description = "Set login status for AWS";
       };
     };
+    login-status-keyring = {
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.writeShellScript "login-status-keyring" ''
+          # Dummy comment for syntax
+          if ! command -v gnome-keyring-daemon > /dev/null; then
+            echo "Ensure gnome-keyring-daemon is installed" >&2
+            echo "Clearing state" >&2
+            rm --force "$HOME/.local/state/login-status-gkd"
+            exit 0
+          fi
+
+          TMP="$(mktemp)"
+          IS_LOCKED="$(busctl --json=pretty --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked | jq '.data')"
+          if [ "$IS_LOCKED" = "true" ]; then
+            echo 1 >"$TMP"
+          elif [ "$IS_LOCKED" = "false" ]; then
+            echo 0 >"$TMP"
+          fi
+          mv "$TMP" "$HOME/.local/state/login-status-gkd"
+        ''}";
+      };
+    };
     login-status-vault = {
       Install = {
         WantedBy = [ "default.target" ];
       };
       Service = {
-        ExecStart = "${pkgs.writeShellScript "login-status-vault" ''
+        ExecStart = "${pkgs.writeShellScript "login-status-vlt" ''
           # Load additional profiles
           for f in $(find ~ -maxdepth 1 -name '.bash_profile_*'); do
             source "$f"
@@ -245,14 +270,14 @@ in
           if ! command -v vault > /dev/null || [ -z "$VAULT_ADDR" ]; then
             echo "Ensure vault is installed and VAULT_ADDR is set" >&2
             echo "Clearing state" >&2
-            rm --force "$HOME/.local/state/login-status-vault"
+            rm --force "$HOME/.local/state/login-status-vlt"
             exit 0
           fi
 
           export VAULT_ADDR
           TMP="$(mktemp)"
           (vault token lookup >&2; echo $?) >"$TMP"
-          mv "$TMP" "$HOME/.local/state/login-status-vault"
+          mv "$TMP" "$HOME/.local/state/login-status-vlt"
         ''}";
       };
       Unit = {
@@ -284,6 +309,18 @@ in
       };
       Unit = {
         Description = "Run login status for AWS every minute";
+      };
+    };
+    login-status-keyring = {
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+      Timer = {
+        OnCalendar = "*-*-* *:*:00";
+        Persistent = true;
+      };
+      Unit = {
+        Description = "Run login status for keyring every minute";
       };
     };
     login-status-vault = {
