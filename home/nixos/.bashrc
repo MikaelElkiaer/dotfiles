@@ -52,7 +52,9 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-  PS1='\[\033[01;34m\]\w\[\033[00m\]\nλ '
+  PS1='\[\033[01;34m\]\w\[\033[00m\]'
+  PS1+=' $(x=$?; if [ $x -gt 0 ]; then echo "\[\033[01;31m\] $x\[\033[01;00m\]"; fi)'
+  PS1+='\nλ '
 else
   PS1='\w\nλ '
 fi
