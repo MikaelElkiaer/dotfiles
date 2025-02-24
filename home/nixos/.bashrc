@@ -195,6 +195,7 @@ fi
 
 # Load additional profiles
 # - These are not supposed to be source-controlled
+# shellcheck disable=SC2044
 for f in $(find ~ -maxdepth 1 -name '.bash_profile_*'); do
   # shellcheck source=/dev/null
   source "$f"
@@ -209,7 +210,12 @@ if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
   fi
 fi
 
-# WARN: Keep this at the bottom
-if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  exec tmux new-session -A -D -X
+if command -v tmux &>/dev/null; then
+  function pbcopy { tmux load-buffer -w -; }
+  function pbpaste { tmux save-buffer -; }
+
+  # WARN: Keep this at the bottom
+  if [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+    exec tmux new-session -A -D -X
+  fi
 fi
