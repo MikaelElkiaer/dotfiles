@@ -92,10 +92,7 @@ function preview {
   IFS=$'\t' read -r TYPE FULL ICON NAME <<<"$1"
   case "$TYPE" in
   c)
-    (man "$NAME" ||
-      eval "$NAME --help" ||
-      eval "$NAME -h" ||
-      eval "$NAME help") 2>/dev/null | nvimpager -c +"set ft=man"
+    man "$NAME" 2>/dev/null | nvimpager -c +"set ft=man"
     ;;
   d)
     README="$(find "$FULL" -maxdepth 1 -type f -iname readme.md)"
