@@ -48,6 +48,7 @@ function _exec_fzf {
     --bind='load:reload(load)+unbind(load)' \
     --bind='enter:become(action_primary {})' \
     --bind='tab:become(action_secondary {})' \
+    --bind="ctrl-p:toggle-preview" \
     --delimiter='\t' \
     --nth=2 \
     --preview='(preview {})' \
