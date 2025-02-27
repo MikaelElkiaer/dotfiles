@@ -23,7 +23,14 @@
     }:
     let
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+      oldPkgs = import (builtins.fetchTarball {
+        url = "https://github.com/NixOS/nixpkgs/archive/32fb99ba93fea2798be0e997ea331dd78167f814.tar.gz";
+        sha256 = "068vakv6i9rwqi81m1qj328p2hsf5ddj84vrw6hwl6m19ns0wfm3";
+      }) { inherit system; };
+      overlay = final: prev: {
+        gh-dash = oldPkgs.gh-dash;
+      };
+      pkgs = nixpkgs.legacyPackages.${system}.extend overlay;
     in
     {
       # Debian 12
