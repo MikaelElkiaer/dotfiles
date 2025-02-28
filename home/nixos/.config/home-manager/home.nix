@@ -340,6 +340,38 @@ in
         Description = "Set upgrade status for Home Manager";
       };
     };
+    upgrade-status-nvim = {
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.writeShellScript "upgrade-status-nvim" ''
+          set -Eeuo pipefail
+
+          trap 'rm --force $TEMP' EXIT
+
+          if ! command -v nvim &>/dev/null; then
+            echo "Ensure nvim is installed" >&2
+            echo "Clearing state" >&2
+            rm --force "$HOME/.local/state/upgrade-status-nvim"
+            exit 0
+          fi
+
+          TEMP=$(mktemp)
+          nvim --headless -c 'lua require("lazy").check({wait=true})' -c "qa" |
+            # remove ansi escape codes
+            sed --regexp-extended 's/\x1b\[[0-9;]*[a-zA-Z]//g' |
+            # split lines
+            sed --regexp-extended 's/(ago\))(\[)/\1\n\2/g' |
+            # extract data
+            sed --quiet --regexp-extended 's/\[([^ ]+)\] +log \| ([0-9a-f]{7,}) (.*)\(.* ago\)/\1\t\2\t\3/p' >"$TEMP"
+          mv "$TEMP" "$HOME/.local/state/upgrade-status-nvim"
+        ''}";
+      };
+      Unit = {
+        Description = "Set upgrade status for Neovim";
+      };
+    };
   };
 
   systemd.user.timers = {
@@ -413,6 +445,18 @@ in
       };
       Unit = {
         Description = "Run upgrade status for Home Manager every 10 minutes";
+      };
+    };
+    upgrade-status-nvim = {
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+      Timer = {
+        OnCalendar = "*-*-* *:0/10:00";
+        Persistent = true;
+      };
+      Unit = {
+        Description = "Run upgrade status for Neovim every 10 minutes";
       };
     };
   };
