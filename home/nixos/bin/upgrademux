@@ -4,14 +4,14 @@ set -Eeuo pipefail
 
 function get_icon() {
   case "$1" in
-  "aws")
-    echo ""
+  "apt")
+    echo ""
     ;;
-  "gkd")
-    echo ""
+  "hm")
+    echo ""
     ;;
-  "vlt")
-    echo ""
+  "nvim")
+    echo ""
     ;;
   *)
     echo "$1"
@@ -19,15 +19,15 @@ function get_icon() {
   esac
 }
 
-OUTPUT="  "
-for f in ~/.local/state/login-status-*; do
+OUTPUT="  "
+for f in ~/.local/state/upgrade-status-*; do
   [ -e "$f" ] || continue
-  STATUS=$(<"$f")
-  if [ "$STATUS" -eq 0 ]; then
-    PROVIDER=$(basename "$f" | sed 's/login-status-//')
+  COUNT=$(wc -l <$f)
+  if [ "$COUNT" -eq 0 ]; then
+    PROVIDER=$(basename "$f" | sed 's/upgrade-status-//')
     OUTPUT+=" #[fg=green]$(get_icon "$PROVIDER")#[fg=default]"
   else
-    PROVIDER=$(basename "$f" | sed 's/login-status-//')
+    PROVIDER=$(basename "$f" | sed 's/upgrade-status-//')
     OUTPUT+=" #[fg=red]$(get_icon "$PROVIDER")#[fg=default]"
   fi
 done

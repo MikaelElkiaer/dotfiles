@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+function get_superscript() {
+  case "$1" in
+  "0")
+    echo -n "⁰"
+    ;;
+  "1")
+    echo -n "¹"
+    ;;
+  "2")
+    echo -n "²"
+    ;;
+  "3")
+    echo -n "³"
+    ;;
+  "4")
+    echo -n "⁴"
+    ;;
+  "5")
+    echo -n "⁵"
+    ;;
+  "6")
+    echo -n "⁶"
+    ;;
+  "7")
+    echo -n "⁷"
+    ;;
+  "8")
+    echo -n "⁸"
+    ;;
+  "9")
+    echo -n "⁹"
+    ;;
+  *)
+    echo "[ERR] Unknown character: $1" >&2
+    exit 1
+    ;;
+  esac
+}
+
+case "${1-}" in
+- | '')
+  read -r INPUT
+  ;;
+*)
+  INPUT="$1"
+  ;;
+esac
+
+for ((i = 0; i < ${#INPUT}; i++)); do
+  CHAR="${INPUT:$i:1}"
+  get_superscript "$CHAR"
+done

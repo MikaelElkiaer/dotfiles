@@ -284,6 +284,62 @@ in
         Description = "Set login status for Vault";
       };
     };
+    upgrade-status-apt = {
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.writeShellScript "upgrade-status-apt" ''
+          trap 'rm --force "$TMP"' EXIT
+
+          if ! command -v apt &>/dev/null; then
+            echo "Ensure apt is installed" >&2
+            echo "Clearing state" >&2
+            rm --force "$HOME/.local/state/upgrade-status-apt"
+            exit 0
+          fi
+
+          TMP="$(mktemp)"
+          apt list --upgradable | tail -n +2 >"$TMP"
+          mv "$TMP" "$HOME/.local/state/upgrade-status-apt"
+        ''}";
+      };
+      Unit = {
+        Description = "Set upgrade status for apt";
+      };
+    };
+    upgrade-status-hm = {
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.writeShellScript "upgrade-status-hm" ''
+          set -Eeuo pipefail
+
+          trap 'rm --force --recursive $TEMP' EXIT
+
+          if ! command -v nix &>/dev/null; then
+            echo "Ensure nix is installed" >&2
+            echo "Clearing state" >&2
+            rm --force "$HOME/.local/state/upgrade-status-hm"
+            exit 0
+          fi
+
+          TEMP=$(mktemp --directory)
+          cp --recursive $HOME/.config/home-manager/* "$TEMP"
+          # shellcheck disable=SC2164
+          cd "$TEMP"
+          #TODO: Remove inputs (nixpkgs) once dagger is working again
+          nix flake update --flake . nixpkgs
+          home-manager build --flake .
+          nix store diff-closures "$HOME/.local/state/nix/profiles/home-manager" ./result | sed -E '/[ε∅] → [ε∅]/d' >out
+          mv out "$HOME/.local/state/upgrade-status-hm"
+        ''}";
+      };
+      Unit = {
+        Description = "Set upgrade status for Home Manager";
+      };
+    };
   };
 
   systemd.user.timers = {
@@ -333,6 +389,30 @@ in
       };
       Unit = {
         Description = "Run login status for Vault every minute";
+      };
+    };
+    upgrade-status-apt = {
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+      Timer = {
+        OnCalendar = "*-*-* *:0/10:00";
+        Persistent = true;
+      };
+      Unit = {
+        Description = "Run upgrade status for apt every 10 minutes";
+      };
+    };
+    upgrade-status-hm = {
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+      Timer = {
+        OnCalendar = "*-*-* *:0/10:00";
+        Persistent = true;
+      };
+      Unit = {
+        Description = "Run upgrade status for Home Manager every 10 minutes";
       };
     };
   };

@@ -26,7 +26,7 @@ function main() {
   fi
   RESULT+="$(basename "$ACTIVE_PATH")"
   if [ -n "$WINDOW_INDEX" ]; then
-    RESULT+="$(get_superscript "$WINDOW_INDEX")"
+    RESULT+="$(superscript "$WINDOW_INDEX")"
   fi
   echo "$RESULT"
 }
@@ -47,44 +47,6 @@ function get_app_icon() {
     ;;
   *)
     echo " "
-    ;;
-  esac
-}
-
-function get_superscript() {
-  case "$1" in
-  "0")
-    echo "⁰"
-    ;;
-  "1")
-    echo "¹"
-    ;;
-  "2")
-    echo "²"
-    ;;
-  "3")
-    echo "³"
-    ;;
-  "4")
-    echo "⁴"
-    ;;
-  "5")
-    echo "⁵"
-    ;;
-  "6")
-    echo "⁶"
-    ;;
-  "7")
-    echo "⁷"
-    ;;
-  "8")
-    echo "⁸"
-    ;;
-  "9")
-    echo "⁹"
-    ;;
-  *)
-    echo "⁺"
     ;;
   esac
 }
