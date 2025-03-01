@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+if ! command -v aws >/dev/null; then
+  echo "Ensure aws is installed" >&2
+  echo "Clearing state" >&2
+  rm --force "$HOME/.local/state/login-status-aws"
+  exit 0
+fi
+
+TMP="$(mktemp)"
+(
+  aws sts get-caller-identity >&2 && EXIT_CODE=$? || EXIT_CODE=$?
+  echo "$EXIT_CODE"
+) >"$TMP"
+mv "$TMP" "$HOME/.local/state/login-status-aws"

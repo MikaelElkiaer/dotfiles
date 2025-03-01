@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+trap 'rm --force "$TMP"' EXIT
+
+if ! command -v apt &>/dev/null; then
+  echo "Ensure apt is installed" >&2
+  echo "Clearing state" >&2
+  rm --force "$HOME/.local/state/upgrade-status-apt"
+  exit 0
+fi
+
+TMP="$(mktemp)"
+apt list --upgradable | tail -n +2 >"$TMP"
+mv "$TMP" "$HOME/.local/state/upgrade-status-apt"

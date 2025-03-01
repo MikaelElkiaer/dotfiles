@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+if ! command -v gnome-keyring-daemon >/dev/null; then
+  echo "Ensure gnome-keyring-daemon is installed" >&2
+  echo "Clearing state" >&2
+  rm --force "$HOME/.local/state/login-status-gkd"
+  exit 0
+fi
+
+TMP="$(mktemp)"
+IS_LOCKED="$(busctl --json=pretty --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked | jq '.data')"
+if [ "$IS_LOCKED" = "true" ]; then
+  echo 1 >"$TMP"
+elif [ "$IS_LOCKED" = "false" ]; then
+  echo 0 >"$TMP"
+fi
+mv "$TMP" "$HOME/.local/state/login-status-gkd"

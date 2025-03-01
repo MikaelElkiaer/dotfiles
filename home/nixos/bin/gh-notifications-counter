@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+if ! command -v gh >/dev/null || ! gh auth status --active | grep '\- Token scopes:' | grep --silent "'notifications'"; then
+  echo "Ensure gh is installed, authenticated, and has scope 'notifications'" >&2
+  echo "Clearing state" >&2
+  rm --force "$HOME/.local/state/gh-notification-counter"
+  exit 0
+fi
+
+TMP="$(mktemp)"
+gh api graphql \
+  --field=query='query { viewer { notificationThreads(query: "is:unread") { totalCount } } }' \
+  --jq=".data.viewer.notificationThreads.totalCount" >"$TMP"
+mv "$TMP" "$HOME/.local/state/gh-notification-counter"

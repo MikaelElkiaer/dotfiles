@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+trap 'rm --force --recursive $TEMP' EXIT
+
+if ! command -v nix &>/dev/null; then
+  echo "Ensure nix is installed" >&2
+  echo "Clearing state" >&2
+  rm --force "$HOME/.local/state/upgrade-status-hm"
+  exit 0
+fi
+
+TEMP=$(mktemp --directory)
+cp --recursive $HOME/.config/home-manager/* "$TEMP"
+# shellcheck disable=SC2164
+cd "$TEMP"
+nix flake update --flake .
+home-manager build --flake .
+nix store diff-closures "$HOME/.local/state/nix/profiles/home-manager" ./result | sed -E '/[ε∅] → [ε∅]/d' >out
+mv out "$HOME/.local/state/upgrade-status-hm"
