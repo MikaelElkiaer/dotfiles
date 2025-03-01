@@ -160,14 +160,6 @@ in
 
   nixpkgs.config = {
     allowUnfree = true;
-    # WARN: Need to permit these in order to use dotnetCorePackages
-    # - even to install newer SDKs
-    permittedInsecurePackages = [
-      "dotnet-core-combined"
-      "dotnet-sdk-6.0.428"
-      "dotnet-sdk-7.0.410"
-      "dotnet-sdk-wrapped-6.0.428"
-    ];
   };
 
   programs.home-manager.enable = true;
