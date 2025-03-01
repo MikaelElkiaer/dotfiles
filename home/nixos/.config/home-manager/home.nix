@@ -329,8 +329,7 @@ in
           cp --recursive $HOME/.config/home-manager/* "$TEMP"
           # shellcheck disable=SC2164
           cd "$TEMP"
-          #TODO: Remove inputs (nixpkgs) once dagger is working again
-          nix flake update --flake . nixpkgs
+          nix flake update --flake .
           home-manager build --flake .
           nix store diff-closures "$HOME/.local/state/nix/profiles/home-manager" ./result | sed -E '/[ε∅] → [ε∅]/d' >out
           mv out "$HOME/.local/state/upgrade-status-hm"
