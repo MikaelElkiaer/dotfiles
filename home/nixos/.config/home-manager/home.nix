@@ -178,9 +178,6 @@ in
       . ~/.bashrc_extra
     '';
   };
-  programs.gpg.enable = true;
-  services.gpg-agent.enable = true;
-  services.ssh-agent.enable = true;
 
   systemd.user = {
     services = {
