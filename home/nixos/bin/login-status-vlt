@@ -8,7 +8,7 @@ for f in $(find ~ -maxdepth 1 -name '.bash_profile_*'); do
   source "$f"
 done
 
-if ! command -v vault >/dev/null || [ -z "$VAULT_ADDR" ]; then
+if ! command -v vault >/dev/null || [ -z "${VAULT_ADDR-}" ]; then
   echo "Ensure vault is installed and VAULT_ADDR is set" >&2
   echo "Clearing state" >&2
   rm --force "$HOME/.local/state/login-status-vlt"
