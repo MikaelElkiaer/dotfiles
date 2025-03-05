@@ -7,7 +7,6 @@ if ! [ -f ~/.cache/nerdfonts.json ]; then
   wget https://raw.githubusercontent.com/ryanoasis/nerd-fonts/master/glyphnames.json --output-document ~/.cache/nerdfonts.json
 fi
 
-jq --raw-output 'to_entries | .[1:] | map("\(.value.char) \(.key)") | .[]' <~/.cache/nerdfonts.json |
-  fzf --nth=2 --separator=$'\t' |
-  awk '{print $1}' |
+jq --raw-output 'to_entries | .[1:] | map("\(.value.char)\t\(.key)") | .[]' <~/.cache/nerdfonts.json |
+  fzf --accept-nth=1 --nth=2 --delimiter=$'\t' |
   tmux load-buffer -w -
