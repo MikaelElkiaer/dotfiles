@@ -36,9 +36,9 @@ This must be done for any device that is targeted for encryption.
 
 ```bash
 # Pick a device
-device="$(lsblk --paths --fs | fzf --header-lines=1 --separator=$'\t' | sed --silent --regexp-extended 's,.*(/dev/\w+).*,\1,p')"
+device="$(lsblk --paths --fs | yank -g '/dev/[^ ]*')"
 # Enable encryption
-if ! sudo tune2fs -l /dev/nvme0n1p1 | grep 'Filesystem features:' | grep --extended-regexp '[[:space:]]encrypt([[:space:]]|$)'; then
+if ! sudo tune2fs -l $device | grep 'Filesystem features:' | grep --extended-regexp '[[:space:]]encrypt([[:space:]]|$)'; then
   sudo tune2fs -O encrypt "$device"
 else
   echo "[WRN] Device $device already has encryption enabled"
