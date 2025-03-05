@@ -91,6 +91,7 @@ in
     xclip
     xsel
     xdg-utils
+    yank
     yq-go
     zoxide
   ];
