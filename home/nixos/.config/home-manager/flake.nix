@@ -27,8 +27,11 @@
       ...
     }:
     let
+      daggerOverlay = final: prev: {
+        dagger = inputs.dagger.packages.${pkgs.system}.dagger;
+      };
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = nixpkgs.legacyPackages.${system}.extend daggerOverlay;
     in
     {
       # Debian 12
@@ -44,7 +47,6 @@
           # to pass through arguments to home.nix
           {
             _module.args = {
-              inherit inputs;
               username = "me";
               homeDirectory = "/home/me";
             };
@@ -66,7 +68,6 @@
               # to pass through arguments to home.nix
               {
                 _module.args = {
-                  inherit inputs;
                   username = "mikaelki@AD.KEYSIGHT.COM";
                   homeDirectory = "/home/mikaelki";
                   nixgl = nixgl;
@@ -86,7 +87,6 @@
           # to pass through arguments to home.nix
           {
             _module.args = {
-              inherit inputs;
               username = "nixos";
               homeDirectory = "/home/nixos";
             };

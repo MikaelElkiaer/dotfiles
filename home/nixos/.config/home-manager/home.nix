@@ -1,14 +1,12 @@
 {
   config,
   pkgs,
-  inputs,
   username,
   homeDirectory,
   ...
 }:
 
 let
-  dagger = inputs.dagger.packages.${pkgs.system}.dagger;
   docker-credential-magic = (pkgs.callPackage ./packages/docker-credential-magic.nix { });
   docker-credential-ghcr-login = (pkgs.callPackage ./packages/docker-credential-ghcr-login.nix { });
   dotnet = (
@@ -42,7 +40,6 @@ in
     bats
     bws
     cargo
-    dagger
     delta
     dotnet
     docker-credential-ghcr-login
