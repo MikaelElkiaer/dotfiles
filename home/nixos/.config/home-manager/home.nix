@@ -7,8 +7,6 @@
 }:
 
 let
-  docker-credential-magic = (pkgs.callPackage ./packages/docker-credential-magic.nix { });
-  docker-credential-ghcr-login = (pkgs.callPackage ./packages/docker-credential-ghcr-login.nix { });
   dotnet = (
     with pkgs.dotnetCorePackages;
     combinePackages [

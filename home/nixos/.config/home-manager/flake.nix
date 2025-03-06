@@ -27,11 +27,13 @@
       ...
     }:
     let
-      daggerOverlay = final: prev: {
+      customPackages = final: prev: {
         dagger = inputs.dagger.packages.${pkgs.system}.dagger;
+        docker-credential-magic = (pkgs.callPackage ./packages/docker-credential-magic.nix { });
+        docker-credential-ghcr-login = (pkgs.callPackage ./packages/docker-credential-ghcr-login.nix { });
       };
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system}.extend daggerOverlay;
+      pkgs = nixpkgs.legacyPackages.${system}.extend customPackages;
     in
     {
       # Debian 12
