@@ -242,7 +242,7 @@ function _exec_fzf() {
     --bind='load:change-prompt($ )+disable-search+reload-sync(_get_data)+unbind(load)' \
     --bind='change:change-header(search disabled)+clear-query' \
     --border=bottom \
-    --border-label=" (d)one (o)pen (p)review-toggle (r)ead 󰘴p preview-diff(${PREVIEW_DIFF}) 󰘴r unread-only(${UNREAD_ONLY}) " \
+    --border-label=" (d)one (o)pen (p)review-toggle (r)ead ^p preview-diff(${PREVIEW_DIFF}) ^r unread-only(${UNREAD_ONLY}) " \
     --delimiter='\t' \
     --header-first \
     --no-sort \
