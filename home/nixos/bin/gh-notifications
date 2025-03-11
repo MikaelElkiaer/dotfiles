@@ -183,7 +183,8 @@ function _get() {
 
 function _toggle_option() {
   local OPTION="$1"
-  local VALUE="$(_get_option "$OPTION")"
+  local VALUE
+  VALUE="$(_get_option "$OPTION")"
   if [ "$VALUE" = "1" ]; then
     local NEW_VALUE="0"
   elif [ "$VALUE" = "0" ]; then
@@ -200,7 +201,8 @@ function _get_option() {
   fi
 
   local OPTION="$1"
-  local VALUE="$(sed --regexp-extended --silent "s/^.*${OPTION}\(([01])\).*\$/\1/p" <<<"$FZF_BORDER_LABEL")"
+  local VALUE
+  VALUE="$(sed --regexp-extended --silent "s/^.*${OPTION}\(([01])\).*\$/\1/p" <<<"$FZF_BORDER_LABEL")"
 
   if [ -n "$VALUE" ]; then
     echo "$VALUE"
