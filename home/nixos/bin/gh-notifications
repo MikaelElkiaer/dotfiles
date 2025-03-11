@@ -112,9 +112,7 @@ function _get_data() {
       };
       def colored(text; color):
         colors[color] + text + colors.reset;
-      # TODO: Find a way to get the max length of the title
-      def maxTitleLength:
-        75;
+      (.data.viewer.notificationThreads.nodes | map(.title | length) | max) as $length |
       .data.viewer.notificationThreads.nodes[] |
       {
         properties: {
@@ -153,7 +151,7 @@ function _get_data() {
             end
           else ""
           end,
-        title: (.title | . + (" " * (maxTitleLength - length)))
+        title: (.title | . + (" " * ($length - length)))
       } | [ (.properties | tostring), .readIcon, .stateIcon, .title, .repository] | @tsv' |
     sed -E 's,\\\\,\\,g'
 }
