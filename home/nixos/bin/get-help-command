@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+CMD="${1?}"
+echo "[DBG] Using command: $CMD" >&2
+
+echo "[DBG] Sourcing /etc/bash_completion" >&2
+source /etc/bash_completion
+
+echo "[DBG] Loading completion" >&2
+_completion_loader "$CMD" || {
+  EXIT_CODE=$?
+  [ $EXIT_CODE -eq 124 ]
+}
+
+FUN="$(complete -p "$CMD" | sed 's/.*-F \([^ ]*\) .*/\1/')"
+if [ -z "$FUN" ]; then
+  echo "[ERR] No completion function found for $CMD" >&2
+  exit 1
+fi
+echo "[DBG] Found completion function: $FUN" >&2
+
+WORDS=(help --help -h -? -help)
+
+export COMP_WORDS COMP_LINE COMP_POINT COMP_CWORD COMP_TYPE
+for W in "${WORDS[@]}"; do
+  COMP_WORDS=("$CMD" "$W")
+  COMP_LINE="$CMD $W"
+  COMP_POINT="$((${#COMP_LINE} + 1))"
+  COMP_CWORD=1
+  COMP_TYPE='?'
+  eval "$FUN" || true
+  if [[ "${#COMPREPLY[@]}" -eq 0 ]]; then
+    continue
+  fi
+  printf '%s %s\n' "$CMD" "${COMPREPLY[@]}"
+  exit
+done
