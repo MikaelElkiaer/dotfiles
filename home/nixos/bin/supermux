@@ -5,9 +5,10 @@ set -Eeuo pipefail
 function _main {
   _init_args "$@"
   _export_functions
-  _exec_fzf || EXIT_CODE=$?
+  _exec_fzf && EXIT_CODE=0 || EXIT_CODE=$?
+
   # Ignore escape and interrupts
-  if [ "${EXIT_CODE:-}" -ne 130 ]; then
+  if [ "$EXIT_CODE" -ne 130 ]; then
     exit "$EXIT_CODE"
   fi
 }
