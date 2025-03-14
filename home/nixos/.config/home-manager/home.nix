@@ -38,6 +38,7 @@ in
     bats
     bws
     cargo
+    dagger
     delta
     dotnet
     docker-credential-ghcr-login
