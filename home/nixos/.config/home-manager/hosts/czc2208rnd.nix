@@ -18,8 +18,6 @@ in
   home.packages = with pkgs; [
     (config.lib.nixGL.wrap alacritty)
     jfrog-cli
-    keepassxc
-    minikube
   ];
   nixGL.packages = nixgl.packages;
   targets.genericLinux.enable = true;
