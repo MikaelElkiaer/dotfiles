@@ -11,6 +11,6 @@ fi
 
 TMP="$(mktemp)"
 gh api graphql \
-  --field=query='query { viewer { notificationThreads(query: "is:unread") { totalCount } } }' \
-  --jq=".data.viewer.notificationThreads.totalCount" >"$TMP"
+  --field=query='query { viewer { notificationThreads(last: 100, query: "is:unread") { nodes { id } } } }' \
+  --jq=".data.viewer.notificationThreads.nodes | length" >"$TMP"
 mv "$TMP" "$HOME/.local/state/gh-notification-counter"
