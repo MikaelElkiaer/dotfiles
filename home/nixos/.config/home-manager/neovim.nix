@@ -21,6 +21,7 @@
     marksman # Markdown
     nil # Nix
     roslyn-ls
+    typescript-language-server
     yaml-language-server
     # Linter
     hadolint
@@ -29,6 +30,7 @@
     csharpier
     mdformat
     nixfmt-rfc-style
+    prettierd
     shfmt
     stylua
     taplo # TOML
