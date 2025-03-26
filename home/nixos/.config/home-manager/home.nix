@@ -100,9 +100,10 @@ in
       dotfilesHome = "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/home/nixos";
     in
     {
-      ".config/containers/registries.conf" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/registries.conf";
-      };
+      # WARN: Conflicts with podman
+      # ".config/containers/registries.conf" = {
+      #   source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/registries.conf";
+      # };
       ".config/home-manager" = {
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/home-manager";
@@ -167,6 +168,8 @@ in
       . ~/.bashrc_extra
     '';
   };
+
+  services.podman.enable = true;
 
   systemd.user = {
     services = {
