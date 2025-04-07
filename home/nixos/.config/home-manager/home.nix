@@ -148,7 +148,7 @@ in
   home.sessionVariables = { };
 
   nix = {
-    package = pkgs.nixVersions.git;
+    package = pkgs.nixVersions.latest;
 
     settings.experimental-features = [
       "flakes"
