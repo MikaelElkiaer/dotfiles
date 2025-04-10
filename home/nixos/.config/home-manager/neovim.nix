@@ -25,6 +25,7 @@
     yaml-language-server
     # Linter
     hadolint
+    htmlhint
     markdownlint-cli2
     # Formatter
     csharpier
