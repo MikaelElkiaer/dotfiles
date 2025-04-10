@@ -28,9 +28,9 @@
     markdownlint-cli2
     # Formatter
     csharpier
-    jsbeautifier
     mdformat
     nixfmt-rfc-style
+    nodePackages.js-beautify
     prettierd
     shfmt
     stylua
