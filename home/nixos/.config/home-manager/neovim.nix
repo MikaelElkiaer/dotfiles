@@ -28,6 +28,7 @@
     markdownlint-cli2
     # Formatter
     csharpier
+    jsbeautifier
     mdformat
     nixfmt-rfc-style
     prettierd
