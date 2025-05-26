@@ -21,6 +21,7 @@
     marksman # Markdown
     nil # Nix
     roslyn-ls
+    terraform-lsp
     typescript-language-server
     yaml-language-server
     # Linter

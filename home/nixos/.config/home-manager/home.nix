@@ -79,6 +79,7 @@ in
     renovate
     ripgrep
     skopeo
+    terraform
     tlrc
     tmux
     tree
