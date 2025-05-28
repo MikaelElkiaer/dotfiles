@@ -10,8 +10,8 @@ let
   dotnet = (
     with pkgs.dotnetCorePackages;
     combinePackages [
-      sdk_9_0
-      sdk_8_0_3xx
+      dotnet_9.sdk
+      dotnet_8.sdk
     ]
   );
 in
@@ -146,7 +146,10 @@ in
       };
     };
 
-  home.sessionVariables = { };
+  home.sessionVariables = {
+    DOTNET_PATH = "${dotnet}/bin/dotnet";
+    DOTNET_ROOT = "${dotnet}/share/dotnet";
+  };
 
   nix = {
     package = pkgs.nixVersions.latest;
