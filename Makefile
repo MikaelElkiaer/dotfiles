@@ -37,6 +37,8 @@ hm-update:		## Update home-manager flake
 		rm --force ./result ./diff
 		git restore home/nixos/.config/home-manager/flake.lock
 	}' EXIT
+	echo "[DBG] Updating custom packages" >&2
+	update-nix-fetchgit --only-commented $$PWD/home/nixos/.config/home-manager/packages/*
 	echo "[DBG] Updating flake" >&2
 	nix flake update --flake $$PWD/home/nixos/.config/home-manager/
 	echo "[DBG] Building new revision" >&2
