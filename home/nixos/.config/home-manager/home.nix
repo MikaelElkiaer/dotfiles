@@ -101,10 +101,10 @@ in
       dotfilesHome = "${config.home.homeDirectory}/Repositories/GitHub/dotfiles/home/nixos";
     in
     {
-      # WARN: Conflicts with podman
-      # ".config/containers/registries.conf" = {
-      #   source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/registries.conf";
-      # };
+      ".config/containers/registries.conf.d" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/registries.conf.d";
+      };
       ".config/home-manager" = {
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/home-manager";
