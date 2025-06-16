@@ -97,6 +97,10 @@ fi
 if ! [[ "$PATH" == *"$HOME/bin/"* ]]; then
   export PATH="$PATH:$HOME/bin/"
 fi
+# Krew
+if ! [[ "$PATH" == *"${KREW_ROOT:-$HOME/.krew}/bin/"* ]]; then
+  export PATH="$PATH:${KREW_ROOT:-$HOME/.krew}/bin/"
+fi
 
 COMPLETION_PATH=~/.local/share/bash-completion/completions
 mkdir --parents "$COMPLETION_PATH"
