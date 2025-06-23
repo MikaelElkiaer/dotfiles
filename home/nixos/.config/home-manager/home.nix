@@ -62,6 +62,7 @@ in
     hyperfine
     kind
     k9s
+    krew
     kubectl
     kubectl-validate
     kubernetes-helm
@@ -73,6 +74,7 @@ in
     navi
     ncurses
     nodejs
+    pgcli
     pigz
     pluto
     python3
@@ -85,6 +87,7 @@ in
     tree
     trivy
     unzip
+    update-nix-fetchgit
     vault-bin
     viddy
     wget
