@@ -19,6 +19,9 @@ in
     (config.lib.nixGL.wrap alacritty)
     jfrog-cli
   ];
+  home.sessionVariables = {
+    VAULT_ADDR = "https://vault.keysight.com";
+  };
   nixGL.packages = nixgl.packages;
   targets.genericLinux.enable = true;
   xdg.enable = true;
