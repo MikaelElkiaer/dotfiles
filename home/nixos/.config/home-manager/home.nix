@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   username,
   homeDirectory,
@@ -197,7 +198,18 @@ in
       };
       login-status-vlt = {
         Install.WantedBy = [ "default.target" ];
-        Service.ExecStart = "${config.home.homeDirectory}/bin/login-status-vlt";
+        Service = {
+          Environment = [
+            "PATH=${
+              lib.makeBinPath [
+                pkgs.bash
+                pkgs.vault-bin
+              ]
+            }:/usr/local/bin:/usr/bin"
+            "VAULT_ADDR=${config.home.sessionVariables.VAULT_ADDR}"
+          ];
+          ExecStart = "${config.home.homeDirectory}/bin/login-status-vlt";
+        };
         Unit.Description = "Set login status for Vault";
       };
       upgrade-status-apt = {

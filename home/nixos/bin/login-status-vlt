@@ -2,12 +2,6 @@
 
 set -Eeuo pipefail
 
-# shellcheck disable=SC1090,SC2044
-# Load additional profiles
-for f in $(find ~ -maxdepth 1 -name '.bash_profile_*'); do
-  source "$f"
-done
-
 if ! command -v vault >/dev/null || [ -z "${VAULT_ADDR-}" ]; then
   echo "Ensure vault is installed and VAULT_ADDR is set" >&2
   echo "Clearing state" >&2
