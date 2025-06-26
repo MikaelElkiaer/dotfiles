@@ -21,7 +21,7 @@ if [ -z "$FUN" ]; then
 fi
 echo "[DBG] Found completion function: $FUN" >&2
 
-WORDS=(help --help -h -? -help)
+WORDS=(--help -h -? -help help)
 
 export COMP_WORDS COMP_LINE COMP_POINT COMP_CWORD COMP_TYPE
 for W in "${WORDS[@]}"; do
@@ -34,6 +34,10 @@ for W in "${WORDS[@]}"; do
   if [[ "${#COMPREPLY[@]}" -eq 0 ]]; then
     continue
   fi
-  printf '%s %s\n' "$CMD" "${COMPREPLY[@]}"
-  exit
+  for R in "${COMPREPLY[@]}"; do
+    if [[ "${R}" = "${W}" ]]; then
+      printf '%s %s\n' "$CMD" "${COMPREPLY[@]}"
+      exit
+    fi
+  done
 done
