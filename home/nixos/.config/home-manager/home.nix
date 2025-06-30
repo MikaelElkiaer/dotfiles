@@ -131,9 +131,6 @@ in
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/tmux";
       };
-      ".docker/config.json" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.docker/config.json";
-      };
       ".bash_aliases" = {
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.bash_aliases";
       };
