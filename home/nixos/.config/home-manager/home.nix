@@ -7,15 +7,6 @@
   ...
 }:
 
-let
-  dotnet = (
-    with pkgs.dotnetCorePackages;
-    combinePackages [
-      dotnet_9.sdk
-      dotnet_8.sdk
-    ]
-  );
-in
 {
   # Dynamically import all modules
   imports =
@@ -46,7 +37,6 @@ in
     cargo
     dagger
     delta
-    dotnet
     docker-credential-ghcr-login
     docker-credential-helpers
     docker-credential-magic
@@ -148,11 +138,6 @@ in
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/bin";
       };
     };
-
-  home.sessionVariables = {
-    DOTNET_PATH = "${dotnet}/bin/dotnet";
-    DOTNET_ROOT = "${dotnet}/share/dotnet";
-  };
 
   nix = {
     package = pkgs.nixVersions.latest;
