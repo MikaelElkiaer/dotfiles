@@ -2,7 +2,7 @@
 
 set -Eeuo pipefail
 
-trap 'rm --force --recursive $TEMP' EXIT
+trap '[ -z "${TEMP-}" ] || rm --force --recursive $TEMP' EXIT
 
 if ! command -v nix &>/dev/null; then
   echo "Ensure nix is installed" >&2

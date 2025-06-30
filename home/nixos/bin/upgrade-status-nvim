@@ -2,7 +2,7 @@
 
 set -Eeuo pipefail
 
-trap 'rm --force $TEMP' EXIT
+trap '[ -z "${TEMP-}" ] || rm --force $TEMP' EXIT
 
 if ! command -v nvim &>/dev/null; then
   echo "Ensure nvim is installed" >&2

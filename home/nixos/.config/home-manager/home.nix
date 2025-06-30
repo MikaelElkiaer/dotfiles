@@ -1,8 +1,9 @@
 {
   config,
+  homeDirectory,
+  lib,
   pkgs,
   username,
-  homeDirectory,
   ...
 }:
 
@@ -209,12 +210,32 @@ in
       };
       upgrade-status-hm = {
         Install.WantedBy = [ "default.target" ];
-        Service.ExecStart = "${config.home.homeDirectory}/bin/upgrade-status-hm";
+        Service = {
+          Environment = [
+            "PATH=${
+              lib.makeBinPath [
+                pkgs.bash
+                pkgs.home-manager
+                pkgs.nix
+              ]
+            }:/usr/local/bin:/usr/bin"
+          ];
+          ExecStart = "${config.home.homeDirectory}/bin/upgrade-status-hm";
+        };
         Unit.Description = "Set upgrade status for Home Manager";
       };
       upgrade-status-nvim = {
         Install.WantedBy = [ "default.target" ];
-        Service.ExecStart = "${config.home.homeDirectory}/bin/upgrade-status-nvim";
+        Service = {
+          Environment = [
+            "PATH=${
+              lib.makeBinPath [
+                pkgs.neovim
+              ]
+            }:/usr/local/bin:/usr/bin"
+          ];
+          ExecStart = "${config.home.homeDirectory}/bin/upgrade-status-nvim";
+        };
         Unit.Description = "Set upgrade status for Neovim";
       };
     };

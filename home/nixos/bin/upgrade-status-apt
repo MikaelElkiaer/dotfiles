@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-trap 'rm --force "$TMP"' EXIT
+trap '[ -z "${TEMP-}" ] || rm --force "$TMP"' EXIT
 
 if ! command -v apt &>/dev/null; then
   echo "Ensure apt is installed" >&2
