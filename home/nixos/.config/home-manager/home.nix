@@ -41,11 +41,8 @@ in
   home.stateVersion = "24.05";
 
   home.packages = with pkgs; [
-    amazon-ecr-credential-helper
     atuin
-    awscli2
     bats
-    bws
     cargo
     dagger
     delta
@@ -83,15 +80,13 @@ in
     navi
     ncurses
     nodejs
-    pgcli
     pigz
     pluto
     python3
     renovate
     ripgrep
     skopeo
-    terraform
-    tlrc
+    tlrc # tldr (Rust)
     tmux
     tree
     trivy

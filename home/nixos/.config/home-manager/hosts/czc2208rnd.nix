@@ -17,7 +17,11 @@ in
   };
   home.packages = with pkgs; [
     (config.lib.nixGL.wrap alacritty)
+    amazon-ecr-credential-helper
+    awscli2
     jfrog-cli
+    pgcli
+    terraform
   ];
   home.sessionVariables = {
     VAULT_ADDR = "https://vault.keysight.com";
