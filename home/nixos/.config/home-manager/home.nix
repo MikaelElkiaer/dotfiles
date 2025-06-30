@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   username,
   homeDirectory,
@@ -17,7 +16,15 @@ let
   );
 in
 {
-  imports = [ ./neovim.nix ];
+  # Dynamically import all modules
+  imports =
+    let
+      moduleDir = ./modules;
+      moduleFiles = builtins.filter (name: builtins.match ".*\\.nix$" name != null) (
+        builtins.attrNames (builtins.readDir moduleDir)
+      );
+    in
+    map (name: moduleDir + "/${name}") moduleFiles;
 
   home.username = username;
   home.homeDirectory = homeDirectory;
@@ -89,7 +96,6 @@ in
     trivy
     unzip
     update-nix-fetchgit
-    vault-bin
     viddy
     wget
     xclip
@@ -196,22 +202,6 @@ in
         Service.ExecStart = "${config.home.homeDirectory}/bin/login-status-gkd";
         Unit.Description = "Set login status for gnome-keyring-daemon";
       };
-      login-status-vlt = {
-        Install.WantedBy = [ "default.target" ];
-        Service = {
-          Environment = [
-            "PATH=${
-              lib.makeBinPath [
-                pkgs.bash
-                pkgs.vault-bin
-              ]
-            }:/usr/local/bin:/usr/bin"
-            "VAULT_ADDR=${config.home.sessionVariables.VAULT_ADDR}"
-          ];
-          ExecStart = "${config.home.homeDirectory}/bin/login-status-vlt";
-        };
-        Unit.Description = "Set login status for Vault";
-      };
       upgrade-status-apt = {
         Install.WantedBy = [ "default.target" ];
         Service.ExecStart = "${config.home.homeDirectory}/bin/upgrade-status-apt";
@@ -252,14 +242,6 @@ in
           Persistent = true;
         };
         Unit.Description = "Run login status for keyring every minute";
-      };
-      login-status-vlt = {
-        Install.WantedBy = [ "timers.target" ];
-        Timer = {
-          OnCalendar = "*-*-* *:*:00";
-          Persistent = true;
-        };
-        Unit.Description = "Run login status for Vault every minute";
       };
       upgrade-status-apt = {
         Install.WantedBy = [ "timers.target" ];
