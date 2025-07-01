@@ -167,7 +167,17 @@
     services = {
       gh-notifications-counter = {
         Install.WantedBy = [ "default.target" ];
-        Service.ExecStart = "${config.home.homeDirectory}/bin/gh-notifications-counter";
+        Service = {
+          Environment = [
+            "PATH=${
+              lib.makeBinPath [
+                pkgs.bash
+                pkgs.gh
+              ]
+            }:/usr/local/bin:/usr/bin"
+          ];
+          ExecStart = "${config.home.homeDirectory}/bin/gh-notifications-counter";
+        };
         Unit.Description = "Count GitHub notifications";
       };
       login-status-aws = {
