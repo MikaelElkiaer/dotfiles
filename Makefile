@@ -50,6 +50,9 @@ hm-update:		## Update home-manager flake
 	if ! [ -s ./diff ]; then
 		echo "[INF] No updates found" >&2
 		exit 0
+	else
+		echo "[INF] Updates found:" >&2
+		cat ./diff
 	fi
 	# Determine whether latest commit is a hm-update, and whether it is unpushed
 	if [ "$$(git show --format=format:%s --quiet)" = "chore(hm): Update flake" ] && ! git log --exit-code origin/main..main &>/dev/null; then
