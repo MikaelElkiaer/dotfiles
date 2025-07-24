@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+echo -n "#[fg=colour0]"
+case "${1}" in
+prefix)
+  echo -n "#[bg=colour3] P "
+  ;;
+copy-mode)
+  echo -n "#[bg=colour3] C "
+  ;;
+*)
+  echo -n "#[bg=colour8] N "
+  ;;
+esac
+
+echo -n "#[bg=default,fg=default]"
