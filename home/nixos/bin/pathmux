@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+_PATH=$1
+
+if [ -z "$_PATH" ]; then
+  echo "Usage: $0 <path>"
+  exit 1
+fi
+
+if [[ "$_PATH" == "$HOME"* ]]; then
+  _PATH="${_PATH/$HOME/'~'}"
+fi
+
+RESULT="#[fg=colour7,dim]"
+IFS='/' read -ra PATH_PARTS <<<"$_PATH"
+for i in "${!PATH_PARTS[@]}"; do
+  if [[ -z "${PATH_PARTS[$i]}" ]]; then
+    continue
+  elif [[ "$i" -eq 0 ]]; then
+    RESULT+="${PATH_PARTS[$i]}/"
+  elif [[ "$i" -eq $(("${#PATH_PARTS[@]}" - 1)) ]]; then
+    RESULT+="#[fg=default,nodim]"
+    RESULT+="${PATH_PARTS[$i]}/"
+  else
+    RESULT+="${PATH_PARTS[$i]:0:1}/"
+  fi
+done
+
+echo "$RESULT"
