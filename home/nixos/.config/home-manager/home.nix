@@ -35,6 +35,7 @@
     atuin
     bats
     cargo
+    comma
     dagger
     delta
     docker-credential-ghcr-login
@@ -73,7 +74,6 @@
     pigz
     pluto
     python3
-    renovate
     ripgrep
     skopeo
     tlrc # tldr (Rust)
