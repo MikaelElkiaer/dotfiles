@@ -161,6 +161,8 @@
     '';
   };
 
+  programs.nix-index.enable = true;
+
   services.podman.enable = true;
 
   systemd.user = {
