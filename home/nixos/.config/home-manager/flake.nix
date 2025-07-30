@@ -8,6 +8,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     dagger = {
       url = "github:dagger/nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -22,6 +26,7 @@
     inputs@{
       nixgl,
       nixpkgs,
+      nix-index-database,
       home-manager,
       dagger,
       ...
@@ -43,6 +48,7 @@
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
         modules = [
+          nix-index-database.homeModules.nix-index
           ./home.nix
           ./hosts/twr.nix
           # Optionally use extraSpecialArgs
@@ -64,6 +70,7 @@
             # Specify your home configuration modules here, for example,
             # the path to your home.nix.
             modules = [
+              nix-index-database.homeModules.nix-index
               ./home.nix
               ./hosts/czc2208rnd.nix
               # Optionally use extraSpecialArgs
@@ -84,6 +91,7 @@
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
         modules = [
+          nix-index-database.homeModules.nix-index
           ./home.nix
           # Optionally use extraSpecialArgs
           # to pass through arguments to home.nix
