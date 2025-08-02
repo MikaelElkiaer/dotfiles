@@ -90,16 +90,16 @@ fi
 ####
 
 # Nix and Home-Manager
-if ! [[ "$PATH" == *"$HOME/.nix-profile/bin/"* ]]; then
-  export PATH="$PATH:$HOME/.nix-profile/bin/"
+if ! [[ "$PATH" == *"$HOME/.nix-profile/bin"* ]]; then
+  export PATH="$HOME/.nix-profile/bin:$PATH"
 fi
 # Dotfiles
-if ! [[ "$PATH" == *"$HOME/bin/"* ]]; then
-  export PATH="$PATH:$HOME/bin/"
+if ! [[ "$PATH" == *"$HOME/bin"* ]]; then
+  export PATH="$HOME/bin:$PATH"
 fi
 # Krew
-if ! [[ "$PATH" == *"${KREW_ROOT:-$HOME/.krew}/bin/"* ]]; then
-  export PATH="$PATH:${KREW_ROOT:-$HOME/.krew}/bin/"
+if ! [[ "$PATH" == *"${KREW_ROOT:-$HOME/.krew}/bin"* ]]; then
+  export PATH="$PATH:${KREW_ROOT:-$HOME/.krew}/bin"
 fi
 
 COMPLETION_PATH=~/.local/share/bash-completion/completions

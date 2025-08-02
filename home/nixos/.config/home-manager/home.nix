@@ -36,11 +36,13 @@
     bats
     cargo
     comma
-    dagger
+    # WARN: Not supported by darwin
+    # dagger
     delta
-    docker-credential-ghcr-login
-    docker-credential-helpers
-    docker-credential-magic
+    # WARN: Not supported by darwin
+    # docker-credential-ghcr-login
+    # docker-credential-helpers
+    # docker-credential-magic
     expect
     file
     fluxcd
@@ -51,6 +53,7 @@
     gh-markdown-preview
     git
     glow
+    gnused
     go
     gotop
     gitmux
@@ -82,6 +85,7 @@
     trivy
     unzip
     update-nix-fetchgit
+    uutils-coreutils-noprefix
     viddy
     wget
     xclip
@@ -104,6 +108,10 @@
       ".config/home-manager" = {
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/home-manager";
+      };
+      ".config/kitty" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/kitty";
       };
       ".config/lazygit" = {
         recursive = true;
@@ -163,7 +171,8 @@
 
   programs.nix-index.enable = true;
 
-  services.podman.enable = true;
+  # WARN: Not supported by darwin
+  # services.podman.enable = true;
 
   systemd.user = {
     services = {

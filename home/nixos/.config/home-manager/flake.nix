@@ -41,6 +41,25 @@
       pkgs = nixpkgs.legacyPackages.${system}.extend customPackages;
     in
     {
+      # Mac
+      homeConfigurations."mae@mae-mac-G00T0L7FPY" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+
+        # Specify your home configuration modules here, for example,
+        # the path to your home.nix.
+        modules = [
+          nix-index-database.homeModules.nix-index
+          ./home.nix
+          # Optionally use extraSpecialArgs
+          # to pass through arguments to home.nix
+          {
+            _module.args = {
+              username = "mae";
+              homeDirectory = "/Users/mae";
+            };
+          }
+        ];
+      };
       # Debian 12
       homeConfigurations."me@twr" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
