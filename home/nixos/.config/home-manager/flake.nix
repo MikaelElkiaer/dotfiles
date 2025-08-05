@@ -41,7 +41,7 @@
       pkgs = nixpkgs.legacyPackages.${system}.extend customPackages;
     in
     {
-      # Mac
+      # macOS 15
       homeConfigurations."mae@mae-mac-G00T0L7FPY" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.aarch64-darwin;
 
@@ -50,6 +50,7 @@
         modules = [
           nix-index-database.homeModules.nix-index
           ./home.nix
+          ./hosts/mae-mac-G00T0L7FPY.nix
           # Optionally use extraSpecialArgs
           # to pass through arguments to home.nix
           {
