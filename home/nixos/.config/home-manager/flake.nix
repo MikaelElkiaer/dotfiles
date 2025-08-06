@@ -33,17 +33,16 @@
     }:
     let
       customPackages = final: prev: {
-        dagger = inputs.dagger.packages.${pkgs.system}.dagger;
-        docker-credential-magic = (pkgs.callPackage ./packages/docker-credential-magic.nix { });
-        docker-credential-ghcr-login = (pkgs.callPackage ./packages/docker-credential-ghcr-login.nix { });
+        dagger = inputs.dagger.packages.${prev.system}.dagger;
+        docker-credential-magic = (prev.callPackage ./packages/docker-credential-magic.nix { });
+        docker-credential-ghcr-login = (prev.callPackage ./packages/docker-credential-ghcr-login.nix { });
+        ic = (prev.callPackage ./packages/ic.nix { });
       };
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system}.extend customPackages;
     in
     {
       # macOS 15
       homeConfigurations."mae@mae-mac-G00T0L7FPY" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+        pkgs = nixpkgs.legacyPackages.aarch64-darwin.extend customPackages;
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
@@ -63,7 +62,7 @@
       };
       # Debian 12
       homeConfigurations."me@twr" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = nixpkgs.legacyPackages.aarch64-darwin.extend customPackages;
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
@@ -85,7 +84,7 @@
       homeConfigurations."mikaelki@AD.KEYSIGHT.COM@czc2208rnd" =
         home-manager.lib.homeManagerConfiguration
           {
-            inherit pkgs;
+            pkgs = nixpkgs.legacyPackages.aarch64-darwin.extend customPackages;
 
             # Specify your home configuration modules here, for example,
             # the path to your home.nix.
@@ -106,7 +105,7 @@
           };
       # WSL2
       homeConfigurations."nixos@nixos" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = nixpkgs.legacyPackages.aarch64-darwin.extend customPackages;
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
