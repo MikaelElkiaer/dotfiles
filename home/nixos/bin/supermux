@@ -240,23 +240,43 @@ function get_tmux_windows {
 }
 
 function color {
-  declare -x color_reset="\u001b[0m"
-  # TODO: Make it work with exported array
-  declare -xA colors
-  colors[black]="\u001b[30m"
-  colors[blue]="\u001b[34m"
-  colors[cyan]="\u001b[36m"
-  colors[default]="$color_reset"
-  colors[green]="\u001b[32m"
-  colors[magenta]="\u001b[35m"
-  colors[red]="\u001b[31m"
-  colors[yellow]="\u001b[33m"
-  colors[white]="\u001b[37m"
+  declare -x color_reset color
+  color=
+  color_reset="$(tput sgr0)"
 
-  color="${colors[$1]-}"
-  if [ -z "$color" ]; then
-    echo "[WRN] Color must be one of: ${!colors[*]}" >&2
-  fi
+  case $1 in
+  black)
+    color="$(tput setaf 0)"
+    ;;
+  blue)
+    color="$(tput setaf 4)"
+    ;;
+  cyan)
+    color="$(tput setaf 6)"
+    ;;
+  default)
+    color="$color_reset"
+    ;;
+  green)
+    color="$(tput setaf 2)"
+    ;;
+  magenta)
+    color="$(tput setaf 5)"
+    ;;
+  red)
+    color="$(tput setaf 1)"
+    ;;
+  yellow)
+    color="$(tput setaf 3)"
+    ;;
+  white)
+    color="$(tput setaf 15)"
+    ;;
+  *)
+    echo "[WRN] Color must be one of: black, blue, cyan, default, green, magenta, red, yellow, white" >&2
+    ;;
+  esac
+
   echo -e "$color$2$color_reset"
 }
 
