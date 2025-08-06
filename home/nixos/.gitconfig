@@ -1,10 +1,14 @@
 [user]
 	name = Mikael Elkiaer
-	email = 2102306+MikaelElkiaer@users.noreply.github.com
+  email = 2102306+MikaelElkiaer@users.noreply.github.com
+# INFO: Allow for local overrides
+# The file is not created by default.
+# It can be created and then used for additional `includeIf` blocks.
+# See below for examples.
+[include]
+	path = ~/.override.gitconfig
 [includeIf "gitdir:**/Repositories/GitHub/**"]
 	path = ~/.github.gitconfig
-[includeIf "gitdir:**/Repositories/*-ks/**"]
-	path = ~/.ks.gitconfig
 [includeIf "gitdir:**/Repositories/AUR/**"]
 	path = ~/.aur.gitconfig
 [core]
