@@ -73,6 +73,7 @@
     lnav
     navi
     ncurses
+    nix-init
     nodejs
     pigz
     pluto
