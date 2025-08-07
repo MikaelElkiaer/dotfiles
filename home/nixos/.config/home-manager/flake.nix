@@ -57,7 +57,7 @@
       };
       # Debian 12
       homeConfigurations."me@twr" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.aarch64-darwin.extend customPackages;
+        pkgs = nixpkgs.legacyPackages.x86_64-linux.extend customPackages;
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
