@@ -197,6 +197,14 @@ EOF
   fi
 fi
 
+# Load additional profiles
+# - These are not supposed to be source-controlled
+# shellcheck disable=SC2044
+for f in $(find ~ -maxdepth 1 -name '.bash_profile_*'); do
+  # shellcheck source=/dev/null
+  source "$f"
+done
+
 # Clear function only needed for init
 unset -f _add_completion
 
