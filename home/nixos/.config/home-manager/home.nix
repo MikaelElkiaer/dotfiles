@@ -39,10 +39,9 @@
     # WARN: Not supported by darwin
     # dagger
     delta
-    # WARN: Not supported by darwin
-    # docker-credential-ghcr-login
-    # docker-credential-helpers
-    # docker-credential-magic
+    docker-credential-ghcr-login
+    docker-credential-helpers
+    docker-credential-magic
     expect
     file
     fluxcd
