@@ -16,15 +16,10 @@
       url = "github:dagger/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixgl = {
-      url = "github:nix-community/nixGL";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
     inputs@{
-      nixgl,
       nixpkgs,
       nix-index-database,
       home-manager,
@@ -76,48 +71,6 @@
             _module.args = {
               username = "me";
               homeDirectory = "/home/me";
-            };
-          }
-        ];
-      };
-      # Debian 12
-      homeConfigurations."mikaelki@AD.KEYSIGHT.COM@czc2208rnd" =
-        home-manager.lib.homeManagerConfiguration
-          {
-            pkgs = nixpkgs.legacyPackages.aarch64-darwin.extend customPackages;
-
-            # Specify your home configuration modules here, for example,
-            # the path to your home.nix.
-            modules = [
-              nix-index-database.homeModules.nix-index
-              ./home.nix
-              ./hosts/czc2208rnd.nix
-              # Optionally use extraSpecialArgs
-              # to pass through arguments to home.nix
-              {
-                _module.args = {
-                  username = "mikaelki@AD.KEYSIGHT.COM";
-                  homeDirectory = "/home/mikaelki";
-                  nixgl = nixgl;
-                };
-              }
-            ];
-          };
-      # WSL2
-      homeConfigurations."nixos@nixos" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.aarch64-darwin.extend customPackages;
-
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [
-          nix-index-database.homeModules.nix-index
-          ./home.nix
-          # Optionally use extraSpecialArgs
-          # to pass through arguments to home.nix
-          {
-            _module.args = {
-              username = "nixos";
-              homeDirectory = "/home/nixos";
             };
           }
         ];
