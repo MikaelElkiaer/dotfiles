@@ -9,6 +9,15 @@ login-gh:		## Log in to GitHub CLI
 	@
 	gh auth login --hostname=github.com --git-protocol=https --scopes=notifications,read:packages,read:org,read:project
 
+darwin-switch:		## Apply current nix-darwin configuration
+	@
+	sudo cp -r etc/nix-darwin/* /etc/nix-darwin
+	sudo darwin-rebuild switch
+
+darwin-update:		## Update nix-darwin flake
+	@
+	nix flake update --flake $$PWD/home/nixos/.config/home-manager/
+
 hm-build:		## Build home-manager config
 	@
 	set -e
