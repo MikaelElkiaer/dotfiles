@@ -76,6 +76,7 @@
     nodejs
     pigz
     pluto
+    podman
     python3
     ripgrep
     skopeo
