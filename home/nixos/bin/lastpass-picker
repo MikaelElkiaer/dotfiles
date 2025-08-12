@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+lpass ls | tail -n+2 | sed 's/\(.*\)\/\(.*\)\[id: \([0-9]\+\)\]/\1\t\2\t\3/' |
+  fzf \
+    --accept-nth=3 \
+    --ansi \
+    --delimiter='\t' \
+    --header-first \
+    --no-sort \
+    --with-nth=..2 |
+  xargs lpass show --sync=no --password |
+  xargs echo -n |
+  pbcopy
