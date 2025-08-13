@@ -89,6 +89,11 @@ fi
 # me
 ####
 
+if [ -f ~/.profile ]; then
+  # shellcheck source=/dev/null
+  . ~/.profile
+fi
+
 # Nix and Home-Manager
 if ! [[ "$PATH" == *"$HOME/.nix-profile/bin"* ]]; then
   export PATH="$HOME/.nix-profile/bin:$PATH"
