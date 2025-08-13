@@ -10,5 +10,6 @@
     kubelogin # Azure
     kubelogin-oidc
     lastpass-cli
+    terraform
   ];
 }
