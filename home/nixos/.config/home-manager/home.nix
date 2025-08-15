@@ -64,8 +64,11 @@
     krew
     kubectl
     kubectl-validate
-    kubernetes-helm
-    kubernetes-helmPlugins.helm-diff
+    (wrapHelm kubernetes-helm {
+      plugins = [
+        kubernetes-helmPlugins.helm-diff
+      ];
+    })
     kubeseal
     kubeswitch
     lazydocker
