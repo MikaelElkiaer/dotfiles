@@ -65,6 +65,7 @@
     kubectl
     kubectl-validate
     kubernetes-helm
+    kubernetes-helmPlugins.helm-diff
     kubeseal
     kubeswitch
     lazydocker
