@@ -34,6 +34,8 @@
               "kitty"
               "podman-desktop"
             ];
+            # Delete undeclared brews and casks
+            onActivation.cleanup = "zap";
           };
 
           # Necessary for using flakes on this system.
