@@ -51,8 +51,35 @@ if [ -n "$force_color_prompt" ]; then
   fi
 fi
 
+# Add this to ~/.bashrc or ~/.bash_profile
+function parse_k8s_context() {
+  # Check if kubectl is installed
+  if ! command -v kubectl &>/dev/null; then
+    return
+  fi
+
+  # Get the current context and namespace
+  local context=$(kubectl config current-context 2>/dev/null)
+
+  if [[ -n "$context" ]]; then
+    local namespace=$(kubectl config view --minify --output "jsonpath={..namespace}" 2>/dev/null)
+
+    # Check if namespace is set and not 'default'
+    if [[ -n "$namespace" && "$namespace" != "default" ]]; then
+      echo -e " \e[35m $context($namespace)\e[0m"
+    else
+      echo " \e[35m $context\e[0m" -e
+    fi
+  fi
+}
+
+# Update your PS1 variable to include the function
+# This is a basic example; adjust your PS1 to your liking
+export PS1='[\u@\h \W $(parse_k8s_context)]\$ '
+
 if [ "$color_prompt" = yes ]; then
   PS1='\[\033[01;34m\]\w\[\033[00m\]'
+  PS1+='$(parse_k8s_context)'
   PS1+=' $(x=$?; if [ $x -gt 0 ]; then echo "\[\033[01;31m\] $x\[\033[01;00m\]"; fi)'
   PS1+='\nλ '
 else
