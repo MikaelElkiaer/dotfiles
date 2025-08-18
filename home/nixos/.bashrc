@@ -68,7 +68,7 @@ function parse_k8s_context() {
     if [[ -n "$namespace" && "$namespace" != "default" ]]; then
       echo -e " \e[35m $context($namespace)\e[0m"
     else
-      echo " \e[35m $context\e[0m" -e
+      echo -e " \e[35m $context\e[0m"
     fi
   fi
 }
