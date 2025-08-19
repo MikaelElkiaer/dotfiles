@@ -8,15 +8,9 @@
 }:
 
 {
-  # Dynamically import all modules
-  imports =
-    let
-      moduleDir = ./modules;
-      moduleFiles = builtins.filter (name: builtins.match ".*\\.nix$" name != null) (
-        builtins.attrNames (builtins.readDir moduleDir)
-      );
-    in
-    map (name: moduleDir + "/${name}") moduleFiles;
+  imports = [
+    ./modules/neovim.nix
+  ];
 
   home.username = username;
   home.homeDirectory = homeDirectory;
@@ -39,9 +33,7 @@
     # WARN: Not supported by darwin
     # dagger
     delta
-    docker-credential-ghcr-login
     docker-credential-helpers
-    docker-credential-magic
     expect
     file
     fluxcd
@@ -71,7 +63,6 @@
     })
     kubeseal
     kubeswitch
-    lazydocker
     lazygit
     lnav
     navi

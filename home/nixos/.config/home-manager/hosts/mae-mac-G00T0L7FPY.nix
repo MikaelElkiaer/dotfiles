@@ -13,6 +13,7 @@
     kubelogin-oidc
     lastpass-cli
     terraform
+    vault-bin
   ];
 
   home.sessionVariables = {
