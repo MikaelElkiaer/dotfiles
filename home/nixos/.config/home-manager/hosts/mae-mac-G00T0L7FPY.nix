@@ -7,6 +7,7 @@
 {
   home.packages = with pkgs; [
     awscli2
+    crane
     ic
     kubelogin # Azure
     kubelogin-oidc
