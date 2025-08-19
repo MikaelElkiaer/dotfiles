@@ -30,62 +30,56 @@ shopt -s globstar
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-xterm-color | *-256color) color_prompt=yes ;;
-esac
+function __prompt_command {
+  local EXIT=$?
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-# force_color_prompt=yes
+  local color_prompt
+  case "$TERM" in
+  *-256color) color_prompt= ;;
+  esac
 
-if [ -n "$force_color_prompt" ]; then
-  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    # We have color support; assume it's compliant with Ecma-48
-    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-    # a case would tend to support setf rather than setaf.)
-    color_prompt=yes
-  else
-    color_prompt=
-  fi
-fi
-
-# Add this to ~/.bashrc or ~/.bash_profile
-function parse_k8s_context() {
-  # Check if kubectl is installed
-  if ! command -v kubectl &>/dev/null; then
-    return
-  fi
-
-  # Get the current context and namespace
-  local context=$(kubectl config current-context 2>/dev/null)
-
-  if [[ -n "$context" ]]; then
-    local namespace=$(kubectl config view --minify --output "jsonpath={..namespace}" 2>/dev/null)
-
-    # Check if namespace is set and not 'default'
-    if [[ -n "$namespace" && "$namespace" != "default" ]]; then
-      echo -e " \e[35m $context($namespace)\e[0m"
-    else
-      echo -e " \e[35m $context\e[0m"
+  if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+      # We have color support; assume it's compliant with Ecma-48
+      # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+      # a case would tend to support setf rather than setaf.)
+      color_prompt=
     fi
   fi
+
+  local reset="$(tput sgr0)"
+  local purple="$(tput setaf 5)"
+  local k8s_prompt
+  if command -v kubectl &>/dev/null; then
+    context=$(kubectl config current-context 2>/dev/null)
+
+    if [[ -n "$context" ]]; then
+      namespace=$(kubectl config view --minify --output "jsonpath={..namespace}" 2>/dev/null)
+
+      if [[ -n "$namespace" && "$namespace" != "default" ]]; then
+        k8s_prompt=" ${color_prompt+$purple} $context($namespace)${color_prompt+$reset}"
+      else
+        k8s_prompt=" ${color_prompt+$purple} $context${color_prompt+$reset}"
+      fi
+    fi
+  fi
+
+  local red="$(tput setaf 1)"
+  local exitcode_prompt
+  if [ $EXIT -gt 0 ]; then
+    exitcode_prompt=" ${color_prompt+$red} $EXIT${color_prompt+$reset}"
+  fi
+
+  local blue="$(tput setaf 4)"
+  local dir_prompt="${color_prompt+$blue}\w${color_prompt+$reset}"
+
+  PS1="$dir_prompt"
+  PS1+="$k8s_prompt"
+  PS1+="$exitcode_prompt"
+  PS1+="\nλ "
 }
 
-# Update your PS1 variable to include the function
-# This is a basic example; adjust your PS1 to your liking
-export PS1='[\u@\h \W $(parse_k8s_context)]\$ '
-
-if [ "$color_prompt" = yes ]; then
-  PS1='\[\033[01;34m\]\w\[\033[00m\]'
-  PS1+='$(parse_k8s_context)'
-  PS1+=' $(x=$?; if [ $x -gt 0 ]; then echo "\[\033[01;31m\] $x\[\033[01;00m\]"; fi)'
-  PS1+='\nλ '
-else
-  PS1='\w\nλ '
-fi
-unset color_prompt force_color_prompt
+PROMPT_COMMAND=__prompt_command
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
