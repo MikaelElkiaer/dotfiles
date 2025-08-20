@@ -33,6 +33,7 @@
             casks = [
               "kitty"
               "podman-desktop"
+              "trex"
             ];
             # Delete undeclared brews and casks
             onActivation.cleanup = "zap";
