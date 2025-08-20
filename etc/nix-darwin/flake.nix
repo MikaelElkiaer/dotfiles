@@ -32,6 +32,7 @@
             enable = true;
             casks = [
               "kitty"
+              "nikitabobko/tap/aerospace@0.12.0"
               "podman-desktop"
               "trex"
             ];
