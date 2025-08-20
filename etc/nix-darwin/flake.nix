@@ -55,6 +55,7 @@
           system.configurationRevision = self.rev or self.dirtyRev or null;
 
           system.defaults.dock.autohide = true;
+          system.defaults.NSGlobalDomain._HIHideMenuBar = true;
 
           system.primaryUser = "mae";
 
