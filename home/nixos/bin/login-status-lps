@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+if ! command -v lpass >/dev/null; then
+  echo "Ensure lpass (lastpass-cli) is installed" >&2
+  echo "Clearing state" >&2
+  rm --force "$HOME/.local/state/login-status-lps"
+  exit 0
+fi
+
+TMP="$(mktemp)"
+(
+  lpass status -q >&2 && EXIT_CODE=$? || EXIT_CODE=$?
+  echo "$EXIT_CODE"
+) >"$TMP"
+mv "$TMP" "$HOME/.local/state/login-status-lps"
