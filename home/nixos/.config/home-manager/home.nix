@@ -143,6 +143,95 @@
       };
     };
 
+  launchd.agents = {
+    gh-notifications-counter = {
+      config = {
+        EnvironmentVariables = {
+          PATH = "${
+            lib.makeBinPath [
+              pkgs.bash
+              pkgs.gh
+              pkgs.uutils-coreutils-noprefix
+            ]
+          }:/usr/local/bin:/usr/bin";
+        };
+        Program = "${config.home.homeDirectory}/bin/gh-notifications-counter";
+        RunAtLoad = true;
+        StartInterval = 60;
+      };
+      enable = true;
+    };
+    login-status-aws = {
+      config = {
+        EnvironmentVariables = {
+          PATH = "${
+            lib.makeBinPath [
+              pkgs.awscli2
+              pkgs.bash
+              pkgs.uutils-coreutils-noprefix
+            ]
+          }:/usr/local/bin:/usr/bin";
+        };
+        Program = "${config.home.homeDirectory}/bin/login-status-aws";
+        RunAtLoad = true;
+        StartInterval = 60;
+      };
+      enable = true;
+    };
+    login-status-lps = {
+      config = {
+        EnvironmentVariables = {
+          PATH = "${
+            lib.makeBinPath [
+              pkgs.bash
+              pkgs.lastpass-cli
+              pkgs.uutils-coreutils-noprefix
+            ]
+          }:/usr/local/bin:/usr/bin";
+        };
+        Program = "${config.home.homeDirectory}/bin/login-status-lps";
+        RunAtLoad = true;
+        StartInterval = 60;
+      };
+      enable = true;
+    };
+    upgrade-status-hm = {
+      config = {
+        EnvironmentVariables = {
+          PATH = "${
+            lib.makeBinPath [
+              pkgs.bash
+              pkgs.home-manager
+              pkgs.nix
+              pkgs.uutils-coreutils-noprefix
+            ]
+          }:/usr/local/bin:/usr/bin";
+        };
+        Program = "${config.home.homeDirectory}/bin/upgrade-status-hm";
+        RunAtLoad = true;
+        StartInterval = 600;
+      };
+      enable = true;
+    };
+    upgrade-status-nvim = {
+      config = {
+        EnvironmentVariables = {
+          PATH = "${
+            lib.makeBinPath [
+              pkgs.gnused
+              pkgs.neovim
+              pkgs.uutils-coreutils-noprefix
+            ]
+          }:/usr/local/bin:/usr/bin";
+        };
+        Program = "${config.home.homeDirectory}/bin/upgrade-status-nvim";
+        RunAtLoad = true;
+        StartInterval = 600;
+      };
+      enable = true;
+    };
+  };
+
   nix = {
     package = pkgs.nixVersions.latest;
 
@@ -166,9 +255,6 @@
   };
 
   programs.nix-index.enable = true;
-
-  # WARN: Not supported by darwin
-  # services.podman.enable = true;
 
   systemd.user = {
     services = {
