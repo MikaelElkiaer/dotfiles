@@ -17,6 +17,7 @@
   ];
 
   home.sessionVariables = {
+    AWS_PROFILE = "netic-iam-mfa";
     XDG_CACHE_HOME = "${homeDirectory}/.cache";
     XDG_CONFIG_HOME = "${homeDirectory}/.config";
     XDG_DATA_HOME = "${homeDirectory}/.local/share";

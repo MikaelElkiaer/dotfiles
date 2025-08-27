@@ -164,6 +164,7 @@
     login-status-aws = {
       config = {
         EnvironmentVariables = {
+          AWS_PROFILE = "${config.home.sessionVariables.AWS_PROFILE}";
           PATH = "${
             lib.makeBinPath [
               pkgs.awscli2
