@@ -21,7 +21,7 @@
           # $ nix-env -qaP | grep wget
           environment.systemPackages = with pkgs; [
             # WARN: Desktop applications installed this way will not appear in Spotlight
-            # - see https://github.com/nix-darwin/nix-darwin/issues/214
+            # - see https://github.com/nix-darwin/nix-darwin/issues/1576
             # - use `homebrew.casks` instead
           ];
 
