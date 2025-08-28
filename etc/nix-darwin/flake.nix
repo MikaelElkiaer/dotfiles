@@ -160,16 +160,16 @@
               alt-shift-f = "fullscreen";
 
               # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-              alt-shift-h = "focus --boundaries all-monitors-outer-frame left";
-              alt-shift-j = "focus --boundaries all-monitors-outer-frame down";
-              alt-shift-k = "focus --boundaries all-monitors-outer-frame up";
-              alt-shift-l = "focus --boundaries all-monitors-outer-frame right";
+              alt-shift-h = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors left";
+              alt-shift-j = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors down";
+              alt-shift-k = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors up";
+              alt-shift-l = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors right";
 
               # See: https://nikitabobko.github.io/AeroSpace/commands#move
-              alt-shift-ctrl-h = "move --boundaries all-monitors-outer-frame left";
-              alt-shift-ctrl-j = "move --boundaries all-monitors-outer-frame down";
-              alt-shift-ctrl-k = "move --boundaries all-monitors-outer-frame up";
-              alt-shift-ctrl-l = "move --boundaries all-monitors-outer-frame right";
+              alt-shift-ctrl-h = "move --boundaries all-monitors-outer-frame --boundaries-action stop left";
+              alt-shift-ctrl-j = "move --boundaries all-monitors-outer-frame --boundaries-action stop down";
+              alt-shift-ctrl-k = "move --boundaries all-monitors-outer-frame --boundaries-action stop up";
+              alt-shift-ctrl-l = "move --boundaries all-monitors-outer-frame --boundaries-action stop right";
 
               # See: https://nikitabobko.github.io/AeroSpace/commands#resize
               # alt-shift-minus = "resize smart -50";
