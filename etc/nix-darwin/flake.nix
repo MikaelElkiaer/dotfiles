@@ -110,7 +110,11 @@
               inner.vertical = 0;
               outer.left = 0;
               outer.bottom = 0;
-              outer.top = 0;
+              outer.top = [
+                { monitor."built-in retina display" = 0; } # Even if "main" it should be 0 due to notch
+                { monitor."main" = 25; } # Leave room for sketchybar
+                0
+              ];
               outer.right = 0;
             };
 
