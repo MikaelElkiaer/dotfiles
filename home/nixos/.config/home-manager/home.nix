@@ -125,6 +125,10 @@
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/tmux";
       };
+      ".config/sketchybar" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/sketchybar";
+      };
       ".bash_aliases" = {
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.bash_aliases";
       };
