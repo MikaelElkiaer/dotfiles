@@ -223,6 +223,7 @@
         EnvironmentVariables = {
           PATH = "${
             lib.makeBinPath [
+              pkgs.bash
               pkgs.gnused
               pkgs.neovim
               pkgs.uutils-coreutils-noprefix
