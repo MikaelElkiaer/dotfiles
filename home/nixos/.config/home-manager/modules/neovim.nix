@@ -20,7 +20,7 @@
     lua-language-server
     marksman # Markdown
     nil # Nix
-    roslyn-ls
+    # roslyn-ls # WARN: Currently broken
     terraform-lsp
     typescript-language-server
     yaml-language-server
