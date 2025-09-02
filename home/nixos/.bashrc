@@ -206,6 +206,11 @@ if [ "$(command -v bws)" ]; then
   _add_completion _bws "bws completions bash"
 fi
 
+# [ic](https://github.com/containdk/ic)
+if [ "$(command -v ic)" ]; then
+  _add_completion _ic "ic completion bash"
+fi
+
 # [docker-credential-magic](https://github.com/docker-credential-magic/docker-credential-magic)
 if [ "$(command -v docker-credential-magic)" ]; then
   export DOCKER_CONFIG="$(docker-credential-magic home)"
