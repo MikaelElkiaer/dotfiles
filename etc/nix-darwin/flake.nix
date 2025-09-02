@@ -287,6 +287,16 @@
                 "join-with right"
                 "mode main"
               ];
+              j = [
+                "resize smart -50"
+                "mode main"
+              ];
+              k = [
+                "resize smart +50"
+                "mode main"
+              ];
+              ctrl-j = "resize smart -50";
+              ctrl-k = "resize smart +50";
             };
 
             # Notify Sketchybar about workspace change
