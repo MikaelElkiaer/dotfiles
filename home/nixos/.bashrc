@@ -127,6 +127,10 @@ fi
 if ! [[ "$PATH" == *"${KREW_ROOT:-$HOME/.krew}/bin"* ]]; then
   export PATH="$PATH:${KREW_ROOT:-$HOME/.krew}/bin"
 fi
+# Homebrew
+if ! [[ "$PATH" == *"/opt/homebrew/bin"* ]]; then
+  export PATH="$PATH:/opt/homebrew/bin"
+fi
 
 COMPLETION_PATH=~/.local/share/bash-completion/completions
 mkdir --parents "$COMPLETION_PATH"
