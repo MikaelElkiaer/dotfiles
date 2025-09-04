@@ -12,7 +12,6 @@
     ic
     kubelogin # Azure
     kubelogin-oidc
-    lastpass-cli
     terraform
     vault-bin
   ];
