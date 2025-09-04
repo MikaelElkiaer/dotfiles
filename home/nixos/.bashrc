@@ -48,22 +48,6 @@ function __prompt_command {
   fi
 
   local reset="$(tput sgr0)"
-  local purple="$(tput setaf 5)"
-  local k8s_prompt
-  if command -v kubectl &>/dev/null; then
-    context=$(kubectl config current-context 2>/dev/null)
-
-    if [[ -n "$context" ]]; then
-      namespace=$(kubectl config view --minify --output "jsonpath={..namespace}" 2>/dev/null)
-
-      if [[ -n "$namespace" && "$namespace" != "default" ]]; then
-        k8s_prompt=" ${color_prompt+$purple} $context($namespace)${color_prompt+$reset}"
-      else
-        k8s_prompt=" ${color_prompt+$purple} $context${color_prompt+$reset}"
-      fi
-    fi
-  fi
-
   local red="$(tput setaf 1)"
   local exitcode_prompt
   if [ $EXIT -gt 0 ]; then
@@ -74,7 +58,6 @@ function __prompt_command {
   local dir_prompt="${color_prompt+$blue}\w${color_prompt+$reset}"
 
   PS1="$dir_prompt"
-  PS1+="$k8s_prompt"
   PS1+="$exitcode_prompt"
   PS1+="\nλ "
 }
@@ -248,8 +231,15 @@ if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
 fi
 
 if command -v tmux &>/dev/null; then
-  function pbcopy { tmux load-buffer -w -; }
-  function pbpaste { tmux save-buffer -; }
+  # Actions to do only when inside tmux
+  if [ -n "$TMUX" ]; then
+    # Create kubeconfig file per tmux window
+    if [ -z "$KUBECONFIG" ]; then
+      WINDOW_ID="$(tmux display-message -p '#{window_id}')"
+      export KUBECONFIG="$HOME/.kube/config-tmux-$WINDOW_ID"
+      tmux set-hook -w window-unlinked "run-shell 'rm -f $KUBECONFIG'"
+    fi
+  fi
 
   # WARN: Keep this at the bottom
   if [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then

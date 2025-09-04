@@ -11,8 +11,11 @@ if [[ "$_PATH" == "$HOME"* ]]; then
   _PATH="${_PATH/$HOME/'~'}"
 fi
 
-RESULT="#[fg=colour7,dim]"
+RESULT=" "
 IFS='/' read -ra PATH_PARTS <<<"$_PATH"
+if [[ "${#PATH_PARTS[@]}" -gt 1 ]]; then
+  RESULT+="#[fg=colour7,dim]"
+fi
 for i in "${!PATH_PARTS[@]}"; do
   if [[ -z "${PATH_PARTS[$i]}" ]]; then
     continue
