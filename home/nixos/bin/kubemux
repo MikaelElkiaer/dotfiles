@@ -3,7 +3,7 @@
 export KUBECONFIG="$HOME/.kube/config-tmux-$1"
 RESULT=""
 if CONTEXT="$(kubectl config current-context)"; then
-  RESULT="#[fg=colour5] 󱃾 $CONTEXT#[fg=default]"
+  RESULT="#[fg=colour13] 󱃾 $CONTEXT#[fg=default]"
 fi
 if NAMESPACE="$(
   kubectl config view --minify --output jsonpath='{..namespace}'
