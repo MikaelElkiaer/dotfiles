@@ -189,10 +189,9 @@
           PATH = "${
             lib.makeBinPath [
               pkgs.bash
-              pkgs.lastpass-cli
               pkgs.uutils-coreutils-noprefix
             ]
-          }:/usr/local/bin:/usr/bin";
+          }:/opt/homebrew/bin:/usr/local/bin:/usr/bin";
         };
         Program = "${config.home.homeDirectory}/bin/login-status-lps";
         RunAtLoad = true;
