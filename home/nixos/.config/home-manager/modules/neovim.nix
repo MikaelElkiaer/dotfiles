@@ -41,5 +41,7 @@
     # Treesitter
     gcc # needed for auto install
     tree-sitter
+    # DAP
+    delve # Go
   ];
 }
