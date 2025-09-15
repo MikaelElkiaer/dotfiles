@@ -16,7 +16,7 @@ darwin-switch:		## Apply current nix-darwin configuration
 
 darwin-update:		## Update nix-darwin flake
 	@
-	nix flake update --flake $$PWD/home/nixos/.config/home-manager/
+	nix flake update --flake $$PWD/etc/nix-darwin
 
 hm-build:		## Build home-manager config
 	@
