@@ -55,7 +55,7 @@ hm-update:		## Update home-manager flake
 	echo "[DBG] Comparing revisions" >&2
 	# Remove "hash" change from output
 	nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result |
-		sed -E '/[ε∅] → [ε∅]/d' >./diff
+		sed -E -e '/[ε∅] → [ε∅]/d' -e '/^source:/d' >./diff
 	if ! [ -s ./diff ]; then
 		echo "[INF] No updates found" >&2
 		exit 0
