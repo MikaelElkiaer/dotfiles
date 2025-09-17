@@ -6,14 +6,23 @@ function main() {
   WINDOW_ID="$1"
   WINDOW_INDEX="${2-}"
 
-  mapfile -t PANES < <(tmux list-panes -F "#{pane_current_command} #{pane_current_path} #{pane_active}" -t "$WINDOW_ID")
+  mapfile -t PANES < <(tmux list-panes -F "#{pane_current_command};#{pane_current_path};#{pane_title};#{pane_active}" -t "$WINDOW_ID")
 
   local ACTIVE_PATH RESULT
   for P in "${PANES[@]}"; do
     local FORMAT=""
-    read -r APP _PATH ACTIVE <<<"$P"
+    IFS=$';' read -r APP _PATH TITLE ACTIVE <<<"$P"
     if [ "$ACTIVE" == "1" ]; then
-      ACTIVE_PATH=$_PATH
+      if [ "$APP" == "ssh" ]; then
+        local _TITLE
+        _TITLE="${TITLE%:*}"
+        _TITLE="${_TITLE#*@}"
+        ACTIVE_PATH="$_TITLE"
+      elif [ "$_PATH" == "$HOME" ]; then
+        ACTIVE_PATH="~"
+      else
+        ACTIVE_PATH="$(basename "$_PATH")"
+      fi
       FORMAT+="${NOFORMAT-#[fg=blue]}"
     fi
     FORMAT+="$(get_app_icon "$APP")"
@@ -21,10 +30,7 @@ function main() {
     FORMAT+="${NOFORMAT-#[fg=default]}"
     RESULT+="$FORMAT"
   done
-  if [ "$ACTIVE_PATH" == "$HOME" ]; then
-    ACTIVE_PATH="~"
-  fi
-  RESULT+="$(basename "$ACTIVE_PATH")"
+  RESULT+="$ACTIVE_PATH"
   if [ -n "$WINDOW_INDEX" ]; then
     RESULT+="$(superscript "$WINDOW_INDEX")"
   fi
@@ -34,7 +40,7 @@ function main() {
 function get_app_icon() {
   case "$1" in
   "bash" | "sh")
-    echo ""
+    echo ""
     ;;
   "k9s")
     echo "󱃾"
