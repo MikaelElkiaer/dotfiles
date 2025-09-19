@@ -34,6 +34,7 @@
               "lastpass-cli"
             ];
             casks = [
+              "1password-cli"
               "alfred"
               "font-hack-nerd-font" # Needed for sketchybar
               "font-noto-sans-mono"
