@@ -18,6 +18,7 @@
 
   home.sessionVariables = {
     AWS_PROFILE = "netic-iam-mfa";
+    GOOGLE_CLOUD_PROJECT="netic-code-assist";
     VAULT_ADDR = "https://vault.shared.k8s.netic.dk";
     XDG_CACHE_HOME = "${homeDirectory}/.cache";
     XDG_CONFIG_HOME = "${homeDirectory}/.config";
