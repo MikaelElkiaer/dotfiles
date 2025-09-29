@@ -16,10 +16,11 @@
     dockerfile-language-server-nodejs
     gopls
     helm-ls
-    vscode-langservers-extracted
     lua-language-server
     marksman # Markdown
     nil # Nix
+    python313Packages.python-lsp-server
+    vscode-langservers-extracted
     # roslyn-ls # WARN: Currently broken
     terraform-lsp
     typescript-language-server
