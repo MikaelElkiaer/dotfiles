@@ -4,6 +4,9 @@
   inputs = {
     # Specify the source of Home Manager and Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs_kubectl_1__34__1 = {
+      url = "github:NixOS/nixpkgs/ebeeb10d4c281dcd80fa93f3c0695ea7bdf7dc30";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -21,6 +24,7 @@
   outputs =
     inputs@{
       nixpkgs,
+      nixpkgs_kubectl_1__34__1,
       nix-index-database,
       home-manager,
       dagger,
@@ -32,6 +36,8 @@
         docker-credential-magic = (prev.callPackage ./packages/docker-credential-magic.nix { });
         docker-credential-ghcr-login = (prev.callPackage ./packages/docker-credential-ghcr-login.nix { });
         ic = (prev.callPackage ./packages/ic.nix { });
+        # INFO: 1.34.0 is currently broken
+        kubectl = (import nixpkgs_kubectl_1__34__1 { system = prev.system; }).kubectl;
       };
     in
     {
