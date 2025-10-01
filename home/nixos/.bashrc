@@ -118,6 +118,7 @@ fi
 COMPLETION_PATH=~/.local/share/bash-completion/completions
 mkdir --parents "$COMPLETION_PATH"
 function _add_completion() {
+  # TODO: Figure out how to clear when completion is updated
   if ! [ -s "$COMPLETION_PATH/$1" ]; then
     eval "$2" >"$COMPLETION_PATH/$1"
   fi
