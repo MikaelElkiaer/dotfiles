@@ -237,8 +237,9 @@ if command -v tmux &>/dev/null; then
     # Create kubeconfig file per tmux window
     if [ -z "$KUBECONFIG" ]; then
       WINDOW_ID="$(tmux display-message -p '#{window_id}')"
-      export KUBECONFIG="$HOME/.kube/config-tmux-$WINDOW_ID"
-      tmux set-hook -w window-unlinked "run-shell 'rm -f $KUBECONFIG'"
+      KUBECONFIG_PREFIX="$HOME/.kube/config-tmux"
+      export KUBECONFIG="$KUBECONFIG_PREFIX-$WINDOW_ID"
+      tmux set-option window-unlinked "run-shell 'rm -f $KUBECONFIG_PREFIX-#{hook_window}'"
     fi
   fi
 
