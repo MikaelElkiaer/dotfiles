@@ -30,7 +30,16 @@ function main() {
     FORMAT+="${NOFORMAT-#[fg=default]}"
     RESULT+="$FORMAT"
   done
-  RESULT+="$ACTIVE_PATH"
+
+  KUBECTX="$(NOICON="" kubemux "$WINDOW_ID")"
+  if [ "$ACTIVE_PATH" = "~" ] && [ -n "$KUBECTX" ]; then
+    RESULT+="${NOFORMAT-#[fg=colour13]}"
+    RESULT+="$(shortname "$KUBECTX")"
+    RESULT+="${NOFORMAT-#[fg=default]}"
+  else
+    RESULT+="$(shortname "$ACTIVE_PATH")"
+  fi
+
   if [ -n "$WINDOW_INDEX" ]; then
     RESULT+="$(superscript "$WINDOW_INDEX")"
   fi

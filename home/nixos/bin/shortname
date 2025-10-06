@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# use first arg or stdin
+if [ -n "$1" ] && [ "$1" != "-" ]; then
+  input="$1"
+else
+  input=$(cat)
+fi
+
+output=""
+
+# WARN: Copilot generated code, may need fixing
+  while [[ -n "$input" ]]; do
+  if [[ "$input" =~ ^[a-zA-Z]+ ]]; then
+    chunk="${BASH_REMATCH[0]}"
+    if [[ "$chunk" =~ ^[A-Z] ]]; then
+      # PascalCase: keep all uppercase letters
+      keep=$(echo "$chunk" | grep -o '[A-Z]' | tr -d '\n')
+    elif [[ "$chunk" =~ ^[a-z] && "$chunk" =~ [A-Z] ]]; then
+      # camelCase: keep first lowercase and all uppercase letters
+      first_lower=$(echo "$chunk" | grep -o '^[a-z]')
+      uppers=$(echo "$chunk" | grep -o '[A-Z]' | tr -d '\n')
+      keep="${first_lower}${uppers}"
+    else
+      # Regular letters: keep first character
+      keep="${chunk:0:1}"
+    fi
+    output+="$keep"
+    input="${input:${#chunk}}"
+  elif [[ "$input" =~ ^[0-9]+ ]]; then
+    chunk="${BASH_REMATCH[0]}"
+    output+="$chunk"
+    input="${input:${#chunk}}"
+  else
+    chunk="${input:0:1}"
+    output+="$chunk"
+    input="${input:1}"
+  fi
+done
+
+echo "$output"
