@@ -32,6 +32,7 @@
             enable = true;
             brews = [
               "lastpass-cli"
+              "tinyproxy"
             ];
             casks = [
               "1password-cli"
