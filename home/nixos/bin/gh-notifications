@@ -229,12 +229,24 @@ function _preview() {
   esac
 }
 
+function _open() {
+  if command -v xdg-open &>/dev/null; then
+    xdg-open "$1"
+  elif command -v open &>/dev/null; then
+    open "$1"
+  elif command -v tmux &>/dev/null; then
+    tmux display-message -d 0 "$1"
+  else
+    echo "No method to open URLs found" >&2
+    return 1
+  fi
+}
+
 function _exec_fzf() {
-  # TODO: Replace tmux command with something more generic
   echo -n "" | fzf \
     --ansi \
     --bind="d:execute-silent(_get id <<<{1} | _mark_done)+reload(_get_data)" \
-    --bind="o:become(tmux display-message -d 0 \$(_get url <<<{1}))" \
+    --bind="o:become(_open \$(_get url <<<{1}))" \
     --bind="p:toggle-preview" \
     --bind="r:execute-silent(_get id <<<{1} | _mark_read)+reload(_get_data)" \
     --bind="ctrl-p:transform-border-label(_toggle_option preview-diff)+refresh-preview" \
@@ -251,6 +263,6 @@ function _exec_fzf() {
     --with-nth=2..
 }
 
-export -f _get_data _mark_read _mark_done _get _toggle_option _get_option _exec_fzf _preview
+export -f _get_data _mark_read _mark_done _get _toggle_option _get_option _exec_fzf _preview _open
 
 main "$@"
