@@ -4,6 +4,7 @@
   inputs = {
     # Specify the source of Home Manager and Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs_stable.url = "github:nixos/nixpkgs/release-25.05";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -21,6 +22,7 @@
   outputs =
     inputs@{
       nixpkgs,
+      nixpkgs_stable,
       nix-index-database,
       home-manager,
       dagger,
@@ -32,6 +34,7 @@
         docker-credential-magic = (prev.callPackage ./packages/docker-credential-magic.nix { });
         docker-credential-ghcr-login = (prev.callPackage ./packages/docker-credential-ghcr-login.nix { });
         ic = (prev.callPackage ./packages/ic.nix { });
+        kubelogin = (import nixpkgs_stable { system = prev.system; }).kubelogin;
       };
     in
     {
