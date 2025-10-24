@@ -3,6 +3,12 @@
 set -Eeuo pipefail
 
 function main {
+  CLUSTER_NAME="${1:-}"
+  if [[ -n "$CLUSTER_NAME" ]]; then
+    ic get cluster-kubeconfig --cluster-name "$CLUSTER_NAME" >"$KUBECONFIG"
+    return
+  fi
+
   ic get clusters -o json | jq -r '["ID","ENVIRONMENT","RESILIENCE ZONE"], (.clusters[] | [.id, .environment_name, .resilience_zone]) | @tsv' |
     column -s $'\t' -t |
     fzf \
