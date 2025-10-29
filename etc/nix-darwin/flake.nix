@@ -121,6 +121,14 @@
               outer.right = 0;
             };
 
+            workspace-to-monitor-force-assignment = {
+              "1" = "built-in retina display";
+              "2" = [
+                "secondary"
+                "built-in retina display"
+              ];
+            };
+
             # See https://nikitabobko.github.io/AeroSpace/guide#exec-env-vars
             exec = {
               # Again, you don't need to copy all config sections to your config.
@@ -130,6 +138,25 @@
                 PATH = "/opt/homebrew/bin:/opt/homebrew/sbin:\${PATH}";
               };
             };
+
+            on-window-detected = [
+              {
+                "if".app-id = "net.kovidgoyal.kitty";
+                run = "move-node-to-workspace 2";
+              }
+              {
+                "if".app-id = "com.google.Chrome";
+                run = "move-node-to-workspace 2";
+              }
+              {
+                "if".app-name-regex-substring = "Gmail|Google Calendar|Google Meet";
+                run = "move-node-to-workspace 1";
+              }
+              {
+                "if".app-id = "com.runningwithcrayons.Alfred-Preferences";
+                run = "layout floating";
+              }
+            ];
 
             # 'main' binding mode declaration
             # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
