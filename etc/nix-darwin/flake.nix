@@ -149,12 +149,12 @@
                 run = "move-node-to-workspace 2";
               }
               {
-                "if".app-name-regex-substring = "Gmail|Google Calendar|Google Meet";
-                run = "move-node-to-workspace 1";
-              }
-              {
                 "if".app-id = "com.runningwithcrayons.Alfred-Preferences";
                 run = "layout floating";
+              }
+              {
+                "if".app-name-regex-substring = "^Gmail|Google";
+                run = "move-node-to-workspace 1";
               }
             ];
 
