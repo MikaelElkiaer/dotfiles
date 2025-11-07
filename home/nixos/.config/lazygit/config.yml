@@ -4,6 +4,6 @@ git:
   commit:
     signOff: false
   overrideGpg: true
-  paging:
-    colorArg: always
-    pager: delta --paging=never --true-color=never
+  pagers:
+    - colorArg: always
+      pager: delta --paging=never --true-color=never
