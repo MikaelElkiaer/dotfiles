@@ -114,6 +114,10 @@ fi
 if ! [[ "$PATH" == *"/opt/homebrew/bin"* ]]; then
   export PATH="$PATH:/opt/homebrew/bin"
 fi
+# Go
+if ! [[ "$PATH" == *"$HOME/go/bin"* ]]; then
+  export PATH="$PATH:$HOME/go/bin"
+fi
 
 COMPLETION_PATH=~/.local/share/bash-completion/completions
 mkdir --parents "$COMPLETION_PATH"
