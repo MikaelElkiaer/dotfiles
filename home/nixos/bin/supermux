@@ -45,8 +45,10 @@ function _export_functions {
 
 function _exec_fzf {
   echo -n "" | fzf \
+    --bind='backward-eof:change-prompt(> )+reload(load)+rebind(change)+unbind(backward-eof)' \
+    --bind='change:transform(detect_mode {q})' \
     --bind='focus:transform-border-label(change_border_label {})' \
-    --bind='load:reload(load)+unbind(load)' \
+    --bind='load:reload(load)+unbind(load)+unbind(backward-eof)' \
     --bind='enter:become(action_primary {})' \
     --bind='tab:become(action_secondary {})' \
     --bind="ctrl-p:toggle-preview" \
@@ -57,12 +59,32 @@ function _exec_fzf {
     --with-nth=3,4
 }
 
+function detect_mode {
+  case "$1" in
+  'c ')
+    match=1
+    cmd="get_commands"
+    prompt="commands"
+    ;;
+  'd ')
+    match=1
+    cmd="get_directories"
+    prompt="directories"
+    ;;
+  'k ')
+    match=1
+    cmd="get_tmux_keys"
+    prompt="keys"
+    ;;
+  *) ;;
+  esac
+  if [ -n "${match:-}" ]; then
+    echo "clear-query+change-prompt($prompt> )+reload($cmd)+unbind(change)+rebind(backward-eof)"
+  fi
+}
+
 function load {
-  get_commands &
-  get_directories &
-  get_kube_contexts &
   get_tmux_windows &
-  get_tmux_keys &
   wait
 }
 
