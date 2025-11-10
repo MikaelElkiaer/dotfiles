@@ -236,7 +236,12 @@ if command -v tmux &>/dev/null; then
   if [ -n "$TMUX" ]; then
     # Create kubeconfig file per tmux window
     if [ -z "$KUBECONFIG" ]; then
-      WINDOW_ID="$(tmux display-message -p '#{window_id}')"
+      # Inherit from parent window in case of popup
+      if [ -n "$POPUPMUX_PARENT_WINDOW" ]; then
+        WINDOW_ID="$POPUPMUX_PARENT_WINDOW"
+      else
+        WINDOW_ID="$(tmux display-message -p '#{window_id}')"
+      fi
       KUBECONFIG_PREFIX="$HOME/.kube/config-tmux"
       export KUBECONFIG="$KUBECONFIG_PREFIX-$WINDOW_ID"
       tmux set-option window-unlinked "run-shell 'rm -f $KUBECONFIG_PREFIX-#{hook_window}'"

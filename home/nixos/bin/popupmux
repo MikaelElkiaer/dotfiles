@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+cmd="${1:-bash}"
+path="$(tmux display -p '#{pane_current_path}')"
+sanitized_path="$(sed 's/[^a-zA-Z0-9]/%/g' <<<"$path")"
+session="_popup_${cmd}_${sanitized_path}"
+parent_window="$(tmux display -p '#{window_id}')"
+
+if [ "$cmd" = "bash" ]; then
+  wrapped_cmd=(bash)
+else
+  wrapped_cmd=(bash -i -c "${cmd}")
+fi
+
+if ! tmux has -t "$session" 2>/dev/null; then
+  session_id="$(tmux new-session -dP -s "$session" -F '#{session_id}' -c "$path" -e "POPUPMUX_PARENT_WINDOW=$parent_window" "${wrapped_cmd[*]}")"
+  tmux set-option -s -t "$session_id" key-table popup
+  tmux set-option -s -t "$session_id" status off
+  tmux set-option -s -t "$session_id" prefix None
+  session="$session_id"
+fi
+
+exec tmux attach -t "$session" >/dev/null
