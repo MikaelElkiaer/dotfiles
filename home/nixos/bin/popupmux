@@ -19,6 +19,14 @@ if ! tmux has -t "$session" 2>/dev/null; then
   tmux set-option -s -t "$session_id" key-table popup
   tmux set-option -s -t "$session_id" status off
   tmux set-option -s -t "$session_id" prefix None
+  # INFO: ANSI escape sequences (OSC 52) does not work in popup
+  if uname | grep -q Darwin; then
+    tmux bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "pbcopy"
+    tmux bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "pbcopy"
+  else
+    tmux bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "xclip -in -selection clipboard"
+    tmux bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "xclip -in -selection clipboard"
+  fi
   session="$session_id"
 fi
 
