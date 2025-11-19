@@ -14,6 +14,7 @@
     kubelogin-oidc
     terraform
     vault-bin
+    vault-medusa
     velero
   ];
 
