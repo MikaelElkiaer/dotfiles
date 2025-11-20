@@ -253,10 +253,10 @@ function get_tmux_windows {
   local FULL ICON NAME TYPE
   ICON="$(color green )"
   TYPE="t"
-  tmux list-windows -a -F "#{window_id}" |
+  tmux list-windows -a -F "#{window_id}" -f '#{?#{m:_popup_*,#{session_name}},0,1}' |
     while read -r FULL; do
       # TODO: Replace tmux styling format with ANSI escape codes
-      NAME="$(eval "NOFORMAT= windowmux $FULL")"
+      NAME="$(eval "NOSHORT= NOFORMAT= windowmux $FULL")$(eval "NOFORMAT= kubemux $FULL")"
       echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
     done
 }
