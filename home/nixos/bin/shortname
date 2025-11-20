@@ -10,7 +10,7 @@ fi
 output=""
 
 # WARN: Copilot generated code, may need fixing
-  while [[ -n "$input" ]]; do
+while [[ -n "$input" ]]; do
   if [[ "$input" =~ ^[a-zA-Z]+ ]]; then
     chunk="${BASH_REMATCH[0]}"
     if [[ "$chunk" =~ ^[A-Z] ]]; then
@@ -38,4 +38,5 @@ output=""
   fi
 done
 
-echo "$output"
+# echo "${output}…"
+echo "${output}"

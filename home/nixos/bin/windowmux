@@ -4,45 +4,46 @@ set -euo pipefail
 
 function main() {
   WINDOW_ID="$1"
-  WINDOW_INDEX="${2-}"
 
-  mapfile -t PANES < <(tmux list-panes -F "#{pane_current_command};#{pane_current_path};#{pane_title};#{pane_active}" -t "$WINDOW_ID")
+  IFS=$';' read -r path command title < <(tmux display-message -p -F '#{pane_current_path};#{pane_current_command};#{pane_title}' -t "$WINDOW_ID")
 
-  local ACTIVE_PATH RESULT
-  for P in "${PANES[@]}"; do
-    local FORMAT=""
-    IFS=$';' read -r APP _PATH TITLE ACTIVE <<<"$P"
-    if [ "$ACTIVE" == "1" ]; then
-      if [ "$APP" == "ssh" ]; then
-        local _TITLE
-        _TITLE="${TITLE%:*}"
-        _TITLE="${_TITLE#*@}"
-        ACTIVE_PATH="$_TITLE"
-      elif [ "$_PATH" == "$HOME" ]; then
-        ACTIVE_PATH="~"
-      else
-        ACTIVE_PATH="$(basename "$_PATH")"
-      fi
-      FORMAT+="${NOFORMAT-#[fg=blue]}"
+  icon=$(get_app_icon "$command")
+  RESULT="$(set-color 12)${icon}$(set-color reset)"
+
+  if [[ "$path" == "$HOME"* ]]; then
+    path="${path/$HOME/'~'}"
+  fi
+
+  if [ "$command" == "ssh" ]; then
+    local _host _path
+    _host="${title%%:*}"
+    _host="${_host#*@}"
+    _path="${title#*:}"
+    path="$_path"
+    RESULT+=" ${_host}"
+  else
+    RESULT+=" "
+  fi
+
+  IFS='/' read -ra PATH_PARTS <<<"$path"
+  if [[ "${#PATH_PARTS[@]}" -gt 1 ]]; then
+    RESULT+="$(set-color 8)"
+  fi
+  for i in "${!PATH_PARTS[@]}"; do
+    if [[ -z "${PATH_PARTS[$i]}" ]]; then
+      continue
+    elif [[ "$i" -eq 0 ]]; then
+      RESULT+="${PATH_PARTS[$i]}/"
+    elif [[ "$i" -eq $(("${#PATH_PARTS[@]}" - 1)) ]]; then
+      RESULT+="$(set-color reset)"
+      RESULT+="${PATH_PARTS[$i]}/"
+    elif [[ -v NOSHORT ]]; then
+      RESULT+="${PATH_PARTS[$i]}/"
+    else
+      RESULT+="$(shortname "${PATH_PARTS[$i]}")/"
     fi
-    FORMAT+="$(get_app_icon "$APP")"
-    FORMAT+=" "
-    FORMAT+="${NOFORMAT-#[fg=default]}"
-    RESULT+="$FORMAT"
   done
 
-  KUBECTX="$(NOICON="" kubemux "$WINDOW_ID")"
-  if [ "$ACTIVE_PATH" = "~" ] && [ -n "$KUBECTX" ]; then
-    RESULT+="${NOFORMAT-#[fg=colour13]}"
-    RESULT+="$(shortname "$KUBECTX")"
-    RESULT+="${NOFORMAT-#[fg=default]}"
-  else
-    RESULT+="$(shortname "$ACTIVE_PATH")"
-  fi
-
-  if [ -n "$WINDOW_INDEX" ]; then
-    RESULT+="$(superscript "$WINDOW_INDEX")"
-  fi
   echo "$RESULT"
 }
 

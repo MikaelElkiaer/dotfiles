@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -Eeu -o pipefail
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <color-name>" >&2
+  exit 1
+fi
+
+color="$1"
+
+COLORMODE="${COLORMODE:-ansi}"
+COLORPOS="${COLORPOS:-fg}"
+if [ "$COLORMODE" = "tmux" ]; then
+  if [ "$color" = "reset" ]; then
+    echo "#[default]"
+    exit 0
+  fi
+  echo "#[${COLORPOS}=colour${color}]"
+else
+  if [ "$color" = "reset" ]; then
+    tput sgr0
+  elif [ "$COLORPOS" = "fg" ]; then
+    tput setaf "$color"
+  else
+    tput setab "$color"
+  fi
+fi
