@@ -4,9 +4,14 @@ set -Eeuo pipefail
 
 cmd="${1:-bash}"
 path="$(tmux display -p '#{pane_current_path}')"
-sanitized_path="$(sed 's/[^a-zA-Z0-9]/%/g' <<<"$path")"
-session="_popup_${cmd}_${sanitized_path}"
 parent_window="$(tmux display -p '#{window_id}')"
+if [ "$cmd" = "k9s" ]; then
+  # INFO: Kubernetes context is per window
+  sanitized_id="$(sed 's/[^a-zA-Z0-9]/%/g' <<<$parent_window)"
+else
+  sanitized_id="$(sed 's/[^a-zA-Z0-9]/%/g' <<<"$path")"
+fi
+session="_popup_${cmd}_${sanitized_id}"
 
 if [ "$cmd" = "bash" ]; then
   wrapped_cmd=(bash)
