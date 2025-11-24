@@ -34,7 +34,9 @@
         docker-credential-magic = (prev.callPackage ./packages/docker-credential-magic.nix { });
         docker-credential-ghcr-login = (prev.callPackage ./packages/docker-credential-ghcr-login.nix { });
         ic = (prev.callPackage ./packages/ic.nix { });
+        # INFO: https://github.com/NixOS/nixpkgs/pull/459527
         kubelogin = (import nixpkgs_stable { system = prev.system; }).kubelogin;
+        # INFO: https://github.com/NixOS/nixpkgs/pull/450333
         awscli2 = (import nixpkgs_stable { system = prev.system; }).awscli2;
       };
     in
