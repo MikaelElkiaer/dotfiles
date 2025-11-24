@@ -35,6 +35,7 @@
         docker-credential-ghcr-login = (prev.callPackage ./packages/docker-credential-ghcr-login.nix { });
         ic = (prev.callPackage ./packages/ic.nix { });
         kubelogin = (import nixpkgs_stable { system = prev.system; }).kubelogin;
+        awscli2 = (import nixpkgs_stable { system = prev.system; }).awscli2;
       };
     in
     {
