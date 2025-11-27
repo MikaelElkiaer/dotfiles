@@ -138,6 +138,9 @@
       ".bashrc_extra" = {
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.bashrc";
       };
+      ".docker/config.json" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/auth.json";
+      };
       ".gitconfig" = {
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.gitconfig";
       };
