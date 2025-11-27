@@ -30,8 +30,7 @@
     bats
     cargo
     comma
-    # WARN: Not supported by darwin
-    # dagger
+    dagger
     delta
     docker-credential-helpers
     expect
