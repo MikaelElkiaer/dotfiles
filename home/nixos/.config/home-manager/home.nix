@@ -32,6 +32,7 @@
     comma
     dagger
     delta
+    docker-credential-ghcr-login
     docker-credential-helpers
     expect
     file
@@ -100,6 +101,9 @@
       # ".config/containers/registries.conf" = {
       #   source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/registries.conf";
       # };
+      ".config/containers/auth.json" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/auth.json";
+      };
       ".config/home-manager" = {
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/home-manager";
