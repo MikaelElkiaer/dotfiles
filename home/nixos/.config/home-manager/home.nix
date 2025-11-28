@@ -101,6 +101,7 @@
       # ".config/containers/registries.conf" = {
       #   source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/registries.conf";
       # };
+      # TODO: Turn into a module? Dynamically set 'credsStore' based on OS or other config
       ".config/containers/auth.json" = {
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/auth.json";
       };
