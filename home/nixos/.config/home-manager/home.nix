@@ -38,6 +38,7 @@
     file
     fluxcd
     fzf
+    gemini-cli
     gh
     gh-copilot
     gh-dash
@@ -49,6 +50,7 @@
     gotop
     gitmux
     gnumake
+    just
     htop
     hyperfine
     kind
