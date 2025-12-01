@@ -5,6 +5,8 @@
     # Specify the source of Home Manager and Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs_stable.url = "github:nixos/nixpkgs/release-25.05";
+    # INFO: Pre 0.17 - https://github.com/NixOS/nixpkgs/commit/af57e99c785f334638402ffd7b5e4565a0379461
+    nixpkgs_gemini.url = "github:nixos/nixpkgs/af57e99c785f334638402ffd7b5e4565a0379461";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -23,6 +25,7 @@
     inputs@{
       nixpkgs,
       nixpkgs_stable,
+      nixpkgs_gemini,
       nix-index-database,
       home-manager,
       dagger,
@@ -38,6 +41,7 @@
         kubelogin = (import nixpkgs_stable { system = prev.system; }).kubelogin;
         # INFO: https://github.com/NixOS/nixpkgs/pull/450333
         awscli2 = (import nixpkgs_stable { system = prev.system; }).awscli2;
+        gemini-cli = (import nixpkgs_gemini { system = prev.system; }).gemini-cli;
       };
     in
     {
