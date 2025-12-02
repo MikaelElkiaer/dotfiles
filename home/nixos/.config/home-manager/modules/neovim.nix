@@ -16,6 +16,7 @@
     dockerfile-language-server-nodejs
     gopls
     helm-ls
+    jsonnet-language-server
     lua-language-server
     marksman # Markdown
     nil # Nix
