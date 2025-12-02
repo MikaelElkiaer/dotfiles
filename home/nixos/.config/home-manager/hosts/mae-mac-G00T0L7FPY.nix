@@ -11,6 +11,8 @@
     crane
     grizzly # Grafana manager - with jsonnet support
     ic
+    jsonnet
+    jsonnet-bundler
     kubelogin # Azure
     kubelogin-oidc
     terraform
