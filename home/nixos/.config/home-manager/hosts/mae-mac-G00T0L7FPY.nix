@@ -9,6 +9,7 @@
     aws-iam-authenticator
     awscli2
     crane
+    grizzly # Grafana manager - with jsonnet support
     ic
     kubelogin # Azure
     kubelogin-oidc
