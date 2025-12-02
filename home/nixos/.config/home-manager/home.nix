@@ -34,6 +34,7 @@
     delta
     docker-credential-ghcr-login
     docker-credential-helpers
+    entr
     expect
     file
     fluxcd
