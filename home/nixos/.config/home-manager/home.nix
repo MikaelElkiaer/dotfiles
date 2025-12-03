@@ -30,6 +30,7 @@
     bats
     cargo
     comma
+    github-copilot-cli
     dagger
     delta
     docker-credential-ghcr-login
@@ -41,7 +42,6 @@
     fzf
     gemini-cli
     gh
-    gh-copilot
     gh-dash
     gh-markdown-preview
     git
