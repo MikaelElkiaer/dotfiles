@@ -85,5 +85,9 @@
           }
         ];
       };
+      # INFO: Install packages via nix profile
+      # - `nix profile add .#<package>`
+      packages.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin;
+      packages.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux;
     };
 }
