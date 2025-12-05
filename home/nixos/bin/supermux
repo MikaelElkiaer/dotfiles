@@ -71,6 +71,10 @@ function detect_mode {
     cmd="get_zoxide"
     prompt="zoxide"
     ;;
+  'i ')
+    match=1
+    cmd="get_inventory"
+    prompt="inventory"
     ;;
   'k ')
     match=1
@@ -95,12 +99,11 @@ function change_border_label {
   c)
     echo " 󰌑 run  prompt "
     ;;
+  i)
+    echo " 󰌑 k9s  prompt "
     ;;
   k)
     echo " 󰌑 run "
-    ;;
-  s)
-    echo " 󰌑 k9s  prompt "
     ;;
   t)
     echo " 󰌑 switch "
@@ -120,6 +123,8 @@ function preview {
   c)
     man "$NAME" 2>/dev/null | nvimpager -c +"set ft=man"
     ;;
+  i)
+    ic get cluster -q "$FULL"
     ;;
   k)
     tmux list-keys -Tprefix "${FULL//;/\\;}" | sed 's/bind-key\( -r\)\? -T prefix [^ ]\+ //'
@@ -146,21 +151,13 @@ function action_primary {
   c)
     exec "$FULL"
     ;;
+  i)
+    NEW_WINDOW_ID="$(tmux new-window -c "$HOME" -d -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{window_id}' bash -i -c 'k9s;exec bash')"
+    ic get cluster-kubeconfig --cluster-name "$FULL" >"$HOME/.kube/config-tmux-${NEW_WINDOW_ID}"
+    tmux switch-client -t "$NEW_WINDOW_ID"
     ;;
   k)
     eval "tmux $(tmux list-keys -Tprefix "${FULL//;/\\;}" | sed 's/bind-key\( -r\)\? -T prefix [^ ]\+ //')"
-    ;;
-  s)
-    echo "Loading Kubernetes context..." >&2
-    read -r KUBECONFIG NAME <<<"$(switcher set-context "$FULL" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
-    # TODO: Remove KUBECACHEDIR once fixed
-    # - see https://github.com/derailed/k9s/issues/1895
-    NEW_PANE_ID="$(tmux new-window -c "$HOME" -d -e "KUBECONFIG=$KUBECONFIG" -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{pane_id}' bash -i -c 'k9s;exec bash')"
-    # INFO: Create symlink so temporary config can be cleaned up by a hook
-    ln --symbolic --force "$KUBECONFIG" "/tmp/TMUX_${NEW_PANE_ID}_KUBECONFIG"
-    # TODO: Figure out why this is not working
-    tmux set-hook -p -t "$NEW_PANE_ID" pane-exited "run-shell 'rm --force \"$(readlink --canonicalize /tmp/TMUX_#{hook_pane}_KUBECONFIG)\" /tmp/TMUX_#{hook_pane}_KUBECONFIG'"
-    tmux switch-client -t "$NEW_PANE_ID"
     ;;
   t)
     tmux switch-client -t "$FULL"
@@ -178,18 +175,11 @@ function action_secondary {
   c)
     bash_prompt "$NAME"
     ;;
+  i)
+    NEW_WINDOW_ID="$(tmux new-window -c "$HOME" -d -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{window_id}' bash -i -c 'bash')"
+    ic get cluster-kubeconfig --cluster-name "$FULL" >"$HOME/.kube/config-tmux-${NEW_WINDOW_ID}"
+    tmux switch-client -t "$NEW_WINDOW_ID"
     ;;
-  s)
-    echo "Loading Kubernetes context..." >&2
-    read -r KUBECONFIG NAME <<<"$(switcher set-context "$FULL" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
-    # TODO: Remove KUBECACHEDIR once fixed
-    # - see https://github.com/derailed/k9s/issues/1895
-    NEW_PANE_ID="$(tmux new-window -c "$HOME" -d -e "KUBECONFIG=$KUBECONFIG" -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{pane_id}' bash -i -c 'bash')"
-    # INFO: Create symlink so temporary config can be cleaned up by a hook
-    ln --symbolic --force "$KUBECONFIG" "/tmp/TMUX_${NEW_PANE_ID}_KUBECONFIG"
-    # TODO: Figure out why this is not working
-    tmux set-hook -p -t "$NEW_PANE_ID" pane-exited "run-shell 'rm --force \"$(readlink --canonicalize /tmp/TMUX_#{hook_pane}_KUBECONFIG)\" /tmp/TMUX_#{hook_pane}_KUBECONFIG'"
-    tmux switch-client -t "$NEW_PANE_ID"
   z)
     tmux new-window -c "$FULL" bash
     ;;
@@ -217,11 +207,12 @@ function get_commands {
     done
 }
 
-function get_kube_contexts {
+function get_inventory {
   local FULL ICON NAME TYPE
-  ICON="$(color cyan 󱃾)"
-  TYPE="s"
-  switcher list-contexts |
+  ICON="$(color magenta )"
+  TYPE="i"
+  ic get clusters -q -o json |
+    jq -r '.clusters[].id' |
     while read -r NAME; do
       FULL="$NAME"
       echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
