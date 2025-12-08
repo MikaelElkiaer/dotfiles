@@ -254,6 +254,30 @@ if command -v tmux &>/dev/null; then
 
   # WARN: Keep this at the bottom
   if [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-    exec tmux new-session -A -D -X
+    if [[ $(tmux list-clients -F '#{session_attached}') -gt 0 ]]; then
+      echo "$(tput bold)Another client is already attached to an existing tmux session - choose an option:$(tput sgr0)"
+      echo "  [a]ttach to existing session (will detach other client)"
+      echo "  [c]reate a new session"
+      echo "  [s]hell without tmux session"
+      echo "  [*] any other key will exit"
+      read -r -n1 TMUX_OPTION
+      case $TMUX_OPTION in
+      a | A)
+        exec tmux attach-session -d
+        ;;
+      c | C)
+        exec tmux new-session
+        ;;
+      s)
+        clear
+        ;;
+      *)
+        exit 0
+        ;;
+      esac
+    else
+      # No clients attached, just attach to existing or create new
+      exec tmux new-session -A -D -X
+    fi
   fi
 fi
