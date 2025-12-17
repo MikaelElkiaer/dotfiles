@@ -154,7 +154,7 @@
                 run = "layout floating";
               }
               {
-                "if".app-name-regex-substring = "^Gmail|Google";
+                "if".app-name-regex-substring = "^Gmail|Google|Slack";
                 run = "move-node-to-workspace 1";
               }
             ];
