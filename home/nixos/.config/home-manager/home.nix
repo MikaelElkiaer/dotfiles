@@ -52,6 +52,7 @@
     gitmux
     gnumake
     just
+    jwt-cli
     htop
     hyperfine
     kind
