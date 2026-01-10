@@ -302,6 +302,47 @@
               #   "mode main"
               # ];
 
+              "1" = [
+                "workspace 1"
+                "mode main"
+              ];
+              "2" = [
+                "workspace 2"
+                "mode main"
+              ];
+              "3" = [
+                "workspace 3"
+                "mode main"
+              ];
+              "4" = [
+                "workspace 4"
+                "mode main"
+              ];
+              "5" = [
+                "workspace 5"
+                "mode main"
+              ];
+              "shift-1" = [
+                "move-node-to-workspace 1"
+                "mode main"
+              ];
+              "shift-2" = [
+                "move-node-to-workspace 2"
+                "mode main"
+              ];
+              "shift-3" = [
+                "move-node-to-workspace 3"
+                "mode main"
+              ];
+              "shift-4" = [
+                "move-node-to-workspace 4"
+                "mode main"
+              ];
+              "shift-5" = [
+                "move-node-to-workspace 5"
+                "mode main"
+              ];
+
               alt-shift-h = [
                 "join-with left"
                 "mode main"
