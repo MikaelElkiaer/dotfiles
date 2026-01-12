@@ -9,6 +9,7 @@
     aws-iam-authenticator
     awscli2
     crane
+    google-cloud-sdk
     grizzly # Grafana manager - with jsonnet support
     ic
     jsonnet
