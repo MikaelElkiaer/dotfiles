@@ -9,4 +9,5 @@ fi
 
 jq --raw-output 'to_entries | .[1:] | map("\(.value.char)\t\(.key)") | .[]' <~/.cache/nerdfonts.json |
   fzf --accept-nth=1 --nth=2 --delimiter=$'\t' |
-  tmux load-buffer -w -
+  xargs echo -n |
+  pbcopy
