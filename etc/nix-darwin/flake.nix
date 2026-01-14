@@ -98,6 +98,13 @@
             on-focused-monitor-changed = [ ];
             on-focus-changed = [ "move-mouse window-lazy-center" ];
 
+            # A callback that runs every time binding mode changes
+            # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
+            # See: https://nikitabobko.github.io/AeroSpace/commands#mode
+            on-mode-changed = [
+              "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode_change"
+            ];
+
             # Possible values: (qwerty|dvorak)
             # See https://nikitabobko.github.io/AeroSpace/guide#key-mapping
             key-mapping.preset = "qwerty";
@@ -373,9 +380,7 @@
 
             # Notify Sketchybar about workspace change
             exec-on-workspace-change = [
-              "/bin/bash"
-              "-c"
-              "sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE"
+              "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE"
             ];
           };
 
@@ -440,13 +445,19 @@
               sketchybar --add space space."$sid" left --set space."$sid" "''\${space[@]}"
             done
 
+            ##### CUSTOM TRIGGERS #####
+            sketchybar --add event aerospace_mode_change
+
             ##### Adding Left Items #####
             # We add some regular items to the left side of the bar, where
             # only the properties deviating from the current defaults need to be set
 
             sketchybar --add item front_app left \
                        --set front_app icon=󰣆 script="$PLUGIN_DIR/front_app.sh" \
-                       --subscribe front_app front_app_switched
+                       --subscribe front_app front_app_switched \
+                       --add item aerospace_mode left \
+                       --set aerospace_mode icon=󰒋 script="$PLUGIN_DIR/aerospace_mode.sh" \
+                       --subscribe aerospace_mode aerospace_mode_change
 
             ##### Adding Right Items #####
             # In the same way as the left items we can add items to the right side.
