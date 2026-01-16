@@ -191,8 +191,8 @@
               # alt-enter = 'exec-and-forget open -n /System/Applications/Utilities/Terminal.app'
 
               # See: https://nikitabobko.github.io/AeroSpace/commands#layout
-              alt-shift-t = "layout tiles horizontal vertical";
-              alt-shift-a = "layout accordion horizontal vertical";
+              # alt-shift-t = "layout tiles horizontal vertical";
+              # alt-shift-a = "layout accordion horizontal vertical";
 
               # See: https://nikitabobko.github.io/AeroSpace/commands#fullscreen
               alt-shift-f = "fullscreen";
@@ -293,6 +293,14 @@
             mode.service.binding = {
               esc = [
                 "reload-config"
+                "mode main"
+              ];
+              t = [
+                "layout tiles horizontal vertical"
+                "mode main"
+              ];
+              a = [
+                "layout accordion horizontal vertical"
                 "mode main"
               ];
               r = [
