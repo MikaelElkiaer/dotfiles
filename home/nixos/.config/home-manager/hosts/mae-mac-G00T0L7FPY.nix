@@ -6,6 +6,7 @@
 
 {
   home.packages = with pkgs; [
+    ansible
     aws-iam-authenticator
     awscli2
     crane
