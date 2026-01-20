@@ -1,0 +1,120 @@
+# Place a copy of this config to ~/.aerospace.toml
+# After that, you can edit ~/.aerospace.toml to your liking
+
+# It's not necessary to copy all keys to your config.
+# If the key is missing in your config, "default-config.toml" will serve as a fallback
+
+# You can use it to add commands that run after login to macOS user session.
+# 'start-at-login' needs to be 'true' for 'after-login-command' to work
+# Available commands: https://nikitabobko.github.io/AeroSpace/commands
+after-login-command = []
+
+# You can use it to add commands that run after AeroSpace startup.
+# 'after-startup-command' is run after 'after-login-command'
+# Available commands : https://nikitabobko.github.io/AeroSpace/commands
+after-startup-command = []
+
+# Start AeroSpace at login
+start-at-login = false
+
+# Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# See: https://nikitabobko.github.io/AeroSpace/guide#layouts
+# The 'accordion-padding' specifies the size of accordion padding
+# You can set 0 to disable the padding feature
+accordion-padding = 25
+
+# Possible values: tiles|accordion
+default-root-container-layout = "accordion"
+
+# Possible values: horizontal|vertical|auto
+# 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
+#               tall monitor (anything higher than wide) gets vertical orientation
+default-root-container-orientation = "auto"
+
+on-focused-monitor-changed = []
+on-focus-changed = ["move-mouse window-lazy-center"]
+
+[gaps]
+inner.horizontal = 0
+inner.vertical = 0
+outer.left = 0
+outer.bottom = 0
+outer.top = [
+  # Even if "main" it should be 0 due to notch
+  { monitor."built-in retina display" = 0 },
+  # Leave room for sketchybar
+  { monitor."main" = 25 },
+  0
+]
+outer.right = 0
+
+[key-mapping]
+preset = "qwerty"
+
+[workspace-to-monitor-force-assignment]
+"1" = "built-in retina display"
+"2" = ["secondary", "built-in retina display"]
+
+[exec]
+inherit-env-vars = true
+
+[exec.env-vars]
+PATH = "/opt/homebrew/bin:/opt/homebrew/sbin:${PATH}"
+
+[[on-window-detected]]
+"if" = { app-id = "net.kovidgoyal.kitty" }
+run = "move-node-to-workspace 2"
+
+[[on-window-detected]]
+"if" = { app-id = "com.google.Chrome" }
+run = "move-node-to-workspace 2"
+
+[[on-window-detected]]
+"if" = { app-id = "com.runningwithcrayons.Alfred-Preferences" }
+run = "layout floating"
+
+[[on-window-detected]]
+"if" = { "app-name-regex-substring" = "^Gmail|Google|Slack" }
+run = "move-node-to-workspace 1"
+
+[mode.main.binding]
+alt-shift-f = "fullscreen"
+alt-shift-h = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors left"
+alt-shift-j = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors down"
+alt-shift-k = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors up"
+alt-shift-l = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors right"
+alt-shift-ctrl-h = "move --boundaries all-monitors-outer-frame --boundaries-action stop left"
+alt-shift-ctrl-j = "move --boundaries all-monitors-outer-frame --boundaries-action stop down"
+alt-shift-ctrl-k = "move --boundaries all-monitors-outer-frame --boundaries-action stop up"
+alt-shift-ctrl-l = "move --boundaries all-monitors-outer-frame --boundaries-action stop right"
+alt-shift-tab = "workspace-back-and-forth"
+alt-shift-ctrl-tab = "move-workspace-to-monitor --wrap-around next"
+alt-shift-space = "mode service"
+
+[mode.service.binding]
+esc = ["reload-config", "mode main"]
+t = ["layout tiles horizontal vertical", "mode main"]
+a = ["layout accordion horizontal vertical", "mode main"]
+r = ["flatten-workspace-tree", "mode main"]
+f = ["layout floating tiling", "mode main"]
+"1" = ["workspace 1", "mode main"]
+"2" = ["workspace 2", "mode main"]
+"3" = ["workspace 3", "mode main"]
+"4" = ["workspace 4", "mode main"]
+"5" = ["workspace 5", "mode main"]
+"shift-1" = ["move-node-to-workspace 1", "mode main"]
+"shift-2" = ["move-node-to-workspace 2", "mode main"]
+"shift-3" = ["move-node-to-workspace 3", "mode main"]
+"shift-4" = ["move-node-to-workspace 4", "mode main"]
+"shift-5" = ["move-node-to-workspace 5", "mode main"]
+alt-shift-h = ["join-with left", "mode main"]
+alt-shift-j = ["join-with down", "mode main"]
+alt-shift-k = ["join-with up", "mode main"]
+alt-shift-l = ["join-with right", "mode main"]
+j = ["resize smart -50", "mode main"]
+k = ["resize smart +50", "mode main"]
+ctrl-j = "resize smart -50"
+ctrl-k = "resize smart +50"
