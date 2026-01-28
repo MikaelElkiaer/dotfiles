@@ -31,7 +31,7 @@
     htmlhint
     markdownlint-cli2
     # Formatter
-    csharpier
+    # csharpier #WARN: Currently broken
     mdformat
     nixfmt-rfc-style
     nodePackages.js-beautify
