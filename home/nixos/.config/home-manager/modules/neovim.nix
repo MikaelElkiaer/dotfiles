@@ -13,7 +13,7 @@
     nvimpager
     # LSP
     bash-language-server
-    dockerfile-language-server-nodejs
+    dockerfile-language-server
     gopls
     helm-ls
     jsonnet-language-server
@@ -33,7 +33,7 @@
     # Formatter
     # csharpier #WARN: Currently broken
     mdformat
-    nixfmt-rfc-style
+    nixfmt
     nodePackages.js-beautify
     prettierd
     shfmt
