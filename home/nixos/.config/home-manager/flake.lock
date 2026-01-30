@@ -92,6 +92,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_master": {
+      "locked": {
+        "lastModified": 1769781606,
+        "narHash": "sha256-Fd0TtgpuoP3mr1OY2TvkCEoZO8ZhWUDgnclvDNan5EE=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "413a3b119ac8ce71318f4a7a440f1abf4aacb120",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_stable": {
       "locked": {
         "lastModified": 1768649915,
@@ -115,6 +131,7 @@
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs",
         "nixpkgs_gemini": "nixpkgs_gemini",
+        "nixpkgs_master": "nixpkgs_master",
         "nixpkgs_stable": "nixpkgs_stable"
       }
     }
