@@ -147,6 +147,17 @@ fi
 
 if [ "$(command -v kubectl)" ]; then
   _add_completion _kubectl "kubectl completion bash"
+  alias k=kubectl
+  if ! [ -s "$COMPLETION_PATH/_k" ]; then
+    cat <<-EOF >"$COMPLETION_PATH/_k"
+			if type _init_completion > /dev/null 2>&1; then
+			  # Load the kubectl completion if not already loaded
+			  _completion_loader kubectl
+			  # Link 'k' to the kubectl completion function
+			  complete -o default -F __start_kubectl k
+			fi
+EOF
+  fi
 fi
 
 # `delta` also uses this
