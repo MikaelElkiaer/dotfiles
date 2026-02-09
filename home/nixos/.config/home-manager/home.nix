@@ -48,6 +48,7 @@
     glow
     gnused
     go
+    golangci-lint
     gotop
     gitmux
     gnumake
