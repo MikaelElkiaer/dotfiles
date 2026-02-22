@@ -73,6 +73,7 @@
     navi
     ncurses
     nix-init
+    nix-prefetch-git
     nodejs
     pigz
     pluto
