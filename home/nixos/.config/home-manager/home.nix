@@ -58,6 +58,7 @@
     htop
     hyperfine
     kind
+    kustomize
     k9s
     krew
     kubectl
