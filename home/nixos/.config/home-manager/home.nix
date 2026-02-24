@@ -39,6 +39,7 @@
     expect
     file
     fluxcd
+    flux-local
     fzf
     gemini-cli
     gh
