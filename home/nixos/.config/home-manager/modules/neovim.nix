@@ -30,6 +30,7 @@
     hadolint
     htmlhint
     markdownlint-cli2
+    yamllint
     # Formatter
     # csharpier #WARN: Currently broken
     mdformat
