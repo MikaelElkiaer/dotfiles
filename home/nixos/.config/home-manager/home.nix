@@ -37,6 +37,7 @@
     docker-credential-helpers
     entr
     expect
+    fd
     file
     fluxcd
     flux-local
