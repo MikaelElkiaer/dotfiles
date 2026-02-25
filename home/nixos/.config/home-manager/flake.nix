@@ -39,6 +39,7 @@
         docker-credential-magic = (prev.callPackage ./packages/docker-credential-magic.nix { });
         docker-credential-ghcr-login = (prev.callPackage ./packages/docker-credential-ghcr-login.nix { });
         flux-local = (prev.callPackage ./packages/flux-local.nix { });
+        yaml-schema-router = (prev.callPackage ./packages/yaml-schema-router.nix { });
         ic = (prev.callPackage ./packages/ic.nix { });
         # INFO: https://github.com/NixOS/nixpkgs/pull/459527
         kubelogin = (import nixpkgs_stable { system = prev.system; }).kubelogin;

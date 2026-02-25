@@ -91,6 +91,7 @@
     update-nix-fetchgit
     uutils-coreutils-noprefix
     viddy
+    yaml-schema-router
     wget
     xclip
     xsel
