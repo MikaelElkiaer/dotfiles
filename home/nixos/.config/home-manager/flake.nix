@@ -41,8 +41,6 @@
         flux-local = (prev.callPackage ./packages/flux-local.nix { });
         yaml-schema-router = (prev.callPackage ./packages/yaml-schema-router.nix { });
         ic = (prev.callPackage ./packages/ic.nix { });
-        # INFO: https://github.com/NixOS/nixpkgs/pull/450333
-        awscli2 = (import nixpkgs_stable { system = prev.system; }).awscli2;
         gemini-cli = (import nixpkgs_gemini { system = prev.system; }).gemini-cli;
         swift = (import nixpkgs_master { system = prev.system; }).swift;
         nix-prefetch-git = (import nixpkgs_stable { system = prev.system; }).nix-prefetch-git;
