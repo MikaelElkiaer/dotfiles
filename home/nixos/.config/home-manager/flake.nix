@@ -42,7 +42,6 @@
         yaml-schema-router = (prev.callPackage ./packages/yaml-schema-router.nix { });
         ic = (prev.callPackage ./packages/ic.nix { });
         gemini-cli = (import nixpkgs_gemini { system = prev.system; }).gemini-cli;
-        swift = (import nixpkgs_master { system = prev.system; }).swift;
         nix-prefetch-git = (import nixpkgs_stable { system = prev.system; }).nix-prefetch-git;
       };
     in
