@@ -17,8 +17,7 @@ function main {
       --header-lines=1 \
       --with-nth=1 |
     awk '{print $1}' |
-    xargs ic get cluster-kubeconfig --cluster-id |
-    yq '(.users[].user.exec | select(.args[0] == "oidc-login")).args += "--skip-open-browser"' >"$KUBECONFIG"
+    xargs ic get cluster-kubeconfig --cluster-id >"$KUBECONFIG"
 }
 
 main "$@"
