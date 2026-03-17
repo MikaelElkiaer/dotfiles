@@ -27,6 +27,7 @@
 
   home.packages = with pkgs; [
     atuin
+    bat
     bats
     cargo
     comma
