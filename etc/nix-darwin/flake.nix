@@ -31,6 +31,7 @@
           homebrew = {
             enable = true;
             brews = [
+              "chainguard-dev/tap/chainctl"
               "lastpass-cli"
               "pint"
               "tinyproxy"
@@ -48,6 +49,9 @@
             ];
             # Delete undeclared brews and casks
             onActivation.cleanup = "zap";
+            taps = [
+              "chainguard-dev/tap"
+            ];
           };
 
           # Necessary for using flakes on this system.
