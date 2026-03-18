@@ -222,6 +222,37 @@ fi
 # [ic](https://github.com/containdk/ic)
 if [ "$(command -v ic)" ]; then
   _add_completion _ic "ic completion bash"
+
+  # shellcheck disable=SC2329
+  function _generate_ic_picker_completions {
+    cat <<'EOF'
+__ic_picker_completions() {
+    local cur cache_file
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+
+    # Logic: Use /run/user if it exists (Linux), otherwise use macOS $TMPDIR,
+    # and fallback to /tmp if all else fails.
+    if [[ -d "/run/user/$(id -u)" ]]; then
+        cache_file="/run/user/$(id -u)/ic_clusters_cache"
+    else
+        cache_file="${TMPDIR:-/tmp}/ic_clusters_cache"
+    fi
+
+    # Refresh cache if older than 1 hour (3600s)
+    if [[ ! -f "$cache_file" ]] || [[ $(($(date +%s) - $(date -r "$cache_file" +%s))) -gt 3600 ]]; then
+        ic get clusters -o json 2>/dev/null | jq -r '.clusters[].id' > "$cache_file" 2>/dev/null
+    fi
+
+    local clusters=$(cat "$cache_file" 2>/dev/null)
+    COMPREPLY=( $(compgen -W "${clusters}" -- "$cur") )
+}
+
+complete -F __ic_picker_completions ic-picker
+EOF
+  }
+
+  _add_completion _ic-picker "_generate_ic_picker_completions"
 fi
 
 # [docker-credential-magic](https://github.com/docker-credential-magic/docker-credential-magic)
@@ -249,6 +280,7 @@ done
 
 # Clear function only needed for init
 unset -f _add_completion
+unset -f _generate_ic_picker_completions
 
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
   if command -v tmux &>/dev/null; then
