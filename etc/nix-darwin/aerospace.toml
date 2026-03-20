@@ -77,6 +77,10 @@ run = "move-node-to-workspace 2"
 run = "layout floating"
 
 [[on-window-detected]]
+"if" = { app-id = "com.toggl.daneel" }
+run = "layout floating"
+
+[[on-window-detected]]
 "if" = { "app-name-regex-substring" = "^Gmail|Google|Slack" }
 run = "move-node-to-workspace 1"
 
