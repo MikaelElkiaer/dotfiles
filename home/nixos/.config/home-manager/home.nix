@@ -144,6 +144,10 @@
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/sketchybar";
       };
+      ".config/yamllint" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/yamllint";
+      };
       ".bash_aliases" = {
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.bash_aliases";
       };

@@ -1,0 +1,6 @@
+# ex: set ft=yaml:
+
+extends: default
+
+rules:
+  line-length:: disable
