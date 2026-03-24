@@ -129,6 +129,8 @@ if ! [[ "$PATH" == *"$HOME/go/bin"* ]]; then
   export PATH="$PATH:$HOME/go/bin"
 fi
 
+# Place completions here for lazy loading
+# - note that filename must match command name (with optional leading underscore)
 COMPLETION_PATH=~/.local/share/bash-completion/completions
 mkdir --parents "$COMPLETION_PATH"
 function _add_completion() {
@@ -137,6 +139,18 @@ function _add_completion() {
     eval "$2" >"$COMPLETION_PATH/$1"
   fi
 }
+
+# Homebrew completions
+# - symlink into completions directory for lazy loading
+if [ -d /opt/homebrew/etc/bash_completion.d ]; then
+  for f in /opt/homebrew/etc/bash_completion.d/*; do
+    name="$(basename "$f")"
+    if [ "$name" == "lpass_bash_completion" ]; then
+      name="lpass"
+    fi
+    ln -sf "$f" "$COMPLETION_PATH/_$name"
+  done
+fi
 
 # [kubeswitch](https://github.com/danielfoehrKn/kubeswitch)
 if [ "$(command -v switcher)" ]; then
