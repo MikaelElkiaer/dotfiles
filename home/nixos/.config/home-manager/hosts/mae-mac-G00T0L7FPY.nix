@@ -10,8 +10,10 @@
     aws-iam-authenticator
     awscli2
     crane
+    cilium-cli
     google-cloud-sdk
     grizzly # Grafana manager - with jsonnet support
+    hubble # Cilium debugging
     ic
     jsonnet
     jsonnet-bundler
