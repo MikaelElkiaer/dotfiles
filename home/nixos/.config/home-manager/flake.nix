@@ -39,6 +39,7 @@
         docker-credential-magic = (prev.callPackage ./packages/docker-credential-magic.nix { });
         docker-credential-ghcr-login = (prev.callPackage ./packages/docker-credential-ghcr-login.nix { });
         flux-local = (prev.callPackage ./packages/flux-local.nix { });
+        kubectl-slice = (prev.callPackage ./packages/kubectl-slice.nix { });
         yaml-schema-router = (prev.callPackage ./packages/yaml-schema-router.nix { });
         ic = (prev.callPackage ./packages/ic.nix { });
       };

@@ -17,6 +17,7 @@
     ic
     jsonnet
     jsonnet-bundler
+    kubectl-slice
     kubelogin # Azure
     kubelogin-oidc
     terraform
