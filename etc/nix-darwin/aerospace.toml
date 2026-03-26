@@ -55,8 +55,8 @@ outer.right = 0
 preset = "qwerty"
 
 [workspace-to-monitor-force-assignment]
-"1" = "built-in retina display"
-"2" = ["secondary", "built-in retina display"]
+"1" = ["secondary", "built-in retina display"]
+"2" = "built-in retina display"
 
 [exec]
 inherit-env-vars = true
@@ -65,24 +65,12 @@ inherit-env-vars = true
 PATH = "/opt/homebrew/bin:/opt/homebrew/sbin:${PATH}"
 
 [[on-window-detected]]
-"if" = { app-id = "net.kovidgoyal.kitty" }
-run = "move-node-to-workspace 2"
-
-[[on-window-detected]]
-"if" = { app-id = "com.google.Chrome" }
-run = "move-node-to-workspace 2"
-
-[[on-window-detected]]
 "if" = { app-id = "com.runningwithcrayons.Alfred-Preferences" }
 run = "layout floating"
 
 [[on-window-detected]]
 "if" = { app-id = "com.toggl.daneel" }
 run = "layout floating"
-
-[[on-window-detected]]
-"if" = { "app-name-regex-substring" = "^Gmail|Google|Slack" }
-run = "move-node-to-workspace 1"
 
 [mode.main.binding]
 alt-shift-f = "fullscreen"
