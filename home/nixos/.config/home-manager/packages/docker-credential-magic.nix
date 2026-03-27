@@ -20,7 +20,6 @@ buildGoModule rec {
   subPackages = [ "cmd/docker-credential-magic" ];
 
   ldflags = [
-    "-s"
     "-w"
     "-X main.VERSION=${version}"
   ];

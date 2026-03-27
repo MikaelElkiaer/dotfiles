@@ -18,7 +18,6 @@ buildGoModule (finalAttrs: {
   vendorHash = "sha256-Lly8gGLkpBAT+h1TJNkt39b5CCrn7xuVqrOjl7RWX7w=";
 
   ldflags = [
-    "-s"
     "-w"
     "-X=main.version=${finalAttrs.version}"
     "-extldflags"
