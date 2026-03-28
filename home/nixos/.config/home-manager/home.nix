@@ -57,6 +57,8 @@
     gotop
     gitmux
     gnumake
+    jsonnet
+    jsonnet-bundler
     just
     jwt-cli
     htop
