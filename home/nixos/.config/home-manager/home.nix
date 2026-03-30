@@ -140,10 +140,6 @@
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/tmux";
       };
-      ".config/sketchybar" = {
-        recursive = true;
-        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/sketchybar";
-      };
       ".config/yamllint" = {
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/yamllint";

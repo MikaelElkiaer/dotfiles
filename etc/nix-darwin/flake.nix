@@ -67,18 +67,7 @@
             let
               toml = builtins.fromTOML (builtins.readFile ./aerospace.toml);
             in
-            toml // {
-              on-mode-changed = [
-                "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode_change"
-              ];
-              exec-on-workspace-change = [
-                "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE"
-              ];
-            };
-
-          services.sketchybar.enable = true;
-          services.sketchybar.config = builtins.readFile ./sketchybarrc;
-          services.sketchybar.extraPackages = [ pkgs.jq ];
+            toml;
 
           # Enable alternative shell support in nix-darwin.
           # programs.fish.enable = true;

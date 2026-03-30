@@ -42,13 +42,7 @@ inner.horizontal = 0
 inner.vertical = 0
 outer.left = 0
 outer.bottom = 0
-outer.top = [
-  # Even if "main" it should be 0 due to notch
-  { monitor."built-in retina display" = 0 },
-  # Leave room for sketchybar
-  { monitor."main" = 25 },
-  0
-]
+outer.top = 0
 outer.right = 0
 
 [key-mapping]
