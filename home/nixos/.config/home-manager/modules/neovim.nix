@@ -35,7 +35,7 @@
     # csharpier #WARN: Currently broken
     mdformat
     nixfmt
-    nodePackages.js-beautify
+    js-beautify
     prettierd
     shfmt
     stylua
