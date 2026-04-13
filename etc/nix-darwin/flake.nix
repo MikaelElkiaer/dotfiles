@@ -35,6 +35,7 @@
               "lastpass-cli"
               "pint"
               "tinyproxy"
+              "tree-sitter-cli"
             ];
             casks = [
               "1password-cli"
