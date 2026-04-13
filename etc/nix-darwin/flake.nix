@@ -40,9 +40,7 @@
               "1password-cli"
               "alfred"
               "caffeine"
-              "font-hack-nerd-font" # Needed for sketchybar
               "font-noto-sans-mono"
-              "font-sketchybar-app-font" # Needed for sketchybar
               "kitty"
               "podman-desktop"
               "trex"
