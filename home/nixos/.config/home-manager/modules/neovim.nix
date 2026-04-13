@@ -11,7 +11,7 @@
   home.packages = with pkgs; [
     neovim
     nvimpager
-    # LSP
+    # # LSP
     bash-language-server
     dockerfile-language-server
     gopls
@@ -31,7 +31,7 @@
     htmlhint
     markdownlint-cli2
     yamllint
-    # Formatter
+    # # Formatter
     # csharpier #WARN: Currently broken
     mdformat
     nixfmt
@@ -41,10 +41,10 @@
     stylua
     taplo # TOML
     xmlformat
-    # Treesitter
+    # # Treesitter
     gcc # needed for auto install
-    tree-sitter
-    # DAP
+    # tree-sitter # WARN: Out-of-date, using brew for now
+    # # DAP
     delve # Go
   ];
 }
