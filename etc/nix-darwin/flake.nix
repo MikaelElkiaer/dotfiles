@@ -41,6 +41,7 @@
               "1password-cli"
               "alfred"
               "caffeine"
+              "font-noto-nerd-font"
               "font-noto-sans-mono"
               "kitty"
               "podman-desktop"
