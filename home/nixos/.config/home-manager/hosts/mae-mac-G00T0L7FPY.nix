@@ -20,6 +20,7 @@
     kubectl-slice
     kubelogin # Azure
     kubelogin-oidc
+    oras # OCI registry client
     terraform
     vault-bin
     vault-medusa
