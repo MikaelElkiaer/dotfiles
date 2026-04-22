@@ -5,7 +5,7 @@
     # Specify the source of Home Manager and Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs_master.url = "github:nixos/nixpkgs/master";
-    nixpkgs_stable.url = "github:nixos/nixpkgs/release-25.05";
+    nixpkgs_stable.url = "github:nixos/nixpkgs/release-25.11";
     # INFO: Pre 0.17 - https://github.com/NixOS/nixpkgs/commit/af57e99c785f334638402ffd7b5e4565a0379461
     nixpkgs_gemini.url = "github:nixos/nixpkgs/af57e99c785f334638402ffd7b5e4565a0379461";
     home-manager = {
@@ -42,6 +42,18 @@
         kubectl-slice = (prev.callPackage ./packages/kubectl-slice.nix { });
         yaml-schema-router = (prev.callPackage ./packages/yaml-schema-router.nix { });
         ic = (prev.callPackage ./packages/ic.nix { });
+        diffyml = (
+          let
+            pkgs = import nixpkgs_stable { system = prev.system; };
+          in
+          pkgs.callPackage ./packages/diffyml.nix {
+            inherit (pkgs)
+              lib
+              fetchFromGitHub
+              ;
+            buildGoModule = pkgs.buildGoModule.override { go = pkgs.go_1_26; };
+          }
+        );
       };
     in
     {
