@@ -21,6 +21,7 @@
 [pull]
 	rebase = true
 [merge]
+	conflictStyle = zdiff3 # recommended by delta
 	ff = false
 [push]
 	default = current
@@ -42,3 +43,5 @@
 [credential "https://gist.github.com"]
 	helper = 
 	helper = !$HOME/.nix-profile/bin/gh auth git-credential
+[delta]
+	navigate = true  # use n and N to move between diff sections
