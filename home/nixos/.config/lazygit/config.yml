@@ -5,5 +5,8 @@ git:
     signOff: false
   overrideGpg: true
   pagers:
+    # cycle through pagers with `|`
     - colorArg: always
       pager: delta --paging=never --true-color=never
+    - colorArg: always
+      externalDiffCommand: diffyml
