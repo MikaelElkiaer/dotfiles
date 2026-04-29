@@ -9,6 +9,7 @@ git:
     - colorArg: always
       # WARN: Workaround for non-working dark/light detection
       # - when using delta inside lazygit
+      # - see https://github.com/jesseduffield/lazygit/issues/4550
       pager: ~/.config/lazygit/delta.sh --paging=never --true-color=never
     - colorArg: always
       externalDiffCommand: diffyml
