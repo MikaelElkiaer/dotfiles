@@ -1,0 +1,185 @@
+plugins:
+  node-ssh:
+    shortCut: Shift-W
+    confirm: true
+    description: SSH to node
+    scopes:
+      - nodes
+    command: ssh
+    background: false
+    args:
+      - -o StrictHostKeyChecking=no
+      - -o UserKnownHostsFile=/dev/null
+      - $COL-INTERNAL-IP
+  rollback-helmrelease:
+    shortCut: Ctrl-T
+    confirm: true
+    scopes:
+      - helmreleases
+    description: Roll back HelmRelease to the previous release
+    command: sh
+    background: false
+    args:
+      - -c
+      - helm rollback $COL-NAME -n $NAMESPACE --kube-context $CONTEXT | less
+  # Velero commands
+  # Requires velero
+  velero-describe:
+    shortCut: Shift-D
+    confirm: true
+    scopes:
+      - backup
+      - restore
+      - schedule
+    description: Describe Velero resource
+    command: bash
+    background: false
+    args:
+      - -c
+      - velero describe $RESOURCE_NAME --kubecontext $CONTEXT -n $NAMESPACE $NAME | less -R
+  velero-logs:
+    shortCut: Shift-L
+    confirm: true
+    scopes:
+      - backup
+      - restore
+    description: Get logs for velero resources
+    command: bash
+    background: false
+    args:
+      - -c
+      - velero $(echo $RESOURCE_NAME | sed 's/s$//') logs --kubecontext $CONTEXT -n $NAMESPACE $NAME | less -R
+  # external secrets commands
+  externalsecret-force-sync:
+    shortCut: Shift-S
+    confirm: true
+    scopes:
+      - externalsecret
+    description: Annotate externalsecret to force sync
+    command: bash
+    background: false
+    args:
+      - -c
+      - kubectl annotate externalsecrets.external-secrets.io $NAME --context $CONTEXT -n $NAMESPACE force-sync=$(date +%s) --overwrite | less -R
+  # cert-manager commands
+  # Requires cmctl
+  cert-manager-renew-cert:
+    shortCut: Shift-R
+    confirm: true
+    scopes:
+      - certificates
+    description: Renew the selected Certificate
+    command: bash
+    background: false
+    args:
+      - -c
+      - cmctl renew $NAME --namespace $NAMESPACE --context $CONTEXT | less -R
+  cert-manager-status-cert:
+    shortCut: Shift-S
+    confirm: false
+    scopes:
+      - certificates
+    description: Show the status of the selected Certificate
+    command: bash
+    background: false
+    args:
+      - -c
+      - cmctl status certificate $NAME --namespace $NAMESPACE --context $CONTEXT | less -R
+  cert-manager-approve-cert-request:
+    shortCut: Shift-E
+    confirm: true
+    scopes:
+      - certificaterequest
+    description: Approve the selected CertificateRequest
+    command: bash
+    background: false
+    args:
+      - -c
+      - cmctl approve $NAME --namespace $NAMESPACE --context $CONTEXT | less -R
+  cert-manager-deny-cert-request:
+    shortCut: Shift-R
+    confirm: true
+    scopes:
+      - certificaterequest
+    description: Deny the selected CertificateRequest
+    command: bash
+    background: false
+    args:
+      - -c
+      - cmctl deny $NAME --namespace $NAMESPACE --context $CONTEXT | less -R
+  # trivy commands
+  # requires trivy and running container runtime
+  trivy-scan-image-all:
+    shortCut: Shift-U
+    confirm: false
+    scopes:
+      - containers
+    description: Scan container image for ALL vulns
+    command: bash
+    background: false
+    args:
+      - -c
+      - trivy image --quiet $COL-IMAGE | less -R
+  trivy-scan-image-critical:
+    shortCut: Shift-I
+    confirm: false
+    scopes:
+      - containers
+    description: Scan container image for CRITICAL vulns
+    command: bash
+    background: false
+    args:
+      - -c
+      - trivy image --severity CRITICAL --quiet $COL-IMAGE | less -R
+  trivy-scan-image-high:
+    shortCut: Shift-O
+    confirm: false
+    scopes:
+      - containers
+    description: Scan container image for HIGH vulns
+    command: bash
+    background: false
+    args:
+      - -c
+      - trivy image --severity HIGH --quiet $COL-IMAGE | less -R
+  trivy-scan-image-medium:
+    shortCut: Shift-P
+    confirm: false
+    scopes:
+      - containers
+    description: Scan container image for MEDIUM vulns
+    command: bash
+    background: false
+    args:
+      - -c
+      - trivy image --severity MEDIUM --quiet $COL-IMAGE | less -R
+  # Kafka
+  strimzipodset-restart:
+    shortCut: r
+    confirm: true
+    description: StrimziPodSet rolling update
+    scopes:
+      - strimzipodsets
+    command: kubectl
+    background: true
+    args:
+      - --context
+      - $CONTEXT
+      - annotate
+      - $RESOURCE_NAME
+      - -n
+      - $NAMESPACE
+      - $NAME
+      - strimzi.io/manual-rolling-update=true
+  # K9s commands
+  browse-portforward-url:
+    shortCut: o
+    confirm: false
+    scopes:
+      - portforwards
+    description: Open in default browser
+    command: bash
+    background: true
+    args:
+      - -c
+      - open $COL-URL

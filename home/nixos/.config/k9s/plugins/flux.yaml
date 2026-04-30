@@ -1,0 +1,214 @@
+plugins:
+  toggle-helmrelease:
+    shortCut: Shift-T
+    confirm: true
+    scopes:
+      - helmreleases
+    description: Toggle to suspend or resume a HelmRelease
+    command: bash
+    background: false
+    args:
+      - -c
+      - suspended=$(kubectl --context $CONTEXT get helmreleases -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1); verb=$([ $suspended = "true" ] && echo "resume" || echo "suspend"); flux $verb helmrelease --context $CONTEXT -n $NAMESPACE $NAME | less -K
+  restart-helmrelease:
+    shortCut: Shift-U
+    confirm: true
+    scopes:
+      - helmreleases
+    description: Restart a HelmRelease
+    command: bash
+    background: false
+    args:
+      - -c
+      - flux --context $CONTEXT suspend helmrelease -n $NAMESPACE $NAME && sleep 2 && flux --context $CONTEXT resume helmrelease -n $NAMESPACE $NAME
+  toggle-kustomization:
+    shortCut: Shift-T
+    confirm: true
+    scopes:
+      - kustomizations
+    description: Toggle to suspend or resume a Kustomization
+    command: bash
+    background: false
+    args:
+      - -c
+      - suspended=$(kubectl --context $CONTEXT get kustomizations -n $NAMESPACE $NAME -o=custom-columns=TYPE:.spec.suspend | tail -1); verb=$([ $suspended = "true" ] && echo "resume" || echo "suspend"); flux $verb kustomization --context $CONTEXT -n $NAMESPACE $NAME | less -K
+  reconcile-git:
+    shortCut: Shift-R
+    confirm: false
+    description: Flux reconcile
+    scopes:
+      - gitrepositories
+    command: bash
+    background: false
+    args:
+      - -c
+      - flux reconcile source git --context $CONTEXT -n $NAMESPACE $NAME | less -K
+  reconcile-hr:
+    shortCut: Shift-R
+    confirm: false
+    description: Flux reconcile
+    scopes:
+      - helmreleases
+    command: bash
+    background: false
+    args:
+      - -c
+      - flux reconcile helmrelease --context $CONTEXT -n $NAMESPACE $NAME | less -K
+  reconcile-helm-repo:
+    shortCut: Shift-Z
+    description: Flux reconcile
+    scopes:
+      - helmrepositories
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - flux reconcile source helm --context $CONTEXT -n $NAMESPACE $NAME | less -K
+  reconcile-oci-repo:
+    shortCut: Shift-Z
+    description: Flux reconcile
+    scopes:
+      - ocirepositories
+    command: bash
+    background: false
+    confirm: false
+    args:
+      - -c
+      - flux reconcile source oci --context $CONTEXT -n $NAMESPACE $NAME | less -K
+  # reconcile-ks:
+  #   shortCut: Shift-R
+  #   confirm: false
+  #   description: Flux reconcile
+  #   scopes:
+  #     - kustomizations
+  #   command: bash
+  #   background: false
+  #   args:
+  #     - -c
+  #     - >-
+  #       flux
+  #       reconcile kustomization
+  #       --context $CONTEXT
+  #       -n $NAMESPACE $NAME
+  #       | less -K
+  reconcile-ks:
+    shortCut: Shift-R
+    confirm: false
+    description: Flux reconcile
+    scopes:
+      - kustomizations
+    command: bash
+    background: false
+    args:
+      - -c
+      - |
+        reconcile_resource() {
+            local resource=$1
+            local dependencies=$(kubectl get kustomizations $resource --context $CONTEXT -n $NAMESPACE -o json | jq -r '.spec.dependsOn | select (.!=null) | .[].name')
+            for dependency in $dependencies; do
+              local depSourceRefName=$(kubectl get kustomizations "$dependency" --context $CONTEXT -n $NAMESPACE -o json | jq -r '.spec.sourceRef.name')
+              if [[ $sourceRefName == $depSourceRefName ]]; then
+                reconcile_resource "$dependency"
+                kustomizations=$(echo -e "$kustomizations\n$dependencies")
+              fi
+            done
+        }
+
+        # Start reconciliation from the root resource
+        sourceRefName=$(kubectl get kustomizations $NAME -n $NAMESPACE -o json | jq -r '.spec.sourceRef.name')
+        flux reconcile source git --context $CONTEXT -n $NAMESPACE $sourceRefName
+        reconcile_resource "$NAME"
+        for kustomization in $kustomizations; do
+          flux reconcile kustomization $kustomization --context $CONTEXT -n $NAMESPACE $NAME
+        done
+        flux reconcile kustomization --context $CONTEXT -n $NAMESPACE $NAME | less -K
+  reconcile-ks-without-dependencies:
+    shortCut: Shift-C
+    confirm: false
+    description: Flux reconcile without dependencies
+    scopes:
+      - kustomizations
+    command: bash
+    background: false
+    args:
+      - -c
+      - flux reconcile kustomization --context $CONTEXT -n $NAMESPACE $NAME --with-source | less -K
+  reconcile-ir:
+    shortCut: Shift-R
+    confirm: false
+    description: Flux reconcile
+    scopes:
+      - imagerepositories
+    command: sh
+    background: false
+    args:
+      - -c
+      - flux reconcile image repository --context $CONTEXT -n $NAMESPACE $NAME | less -K
+  reconcile-iua:
+    shortCut: Shift-R
+    confirm: false
+    description: Flux reconcile
+    scopes:
+      - imageupdateautomations
+    command: sh
+    background: false
+    args:
+      - -c
+      - flux reconcile image update --context $CONTEXT -n $NAMESPACE $NAME | less -K
+  reconcile-hc:
+    shortCut: Shift-R
+    confirm: false
+    description: Flux reconcile
+    scopes:
+      - helmcharts
+    command: sh
+    background: false
+    args:
+      - -c
+      - kubectl annotate --field-manager=flux-client-side-apply --overwrite $RESOURCE_NAME.$RESOURCE_GROUP/$NAME --namespace $NAMESPACE --context $CONTEXT reconcile.fluxcd.io/requestedAt="$(date +%s)" 2>&1 | less -K
+  trace:
+    shortCut: Shift-Q
+    confirm: false
+    description: Flux trace
+    scopes:
+      - all
+    command: bash
+    background: false
+    args:
+      - -c
+      - KIND=$(test "$RESOURCE_GROUP" = "" -o "$RESOURCE_GROUP" = "apps" && echo "$RESOURCE_NAME" | sed -E 's/ies$/y/' | sed -E 's/ses$/se/' | sed -E 's/(s|[^c]es)$//g' || kubectl get crd $RESOURCE_NAME.$RESOURCE_GROUP -o jsonpath="{.spec.names.kind}" --context $CONTEXT) && flux trace --context $CONTEXT --kind $KIND --api-version $RESOURCE_GROUP/$RESOURCE_VERSION --namespace $NAMESPACE $NAME 2>&1 | less -K
+  # credits: https://github.com/fluxcd/flux2/discussions/2494
+  flux-tree:
+    shortCut: Shift-L
+    confirm: false
+    description: Flux tree
+    scopes:
+      - kustomization
+    command: bash
+    background: false
+    args:
+      - -c
+      - flux tree --context $CONTEXT kustomization --namespace $NAMESPACE $NAME 2>&1 | less -K
+  get-suspended-helmreleases:
+    shortCut: Shift-S
+    confirm: false
+    description: Suspended Helm Releases
+    scopes:
+      - helmrelease
+    command: sh
+    background: false
+    args:
+      - -c
+      - kubectl get --all-namespaces --context $CONTEXT helmreleases.helm.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv' | less
+  get-suspended-kustomizations:
+    shortCut: Shift-S
+    confirm: false
+    description: Suspended Kustomizations
+    scopes:
+      - kustomizations
+    command: sh
+    background: false
+    args:
+      - -c
+      - kubectl get --all-namespaces --context $CONTEXT kustomizations.kustomize.toolkit.fluxcd.io -o json | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.name,.spec.suspend] | @tsv' | less

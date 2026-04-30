@@ -125,6 +125,10 @@
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/kitty";
       };
+      ".config/k9s" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/k9s";
+      };
       ".config/lazygit" = {
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/lazygit";
