@@ -92,6 +92,7 @@
     trivy
     unzip
     update-nix-fetchgit
+    util-linux # common unix utilities
     uutils-coreutils-noprefix
     viddy
     yaml-schema-router
