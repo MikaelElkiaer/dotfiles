@@ -30,6 +30,7 @@
     bat
     bats
     cargo
+    cloud-provider-kind
     comma
     github-copilot-cli
     dagger
