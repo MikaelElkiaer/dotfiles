@@ -1,6 +1,39 @@
 #!/usr/bin/env bash
 
-for pkg in $(nix eval ".#packages.$(nix eval --raw --impure --expr 'builtins.currentSystem')" --apply 'builtins.attrNames' --json | jq -r '.[]'); do
-  echo "--- Checking update for: $pkg"
-  nix run nixpkgs#nix-update -- --flake "$pkg"
+set -Eeuo pipefail
+
+# Determine if we should filter
+ONLY_TAGGED="${ONLY_TAGGET:-false}"
+ONLY_REV="${ONLY_REV:-false}"
+
+FLAKE_DIR="${1?Usage: $0 <flake-dir>}"
+
+cd "$FLAKE_DIR"
+
+SYSTEM=$(nix eval --raw --impure --expr 'builtins.currentSystem')
+
+for pkg in $(nix eval ".#packages.$SYSTEM" --apply 'builtins.attrNames' --json | jq -r '.[]'); do
+  # A package is "tagged" if it has a non-null tag attribute
+  is_tagged=$(nix eval ".#packages.$SYSTEM.$pkg.src" --apply 'x: x ? tag && x.tag != null' 2>/dev/null || echo "false")
+  # A package is "rev" if it has a rev but NO tag (to avoid matching tagged packages which also have a rev)
+  is_rev=$(nix eval ".#packages.$SYSTEM.$pkg.src" --apply 'x: (x ? rev && x.rev != null) && !(x ? tag && x.tag != null)' 2>/dev/null || echo "false")
+
+  if [ "$ONLY_TAGGED" = "true" ] && [ "$is_tagged" != "true" ]; then continue; fi
+  if [ "$ONLY_REV" = "true" ] && [ "$is_rev" != "true" ]; then continue; fi
+  if [ "$is_tagged" != "true" ] && [ "$is_rev" != "true" ]; then continue; fi
+
+  echo "Checking update for: $pkg" >&2
+
+  if [ "$is_tagged" = "true" ]; then
+    nix run nixpkgs#nix-update -- --flake "$pkg"
+  elif [ "$is_rev" = "true" ]; then
+    PKG_FILE="./packages/$pkg.nix"
+    if [ -f "$PKG_FILE" ]; then
+      update-nix-fetchgit --only-commented "$PKG_FILE"
+    else
+      nix run nixpkgs#nix-update -- --flake "$pkg"
+    fi
+  else
+    nix run nixpkgs#nix-update -- --flake "$pkg"
+  fi
 done
