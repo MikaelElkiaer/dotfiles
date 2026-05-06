@@ -6,14 +6,14 @@
 
 python3.pkgs.buildPythonApplication (finalAttrs: {
   pname = "flux-local";
-  version = "8.1.0";
+  version = "8.2.0";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "allenporter";
     repo = "flux-local";
     tag = finalAttrs.version;
-    hash = "sha256-kTfGqvva39o5PQInpBiwjr4sNIf0I6YqloqWUXGhOLY=";
+    hash = "sha256-A9n1EKA1sV3vfRRGMPFmPeM+JegPskNf50d4wZrju58=";
   };
 
   build-system = [
