@@ -34,68 +34,87 @@
       ...
     }:
     let
-      customPackages = final: prev: {
-        dagger = inputs.dagger.packages.${prev.system}.dagger;
-        docker-credential-magic = (prev.callPackage ./packages/docker-credential-magic.nix { });
-        docker-credential-ghcr-login = (prev.callPackage ./packages/docker-credential-ghcr-login.nix { });
-        flux-local = (prev.callPackage ./packages/flux-local.nix { });
-        kubectl-slice = (prev.callPackage ./packages/kubectl-slice.nix { });
-        yaml-schema-router = (prev.callPackage ./packages/yaml-schema-router.nix { });
-        ic = (prev.callPackage ./packages/ic.nix { });
-        diffyml = (
-          let
-            pkgs = import nixpkgs_stable { system = prev.system; };
-          in
-          pkgs.callPackage ./packages/diffyml.nix {
-            inherit (pkgs)
-              lib
-              fetchFromGitHub
-              ;
-            buildGoModule = pkgs.buildGoModule.override { go = pkgs.go_1_26; };
-          }
-        );
+      hosts = {
+        "mae-mac-G00T0L7FPY" = {
+          system = "aarch64-darwin";
+          username = "mae";
+          homeDirectory = "/Users/mae";
+        };
+        "twr" = {
+          system = "x86_64-linux";
+          username = "me";
+          homeDirectory = "/home/me";
+        };
       };
+
+      systems = nixpkgs.lib.unique (map (h: h.system) (builtins.attrValues hosts));
+
+      localPackages =
+        let
+          files = builtins.readDir ./packages;
+          names = builtins.attrNames (
+            nixpkgs.lib.filterAttrs (n: v: v == "regular" && nixpkgs.lib.hasSuffix ".nix" n) files
+          );
+        in
+        map (n: nixpkgs.lib.removeSuffix ".nix" n) names;
+
+      allPackageNames = [ "dagger" ] ++ localPackages;
+
+      customPackages =
+        final: prev:
+        let
+          localPkgs = nixpkgs.lib.genAttrs localPackages (
+            name: prev.callPackage (./packages + "/${name}.nix") { }
+          );
+        in
+        localPkgs
+        // {
+          dagger = inputs.dagger.packages.${prev.system}.dagger;
+          diffyml = (
+            let
+              pkgs = import nixpkgs_stable { system = prev.system; };
+            in
+            pkgs.callPackage ./packages/diffyml.nix {
+              inherit (pkgs)
+                lib
+                fetchFromGitHub
+                ;
+              buildGoModule = pkgs.buildGoModule.override { go = pkgs.go_1_26; };
+            }
+          );
+        };
+
+      forAllSystems = nixpkgs.lib.genAttrs systems;
     in
     {
-      # macOS 15
-      homeConfigurations."mae@mae-mac-G00T0L7FPY" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.aarch64-darwin.extend customPackages;
+      packages = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system}.extend customPackages;
+        in
+        nixpkgs.lib.genAttrs allPackageNames (name: pkgs.${name})
+      );
 
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [
-          nix-index-database.homeModules.nix-index
-          ./home.nix
-          ./hosts/mae-mac-G00T0L7FPY.nix
-          # Optionally use extraSpecialArgs
-          # to pass through arguments to home.nix
-          {
-            _module.args = {
-              username = "mae";
-              homeDirectory = "/Users/mae";
-            };
-          }
-        ];
-      };
-      # Debian 12
-      homeConfigurations."me@twr" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux.extend customPackages;
-
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [
-          nix-index-database.homeModules.nix-index
-          ./home.nix
-          ./hosts/twr.nix
-          # Optionally use extraSpecialArgs
-          # to pass through arguments to home.nix
-          {
-            _module.args = {
-              username = "me";
-              homeDirectory = "/home/me";
-            };
-          }
-        ];
-      };
+      homeConfigurations = nixpkgs.lib.mapAttrs' (host: info: {
+        name = "${info.username}@${host}";
+        value = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.${info.system}.extend customPackages;
+          modules = [
+            nix-index-database.homeModules.nix-index
+            ./home.nix
+            (
+              let
+                f = ./hosts/${host}.nix;
+              in
+              if builtins.pathExists f then f else null
+            )
+            {
+              _module.args = {
+                inherit (info) username homeDirectory;
+              };
+            }
+          ];
+        };
+      }) hosts;
     };
 }
