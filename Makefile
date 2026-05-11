@@ -68,6 +68,7 @@ hm-update:		## Update home-manager flake
 		UNPUSHED=""
 	fi
 	git add home/nixos/.config/home-manager/flake.lock
+	git add home/nixos/.config/home-manager/packages/
 	# Determine if there are changes
 	git diff --cached --exit-code &>/dev/null && exit 0
 	# Create commit - if latest commit is unpushed, then amend the changes
