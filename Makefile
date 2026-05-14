@@ -14,11 +14,20 @@ ifeq ($(OS), Darwin)
     BUILD_CMD := darwin-rebuild build --flake $(FLAKE_TARGET)
     CURRENT_PROFILE := /run/current-system
 else
-    # On Linux, we currently manage Home Manager via flake
-    FLAKE_TARGET := .#$(USER)@$(HOSTNAME)
-    SWITCH_CMD := home-manager switch --flake $(FLAKE_TARGET)
-    BUILD_CMD := home-manager build --flake $(FLAKE_TARGET)
-    CURRENT_PROFILE := $(HOME)/.local/state/nix/profiles/home-manager
+    # On Linux, check if we are on NixOS
+    IS_NIXOS := $(shell if [ -f /etc/NIXOS ]; then echo "true"; else echo "false"; fi)
+    ifeq ($(IS_NIXOS), true)
+        FLAKE_TARGET := .#$(HOSTNAME)
+        SWITCH_CMD := sudo nixos-rebuild switch --flake $(FLAKE_TARGET)
+        BUILD_CMD := nixos-rebuild build --flake $(FLAKE_TARGET)
+        CURRENT_PROFILE := /run/current-system
+    else
+        # Generic Linux, we manage Home Manager via flake
+        FLAKE_TARGET := .#$(USER)@$(HOSTNAME)
+        SWITCH_CMD := home-manager switch --flake $(FLAKE_TARGET)
+        BUILD_CMD := home-manager build --flake $(FLAKE_TARGET)
+        CURRENT_PROFILE := $(HOME)/.local/state/nix/profiles/home-manager
+    endif
 endif
 
 help:			## Show this help
@@ -110,13 +119,8 @@ darwin-switch: switch
 hm-switch: switch
 hm-update: update
 hm-build: build
+nix-switch: switch
+nix-update: update
 
-nix-switch:		## Apply current NixOS configuration (non-flake)
-	@
-	sudo cp etc/nixos/configuration.nix /etc/nixos/configuration.nix
-	sudo nixos-rebuild switch
 
-nix-update:		## Update nix packages (channels)
-	@
-	nix-channel --update
 

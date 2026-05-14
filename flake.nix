@@ -20,6 +20,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # NixOS WSL
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Others
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -51,12 +57,21 @@
           username = "mae";
           homeDirectory = "/Users/mae";
           isDarwin = true;
+          isNixOS = false;
         };
         "twr" = {
           system = "x86_64-linux";
           username = "me";
           homeDirectory = "/home/me";
           isDarwin = false;
+          isNixOS = false;
+        };
+        "nixos" = {
+          system = "x86_64-linux";
+          username = "nixos";
+          homeDirectory = "/home/nixos";
+          isDarwin = false;
+          isNixOS = true;
         };
       };
 
@@ -115,6 +130,47 @@
               };
             }
           ];
+        };
+
+      # Helper for NixOS configuration (with integrated Home Manager)
+      mkNixosConfig = host: info:
+        nixpkgs.lib.nixosSystem {
+          inherit (info) system;
+          modules = [
+            # Main NixOS configuration
+            ./etc/nixos/configuration.nix
+            # NixOS-WSL module
+            inputs.nixos-wsl.nixosModules.default
+            # Integrate Home Manager
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.${info.username} = {
+                imports = [
+                  (hmDir + "/home.nix")
+                  (
+                    let
+                      f = hmDir + "/hosts/${host}.nix";
+                    in
+                    if builtins.pathExists f then f else { }
+                  )
+                  nix-index-database.homeModules.nix-index
+                ];
+              };
+              home-manager.extraSpecialArgs = {
+                inherit (info) username homeDirectory;
+                inherit inputs;
+              };
+            }
+            # Add custom packages to nixpkgs
+            {
+              nixpkgs.overlays = [ customPackages ];
+            }
+          ];
+          specialArgs = {
+            inherit host info inputs;
+          };
         };
 
       # Helper for nix-darwin configuration (with integrated Home Manager)
@@ -177,6 +233,12 @@
         nixpkgs.lib.filterAttrs (host: info: info.isDarwin) hosts
       );
 
+      # NixOS configurations
+      # Usage: nixos-rebuild switch --flake .#host
+      nixosConfigurations = nixpkgs.lib.mapAttrs (host: info: mkNixosConfig host info) (
+        nixpkgs.lib.filterAttrs (host: info: info.isNixOS) hosts
+      );
+
       # Expose packages
       packages = forAllSystems (
         system:
@@ -187,3 +249,7 @@
       );
     };
 }
+
+
+
+

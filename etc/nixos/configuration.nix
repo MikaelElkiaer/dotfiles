@@ -13,10 +13,8 @@
 }:
 
 {
-  imports = [
-    # include NixOS-WSL modules
-    <nixos-wsl/modules>
-  ];
+  # WSL module is now handled via flake.nix
+  # imports = [ <nixos-wsl/modules> ];
 
   environment.systemPackages = with pkgs; [ home-manager ];
 
@@ -24,6 +22,8 @@
   # - see https://github.com/nix-community/NixOS-WSL/issues/498
   hardware.graphics.enable = true;
 
+  # NOTE: Absolute paths like /etc/nixos/certs may require --impure flag during evaluation
+  # or should be moved into the flake and referenced with relative paths.
   security.pki.certificateFiles = builtins.map (x: /etc/nixos/certs + ("/" + x)) (
     builtins.attrNames (builtins.readDir /etc/nixos/certs)
   );
