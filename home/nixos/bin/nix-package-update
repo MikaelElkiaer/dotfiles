@@ -24,16 +24,19 @@ for pkg in $(nix eval ".#packages.$SYSTEM" --apply 'builtins.attrNames' --json |
 
   echo "Checking update for: $pkg" >&2
 
-  if [ "$is_tagged" = "true" ]; then
-    nix run nixpkgs#nix-update -- --flake "$pkg"
-  elif [ "$is_rev" = "true" ]; then
-    PKG_FILE="./packages/$pkg.nix"
+  # Check if version is unstable
+  version=$(nix eval ".#packages.$SYSTEM.$pkg.version" --raw 2>/dev/null || echo "")
+  
+  if [[ "$version" == unstable-* ]] || [ "$is_rev" = "true" ]; then
+    PKG_FILE="./home/nixos/.config/home-manager/packages/$pkg.nix"
     if [ -f "$PKG_FILE" ]; then
-      update-nix-fetchgit --only-commented "$PKG_FILE"
+      echo "Updating via fetchgit: $pkg" >&2
+      update-nix-fetchgit --only-commented "$PKG_FILE" || true
     else
-      nix run nixpkgs#nix-update -- --flake "$pkg"
+      echo "Skipping $pkg (unstable version but no local file found)" >&2
     fi
   else
-    nix run nixpkgs#nix-update -- --flake "$pkg"
+    echo "Updating via nix-update: $pkg" >&2
+    nix run nixpkgs#nix-update -- --flake "$pkg" || echo "Warning: Failed to update $pkg" >&2
   fi
 done
