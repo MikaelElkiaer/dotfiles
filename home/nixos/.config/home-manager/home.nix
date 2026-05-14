@@ -12,8 +12,8 @@
     ./modules/neovim.nix
   ];
 
-  home.username = username;
-  home.homeDirectory = homeDirectory;
+  home.username = lib.mkForce username;
+  home.homeDirectory = lib.mkForce homeDirectory;
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
@@ -265,16 +265,12 @@
   };
 
   nix = {
-    package = pkgs.nixVersions.latest;
+    package = lib.mkDefault pkgs.nixVersions.latest;
 
     settings.experimental-features = [
       "flakes"
       "nix-command"
     ];
-  };
-
-  nixpkgs.config = {
-    allowUnfree = true;
   };
 
   programs.home-manager.enable = true;

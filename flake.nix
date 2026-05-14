@@ -144,6 +144,7 @@
             # Integrate Home Manager
             home-manager.nixosModules.home-manager
             {
+              nixpkgs.config.allowUnfree = true;
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.${info.username} = {
@@ -182,6 +183,7 @@
             ./etc/nix-darwin/configuration.nix
             {
               nixpkgs.hostPlatform = info.system;
+              nixpkgs.config.allowUnfree = true;
               system.configurationRevision = self.rev or self.dirtyRev or null;
             }
             # Integrate Home Manager
@@ -249,6 +251,8 @@
       );
     };
 }
+
+
 
 
 
