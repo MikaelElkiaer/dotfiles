@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+# Target directory (default to current if not provided)
+TARGET_DIR=${1:-.}
+
+cd "$TARGET_DIR" || exit
+
+# 1. Find all YAML files in subdirectories
+find . -mindepth 2 -type f \( -name "*.yaml" -o -name "*.yml" \) | while read -r FILE; do
+
+  # Skip if file is empty
+  [ ! -s "$FILE" ] && rm "$FILE" && continue
+
+  # Extract Kind and Name using yq, then lowercase them
+  # This format output: kind-name
+  NEW_IDENTITY=$(yq eval '(.kind | downcase) + "-" + (.metadata.name | downcase)' "$FILE")
+
+  # If the file had multiple documents, yq might return multiple lines.
+  # We'll take the first one to avoid shell errors, though helm output
+  # dir usually splits these already.
+  NEW_NAME=$(echo "$NEW_IDENTITY" | head -n 1).yaml
+
+  # 2. Move and Rename to the root of TARGET_DIR
+  # We use 'mv' to overwrite if a duplicate exists
+  mv "$FILE" "./$NEW_NAME"
+
+done
+
+# 3. Cleanup: Delete now-empty subdirectories
+find . -mindepth 1 -type d -empty -delete
+
+echo "Normalization complete."
