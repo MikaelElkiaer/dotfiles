@@ -1,4 +1,25 @@
 .ONESHELL:
+.PHONY: help build update switch
+
+# Detect host information
+OS := $(shell uname)
+HOSTNAME := $(shell hostname -s)
+USER := $(shell whoami)
+
+# Set targets and commands based on OS
+ifeq ($(OS), Darwin)
+    # On Darwin, we use nix-darwin which manages the whole system including Home Manager
+    FLAKE_TARGET := .#$(HOSTNAME)
+    SWITCH_CMD := sudo darwin-rebuild switch --flake $(FLAKE_TARGET)
+    BUILD_CMD := darwin-rebuild build --flake $(FLAKE_TARGET)
+    CURRENT_PROFILE := /run/current-system
+else
+    # On Linux, we currently manage Home Manager via flake
+    FLAKE_TARGET := .#$(USER)@$(HOSTNAME)
+    SWITCH_CMD := home-manager switch --flake $(FLAKE_TARGET)
+    BUILD_CMD := home-manager build --flake $(FLAKE_TARGET)
+    CURRENT_PROFILE := $(HOME)/.local/state/nix/profiles/home-manager
+endif
 
 help:			## Show this help
 	@
@@ -9,76 +30,93 @@ login-gh:		## Log in to GitHub CLI
 	@
 	gh auth login --hostname=github.com --git-protocol=https --scopes=notifications,read:packages,read:org,read:project
 
-darwin-switch:		## Apply current nix-darwin configuration
-	@
-	sudo cp -r etc/nix-darwin/* /etc/nix-darwin
-	sudo darwin-rebuild switch
-
-darwin-update:		## Update nix-darwin flake
-	@
-	nix flake update --flake $$PWD/etc/nix-darwin
-
-hm-build:		## Build home-manager config
+build:			## Build configuration and commit changes with diff
 	@
 	set -e
-	# Clean up
-	trap 'rm --force ./result ./diff' EXIT
-	# Build new revision
-	home-manager build
-	# Compare new revision with current
-	nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result > ./diff
-	# Add all changes to git
-	git add home/nixos/.config/home-manager/
-	# Determine if there are changes
-	git diff --cached --exit-code &>/dev/null && exit 0
-	# Create commit, with diff as message body
-	git commit --template=<(echo; echo; cat ./diff)
+	trap 'rm -f ./result ./diff' EXIT
+	echo "[INF] Building configuration for $(FLAKE_TARGET)..."
+	$(BUILD_CMD)
+	echo "[INF] Comparing with current profile..."
+	nix store diff-closures $(CURRENT_PROFILE) ./result | \
+		sed -E -e '/[ε∅] → [ε∅]/d' -e '/^source:/d' > ./diff
+	
+	if [ -s ./diff ]; then
+		echo "[INF] Changes found:"
+		cat ./diff
+	else
+		echo "[INF] No changes found."
+		exit 0
+	fi
+	
+	git add .
+	if git diff --cached --exit-code &>/dev/null; then
+		echo "[INF] No changes to commit"
+		exit 0
+	fi
+	
+	git commit --file=<(echo "feat(nix): Update configuration"; echo; cat ./diff)
 
-hm-switch:		## Apply home-manager config
+switch:			## Apply configuration
 	@
-	home-manager switch -b bak
+	echo "[INF] Switching to new configuration for $(FLAKE_TARGET)..."
+	$(SWITCH_CMD)
 
-hm-update:		## Update home-manager flake
+update:			## Update flake and custom packages, then build/diff/commit
 	@
 	set -Eeuo pipefail
-	trap '{
-		echo "[DBG] Cleaning up" >&2
-		rm --force ./result ./diff
-		git restore home/nixos/.config/home-manager/flake.lock
-	}' EXIT
-	echo "[DBG] Updating custom packages" >&2
-	nix-package-update $$PWD/home/nixos/.config/home-manager
-	echo "[DBG] Updating flake" >&2
-	nix flake update --flake $$PWD/home/nixos/.config/home-manager/
-	echo "[DBG] Building new revision" >&2
-	home-manager build
-	echo "[DBG] Comparing revisions" >&2
-	# Remove "hash" change from output
-	nix store diff-closures $$HOME/.local/state/nix/profiles/home-manager ./result |
-		sed -E -e '/[ε∅] → [ε∅]/d' -e '/^source:/d' >./diff
+	trap 'rm -f ./result ./diff' EXIT
+	
+	echo "[INF] Updating custom packages..."
+	# Run package update script from the repo
+	./home/nixos/bin/nix-package-update .
+	
+	echo "[INF] Updating root flake..."
+	nix flake update
+	
+	echo "[INF] Building and checking for changes..."
+	$(BUILD_CMD)
+	
+	nix store diff-closures $(CURRENT_PROFILE) ./result | \
+		sed -E -e '/[ε∅] → [ε∅]/d' -e '/^source:/d' > ./diff
+	
 	if ! [ -s ./diff ]; then
-		echo "[INF] No updates found" >&2
+		echo "[INF] No updates found"
 		exit 0
+	fi
+	
+	echo "[INF] Updates found:"
+	cat ./diff
+	
+	git add flake.lock home/nixos/.config/home-manager/packages/
+	
+	# Determine if there are staged changes
+	if git diff --cached --exit-code &>/dev/null; then
+		echo "[INF] No changes to commit"
+		exit 0
+	fi
+	
+	# Create or amend commit
+	LATEST_MSG="$$(git show --format=format:%s --quiet)"
+	if [ "$$LATEST_MSG" = "chore(nix): Update flake" ] && ! git log --exit-code origin/main..main &>/dev/null; then
+		echo "[INF] Amending unpushed update commit..."
+		git commit --amend --file=<(echo "chore(nix): Update flake"; echo; cat ./diff)
 	else
-		echo "[INF] Updates found:" >&2
-		cat ./diff
+		echo "[INF] Creating new update commit..."
+		git commit --file=<(echo "chore(nix): Update flake"; echo; cat ./diff)
 	fi
-	# Determine whether latest commit is a hm-update, and whether it is unpushed
-	if [ "$$(git show --format=format:%s --quiet)" = "chore(hm): Update flake" ] && ! git log --exit-code origin/main..main &>/dev/null; then
-		UNPUSHED=""
-	fi
-	git add home/nixos/.config/home-manager/flake.lock
-	git add home/nixos/.config/home-manager/packages/
-	# Determine if there are changes
-	git diff --cached --exit-code &>/dev/null && exit 0
-	# Create commit - if latest commit is unpushed, then amend the changes
-	git commit --file=<(echo "chore(hm): Update flake"; echo; cat ./diff) $${UNPUSHED+ --amend}
 
-nix-switch:		## Apply current NixOS configuration
+# Compatibility/Legacy targets
+darwin-switch: switch
+hm-switch: switch
+hm-update: update
+hm-build: build
+
+nix-switch:		## Apply current NixOS configuration (non-flake)
 	@
 	sudo cp etc/nixos/configuration.nix /etc/nixos/configuration.nix
 	sudo nixos-rebuild switch
 
-nix-update:		## Update nix packages
+nix-update:		## Update nix packages (channels)
 	@
 	nix-channel --update
+
