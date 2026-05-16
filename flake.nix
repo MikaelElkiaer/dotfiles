@@ -116,6 +116,9 @@
         home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${info.system}.extend customPackages;
           modules = [
+            {
+              nixpkgs.config.allowUnfree = true;
+            }
             nix-index-database.homeModules.nix-index
             (hmDir + "/home.nix")
             (
