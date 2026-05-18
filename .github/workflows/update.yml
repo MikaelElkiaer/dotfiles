@@ -1,0 +1,179 @@
+name: Nightly Update
+on:
+  schedule:
+    - cron: 0 2 * * *
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  generate-matrix:
+    name: Generate Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+      - id: set-matrix
+        run: |
+          # Extract configurations
+          DARWIN=$(nix eval .#darwinConfigurations --apply 'builtins.mapAttrs (n: v: v.pkgs.stdenv.hostPlatform.system)' --json)
+          NIXOS=$(nix eval .#nixosConfigurations --apply 'builtins.mapAttrs (n: v: v.pkgs.stdenv.hostPlatform.system)' --json)
+          HM=$(nix eval .#homeConfigurations --apply 'builtins.mapAttrs (n: v: v.pkgs.stdenv.hostPlatform.system)' --json)
+
+          # Logic to combine and deduplicate
+          # We want:
+          # 1. All Darwin configs
+          # 2. All NixOS configs
+          # 3. All HM configs that aren't already covered by Darwin/NixOS (standalone)
+
+          echo "$DARWIN" "$NIXOS" "$HM" | jq -s -c '
+            [
+              (.[0] | to_entries[] | { host: .key, system: .value, type: "darwin", attr: "darwinConfigurations.\(.key).system" }),
+              (.[1] | to_entries[] | { host: .key, system: .value, type: "nixos", attr: "nixosConfigurations.\(.key).config.system.build.toplevel" }),
+              (.[2] | to_entries[] | { host: .key, system: .value, type: "hm", attr: "homeConfigurations.\"\(.key)\".activationPackage" })
+            ] | flatten
+            | group_by(.host | split("@") | last)
+            | map(
+                if any(.type == "darwin") then filter(.type == "darwin")
+                elif any(.type == "nixos") then filter(.type == "nixos")
+                else .
+                end
+              )
+            | flatten
+            | map({
+                host: .host,
+                attr: .attr,
+                os: (if .system | contains("darwin") then "macos-latest" else "ubuntu-latest")
+              })
+          ' > matrix.json
+
+          echo "matrix=$(cat matrix.json)" >> $GITHUB_OUTPUT
+  update:
+    name: Update Flake & Packages
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.commit.outputs.branch }}
+      updated: ${{ steps.commit.outputs.updated }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v25
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Update
+        id: commit
+        run: |
+          BRANCH="update/nightly"
+          git checkout -B "$BRANCH"
+
+          echo "Updating custom packages..."
+          nix profile install nixpkgs#jq nixpkgs#nix-update nixpkgs#update-nix-fetchgit
+          ./home/nixos/bin/nix-package-update .
+
+          echo "Updating flake..."
+          nix flake update
+
+          git add .
+          if ! git diff --cached --exit-code; then
+            git commit -m "chore(nix): Nightly update"
+            git push origin "$BRANCH" --force
+            echo "updated=true" >> $GITHUB_OUTPUT
+            echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          else
+            echo "No updates found"
+            echo "updated=false" >> $GITHUB_OUTPUT
+          fi
+  diff:
+    name: Diff ${{ matrix.host }}
+    needs:
+      - generate-matrix
+      - update
+    if: needs.update.outputs.updated == 'true'
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: old
+      - name: Checkout update branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.update.outputs.branch }}
+          path: new
+      - uses: cachix/install-nix-action@v25
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Build and Diff
+        run: |
+          echo "Building old configuration..."
+          nix build "./old#${{ matrix.attr }}" --no-link --print-out-paths > old_path
+          echo "Building new configuration..."
+          nix build "./new#${{ matrix.attr }}" --no-link --print-out-paths > new_path
+
+          echo "Generating diff..."
+          nix store diff-closures $(cat old_path) $(cat new_path) | \
+            sed -E -e '/[ε∅] → [ε∅]/d' -e '/^source:/d' > diff.txt
+      - name: Upload Diff
+        uses: actions/upload-artifact@v4
+        with:
+          name: diff-${{ matrix.host }}
+          path: diff.txt
+  pr:
+    name: Create Pull Request
+    needs:
+      - update
+      - diff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.update.outputs.branch }}
+      - name: Download Diffs
+        uses: actions/download-artifact@v4
+        with:
+          path: diffs
+          pattern: diff-*
+          merge-multiple: true
+      - name: Create or Update PR
+        run: |
+          {
+            echo "Nightly Nix Update Status"
+            echo ""
+            for f in diffs/diff-*.txt; do
+              HOST=$(basename "$f" .txt | sed 's/diff-//')
+              echo "### $HOST"
+              echo "\`\`\`"
+              if [ -s "$f" ]; then
+                cat "$f"
+              else
+                echo "No changes."
+              fi
+              echo "\`\`\`"
+              echo ""
+            done
+          } > pr_body.txt
+
+          PR_URL=$(gh pr list --head ${{ needs.update.outputs.branch }} --state open --json url -q '.[0].url')
+
+          if [ -n "$PR_URL" ]; then
+            echo "Updating existing PR: $PR_URL"
+            gh pr edit "$PR_URL" --title "chore(nix): Nightly update $(date +%Y-%m-%d)" --body-file pr_body.txt
+          else
+            echo "Creating new PR"
+            gh pr create \
+              --title "chore(nix): Nightly update $(date +%Y-%m-%d)" \
+              --body-file pr_body.txt \
+              --base main \
+              --head ${{ needs.update.outputs.branch }}
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
