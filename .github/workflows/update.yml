@@ -36,8 +36,8 @@ jobs:
             ] | flatten
             | group_by(.host | split("@") | last)
             | map(
-                if any(.type == "darwin") then filter(.type == "darwin")
-                elif any(.type == "nixos") then filter(.type == "nixos")
+                if any(.type == "darwin") then map(select(.type == "darwin"))
+                elif any(.type == "nixos") then map(select(.type == "nixos"))
                 else .
                 end
               )
@@ -45,7 +45,7 @@ jobs:
             | map({
                 host: .host,
                 attr: .attr,
-                os: (if .system | contains("darwin") then "macos-latest" else "ubuntu-latest")
+                os: (if .system | contains("darwin") then "macos-latest" else "ubuntu-latest" end)
               })
           ' > matrix.json
 
