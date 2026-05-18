@@ -149,7 +149,7 @@
             {
               nixpkgs.config.allowUnfree = true;
               home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
+              home-manager.useUserPackages = false;
               home-manager.users.${info.username} = {
                 imports = [
                   (hmDir + "/home.nix")
@@ -189,11 +189,18 @@
               nixpkgs.config.allowUnfree = true;
               system.configurationRevision = self.rev or self.dirtyRev or null;
             }
+            # Define the user for nix-darwin & home-manager
+            {
+              users.users.${info.username} = {
+                name = info.username;
+                home = info.homeDirectory;
+              };
+            }
             # Integrate Home Manager
             home-manager.darwinModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
+              home-manager.useUserPackages = false;
               home-manager.users.${info.username} = {
                 imports = [
                   (hmDir + "/home.nix")
