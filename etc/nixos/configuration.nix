@@ -22,9 +22,13 @@
 
   # NOTE: Absolute paths like /etc/nixos/certs may require --impure flag during evaluation
   # or should be moved into the flake and referenced with relative paths.
-  security.pki.certificateFiles = builtins.map (x: /etc/nixos/certs + ("/" + x)) (
-    builtins.attrNames (builtins.readDir /etc/nixos/certs)
-  );
+  security.pki.certificateFiles =
+    let
+      certsDir = ./certs;
+    in
+    if builtins.pathExists certsDir then
+      builtins.map (x: certsDir + ("/" + x)) (builtins.attrNames (builtins.readDir certsDir))
+    else [ ];
 
   users.users.nixos.extraGroups = [ "docker" ];
 
