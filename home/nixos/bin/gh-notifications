@@ -71,34 +71,16 @@ function _init_args() {
 }
 
 function _get_data() {
-  local FILTER="-is:done"
+  local ARGS=()
   if [ "$(_get_option unread-only "$UNREAD_ONLY")" = "1" ]; then
-    FILTER="$FILTER is:unread"
+    ARGS+=("-f" "all=false")
+  else
+    ARGS+=("-f" "all=true")
   fi
 
   # shellcheck disable=SC2016
-  gh api graphql \
-    --field=filter="$FILTER" \
-    --field=query='
-      query($filter: String!) {
-        viewer {
-          notificationThreads(last: 50, query: $filter) {
-            nodes {
-              isUnread
-              id
-              title
-              reason
-              url
-              subject {
-                __typename
-                ... on PullRequest { __typename repository { nameWithOwner } state }
-                ... on Issue { __typename repository { nameWithOwner } state stateReason }
-              }
-            }
-          }
-        }
-      }' \
-    --jq='
+  gh api /notifications -X GET "${ARGS[@]}" -f per_page=50 \
+    --jq '
       def colors: {
         "black": "\u001b[30m",
         "red": "\u001b[31m",
@@ -112,70 +94,51 @@ function _get_data() {
       };
       def colored(text; color):
         colors[color] + text + colors.reset;
-      (.data.viewer.notificationThreads.nodes | map(.title | length) | max) as $length |
-      .data.viewer.notificationThreads.nodes[] |
+      (map(.subject.title | length) | max // 0) as $length |
+      .[] |
       {
         properties: {
           id: .id,
-          isUnread: .isUnread,
-          state: .state,
-          stateReason: .stateReason,
-          title: .title,
-          type: .subject.__typename,
-          url: .url
+          isUnread: .unread,
+          title: .subject.title,
+          type: .subject.type,
+          url: (.subject.url | sub("api.github.com/repos/"; "github.com/") | sub("/pulls/"; "/pull/"))
         },
         readIcon:
-          if .isUnread then colored("";"yellow")
+          if .unread then colored("";"yellow")
           else colored(""; "blue")
           end,
-        repository: colored(.subject.repository.nameWithOwner; "cyan"),
+        repository: colored(.repository.full_name; "cyan"),
         stateIcon:
-          if .subject.__typename == "PullRequest" then
-            if .subject.state == "OPEN" then colored(""; "green")
-            elif .subject.state == "MERGED" then colored(""; "magenta")
-            elif .subject.state == "CLOSED" then colored(""; "red")
-            else ""
-            end
-          elif .subject.__typename == "Issue" then
-            if .subject.state == "OPEN" then
-              if .subject.stateReason == "REOPENED" then colored(""; "green")
-              elif .subject.stateReason == null then colored(""; "green")
-              else ""
-              end
-            elif .subject.state == "CLOSED" then
-              if .subject.stateReason == "COMPLETED" then colored(""; "magenta")
-              elif .subject.stateReason == "NOT_PLANNED" then colored(""; "red")
-              else ""
-              end
-            else ""
-            end
+          if .subject.type == "PullRequest" then colored(""; "green")
+          elif .subject.type == "Issue" then colored(""; "green")
           else ""
           end,
-        title: (.title | . + (" " * ($length - length)))
+        title: (.subject.title | . + (" " * ($length - length)))
       } | [ (.properties | tostring), .readIcon, .stateIcon, .title, .repository] | @tsv' |
     sed -E 's,\\\\,\\,g'
 }
 
 function _mark_read() {
-  read -r ID
-  # shellcheck disable=SC2016
-  gh api graphql \
-    --field=id="$ID" \
-    --field=query='mutation($id: ID!) { markNotificationsAsRead(input: { ids: [$id] }) { success } }'
+  while read -r ID; do
+    [ -z "$ID" ] && continue
+    gh api -X PATCH "/notifications/threads/$ID" >/dev/null
+  done
 }
 
 function _mark_done() {
-  read -r ID
-  # shellcheck disable=SC2016
-  gh api graphql \
-    --field=id="$ID" \
-    --field=query='mutation($id: ID!) { markNotificationAsDone(input: { id: $id }) { success } }'
+  while read -r ID; do
+    [ -z "$ID" ] && continue
+    gh api -X DELETE "/notifications/threads/$ID" >/dev/null
+  done
 }
 
 function _get() {
-  read -r PROPERTIES
-  for k in "$@"; do
-    KEY="$k" yq '.[env(KEY)]' <<<"$PROPERTIES" | xargs echo -n " "
+  while read -r line; do
+    [ -z "$line" ] && continue
+    for k in "$@"; do
+      jq -r ".$k" <<<"$line"
+    done | xargs
   done
 }
 
@@ -245,20 +208,21 @@ function _open() {
 function _exec_fzf() {
   echo -n "" | fzf \
     --ansi \
-    --bind="d:execute-silent(_get id <<<{1} | _mark_done)+reload(_get_data)" \
-    --bind="o:become(_open \$(_get url <<<{1}))" \
+    --multi \
+    --bind="d:execute-silent(printf '%s\n' {+1} | _get id | _mark_done)+reload(_get_data)" \
+    --bind="o:become(_open \$(_get url <<<'{1}'))" \
     --bind="p:toggle-preview" \
-    --bind="r:execute-silent(_get id <<<{1} | _mark_read)+reload(_get_data)" \
+    --bind="r:execute-silent(printf '%s\n' {+1} | _get id | _mark_read)+reload(_get_data)" \
     --bind="ctrl-p:transform-border-label(_toggle_option preview-diff)+refresh-preview" \
     --bind="ctrl-r:transform-border-label(_toggle_option unread-only)+reload-sync(_get_data)" \
     --bind='load:change-prompt($ )+disable-search+reload-sync(_get_data)+unbind(load)' \
     --bind='change:change-header(search disabled)+clear-query' \
     --border=bottom \
-    --border-label=" (d)one (o)pen (p)review-toggle (r)ead ^p preview-diff(${PREVIEW_DIFF}) ^r unread-only(${UNREAD_ONLY}) " \
+    --border-label=" (d)one (o)pen (p)review-toggle (r)ead <tab> multi-select ^p preview-diff(${PREVIEW_DIFF}) ^r unread-only(${UNREAD_ONLY}) " \
     --delimiter='\t' \
     --header-first \
     --no-sort \
-    --preview='(_preview {1})' \
+    --preview='(_preview "{1}")' \
     --preview-window=hidden,wrap \
     --with-nth=2..
 }
