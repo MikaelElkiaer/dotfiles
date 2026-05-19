@@ -14,7 +14,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v25
+      - uses: DeterminateSystems/nix-installer-action@main
       - id: set-matrix
         run: |
           # Extract configurations
@@ -60,7 +60,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: cachix/install-nix-action@v25
+      - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Configure Git
         run: |
@@ -111,7 +111,7 @@ jobs:
         with:
           ref: ${{ needs.update.outputs.branch }}
           path: new
-      - uses: cachix/install-nix-action@v25
+      - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Build and Diff
         run: |
@@ -178,3 +178,4 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
