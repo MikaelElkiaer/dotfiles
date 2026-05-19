@@ -19,8 +19,12 @@
     enable = true;
     brews = [
       "chainguard-dev/tap/chainctl"
+      # Needs to be fetched manually:
+      # `HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew fetch containdk/tap/beagle`
       "containdk/tap/beagle"
+      # `HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew fetch containdk/tap/conductor`
       "containdk/tap/conductor"
+      # `HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew fetch containdk/tap/solas`
       "containdk/tap/solas"
       "lastpass-cli"
       "pint"
