@@ -1,12 +1,10 @@
 {
-  pkgs,
-  host,
   ...
 }:
 {
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     # WARN: Desktop applications installed this way will not appear in Spotlight
     # - see https://github.com/nix-darwin/nix-darwin/issues/1576
     # - use `homebrew.casks` instead

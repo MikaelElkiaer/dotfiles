@@ -112,7 +112,8 @@
         };
 
       # Helper for standalone Home Manager configuration
-      mkHomeConfig = host: info:
+      mkHomeConfig =
+        host: info:
         home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${info.system}.extend customPackages;
           modules = [
@@ -136,7 +137,8 @@
         };
 
       # Helper for NixOS configuration (with integrated Home Manager)
-      mkNixosConfig = host: info:
+      mkNixosConfig =
+        host: info:
         nixpkgs.lib.nixosSystem {
           inherit (info) system;
           modules = [
@@ -178,7 +180,8 @@
         };
 
       # Helper for nix-darwin configuration (with integrated Home Manager)
-      mkDarwinConfig = host: info:
+      mkDarwinConfig =
+        host: info:
         nix-darwin.lib.darwinSystem {
           system = info.system;
           modules = [
@@ -257,13 +260,7 @@
         let
           pkgs = nixpkgs.legacyPackages.${system}.extend customPackages;
         in
-        nixpkgs.lib.genAttrs (["dagger"] ++ localPackages) (name: pkgs.${name})
+        nixpkgs.lib.genAttrs ([ "dagger" ] ++ localPackages) (name: pkgs.${name})
       );
     };
 }
-
-
-
-
-
-
