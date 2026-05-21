@@ -81,6 +81,11 @@ function detect_mode {
     cmd="get_tmux_keys"
     prompt="keys"
     ;;
+  'g ')
+    match=1
+    cmd="get_git_repos"
+    prompt="git"
+    ;;
   *) ;;
   esac
   if [ -n "${match:-}" ]; then
@@ -98,6 +103,9 @@ function change_border_label {
   case "$TYPE" in
   c)
     echo " 󰌑 run  prompt "
+    ;;
+  g)
+    echo " 󰌑 nvim  prompt "
     ;;
   i)
     echo " 󰌑 k9s  prompt "
@@ -122,6 +130,14 @@ function preview {
   case "$TYPE" in
   c)
     man "$NAME" 2>/dev/null | nvimpager -c +"set ft=man"
+    ;;
+  g)
+    README="$(find "$FULL" -maxdepth 1 -type f -iname readme.md)"
+    if [ -n "$README" ]; then
+      nvimpager -c "$README" +"set ft=markdown"
+    else
+      tree -a -C -I '.git' -L 5 "$FULL"
+    fi
     ;;
   i)
     ic get cluster -q "$FULL"
@@ -151,6 +167,9 @@ function action_primary {
   c)
     exec "$FULL"
     ;;
+  g)
+    tmux new-window -c "$FULL" bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash"
+    ;;
   i)
     NEW_WINDOW_ID="$(tmux new-window -c "$HOME" -d -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{window_id}' bash -i -c 'k9s;exec bash')"
     ic get cluster-kubeconfig --cluster-name "$FULL" >"$HOME/.kube/config-tmux-${NEW_WINDOW_ID}"
@@ -174,6 +193,9 @@ function action_secondary {
   case "$TYPE" in
   c)
     bash_prompt "$NAME"
+    ;;
+  g)
+    tmux new-window -c "$FULL" bash
     ;;
   i)
     NEW_WINDOW_ID="$(tmux new-window -c "$HOME" -d -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{window_id}' bash -i -c 'bash')"
@@ -204,6 +226,17 @@ function get_commands {
         EXTRA_ICONS+=" $(color green )"
       fi
       echo -e "$TYPE\t$FULL\t$ICON$EXTRA_ICONS\t$NAME"
+    done
+}
+
+function get_git_repos {
+  local FULL ICON NAME TYPE
+  ICON="$(color yellow )"
+  TYPE="g"
+  fd -g .git -HL -t d -d 10 --prune ~/Repositories/ --exec dirname '{}' |
+    while read -r NAME; do
+      FULL="$NAME"
+      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
     done
 }
 
