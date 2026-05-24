@@ -10,3 +10,5 @@ if [[ "$OSTYPE" == darwin* ]]; then
     exec delta --light "$@"
   fi
 fi
+
+exec delta --dark "$@"
