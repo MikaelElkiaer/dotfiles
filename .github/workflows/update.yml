@@ -122,12 +122,12 @@ jobs:
 
           echo "Generating diff..."
           nix store diff-closures $(cat old_path) $(cat new_path) | \
-            sed -E -e '/[ε∅] → [ε∅]/d' -e '/^source:/d' > diff.txt
+            sed -E -e '/[ε∅] → [ε∅]/d' -e '/^source:/d' > diff-${{ matrix.host }}.txt
       - name: Upload Diff
         uses: actions/upload-artifact@v4
         with:
           name: diff-${{ matrix.host }}
-          path: diff.txt
+          path: diff-${{ matrix.host }}.txt
   pr:
     name: Create Pull Request
     needs:
