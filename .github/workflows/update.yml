@@ -13,8 +13,8 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: DeterminateSystems/nix-installer-action@00199f951aeb9404028a6e4b95ad42546f73296a # main
       - id: set-matrix
         run: |
           # Extract configurations
@@ -57,11 +57,11 @@ jobs:
       branch: ${{ steps.commit.outputs.branch }}
       updated: ${{ steps.commit.outputs.updated }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/nix-installer-action@00199f951aeb9404028a6e4b95ad42546f73296a # main
+      - uses: DeterminateSystems/magic-nix-cache-action@908b263ff629f4cc17666315b7fd3ec127c6244d # main
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
@@ -102,17 +102,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: main
           path: old
       - name: Checkout update branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: ${{ needs.update.outputs.branch }}
           path: new
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/nix-installer-action@00199f951aeb9404028a6e4b95ad42546f73296a # main
+      - uses: DeterminateSystems/magic-nix-cache-action@908b263ff629f4cc17666315b7fd3ec127c6244d # main
       - name: Build and Diff
         run: |
           echo "Building old configuration..."
@@ -124,7 +124,7 @@ jobs:
           nix store diff-closures $(cat old_path) $(cat new_path) | \
             sed -E -e '/[ε∅] → [ε∅]/d' -e '/^source:/d' > diff-${{ matrix.host }}.txt
       - name: Upload Diff
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: diff-${{ matrix.host }}
           path: diff-${{ matrix.host }}.txt
@@ -135,11 +135,11 @@ jobs:
       - diff
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: ${{ needs.update.outputs.branch }}
       - name: Download Diffs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: diffs
           pattern: diff-*
