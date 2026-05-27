@@ -6,7 +6,6 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs_master.url = "github:nixos/nixpkgs/master";
     nixpkgs_stable.url = "github:nixos/nixpkgs/release-25.11";
-    nixpkgs_gemini.url = "github:nixos/nixpkgs/af57e99c785f334638402ffd7b5e4565a0379461";
 
     # Darwin
     nix-darwin = {
@@ -43,7 +42,6 @@
       nixpkgs,
       nixpkgs_master,
       nixpkgs_stable,
-      nixpkgs_gemini,
       nix-darwin,
       home-manager,
       nix-index-database,
