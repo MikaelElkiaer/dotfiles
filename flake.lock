@@ -134,22 +134,6 @@
         "type": "github"
       }
     },
-    "nixpkgs_gemini": {
-      "locked": {
-        "lastModified": 1763493401,
-        "narHash": "sha256-kd3p2FOuy5FV4HTs70EUan4eqtMHMUIkeQwQMYVmppg=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "af57e99c785f334638402ffd7b5e4565a0379461",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "af57e99c785f334638402ffd7b5e4565a0379461",
-        "type": "github"
-      }
-    },
     "nixpkgs_master": {
       "locked": {
         "lastModified": 1779847850,
@@ -190,7 +174,6 @@
         "nix-index-database": "nix-index-database",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
-        "nixpkgs_gemini": "nixpkgs_gemini",
         "nixpkgs_master": "nixpkgs_master",
         "nixpkgs_stable": "nixpkgs_stable"
       }
