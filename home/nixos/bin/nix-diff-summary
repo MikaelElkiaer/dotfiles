@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# nix-diff-summary: Static derivation diffing across the fleet.
+set -euo pipefail
+
+BASE_REF="${1:-origin/main}"
+DIFF_DIR="${DIFF_DIR:-$(mktemp -d)}"
+mkdir -p "$DIFF_DIR"
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' EXIT
+
+# 1. Discover canonical configurations (OS takes precedence over standalone HM for same host)
+echo "[INF] Discovering configurations..." >&2
+FLAKE_DIR=$(pwd)
+EXPR="
+let
+  f = builtins.getFlake \"$FLAKE_DIR\";
+  osHosts = (builtins.attrNames f.darwinConfigurations) ++ (builtins.attrNames f.nixosConfigurations);
+  splitAt = s: let res = builtins.split \"@\" s; in if (builtins.typeOf res == \"list\") && (builtins.length res > 1) then builtins.elemAt res 2 else s;
+  hmFiltered = builtins.listToAttrs (builtins.concatMap (n: 
+    if builtins.elem (splitAt n) osHosts then [] else [{ name = n; value = f.homeConfigurations.\${n}; }]
+  ) (builtins.attrNames f.homeConfigurations));
+  
+  # Helper to get nested attributes from a list of strings
+  getAttrPath = path: set: builtins.foldl' (s: p: s.\${p}) set path;
+  
+  get = c: p: builtins.mapAttrs (n: v: (getAttrPath p v).drvPath) c;
+in {
+  darwin = get f.darwinConfigurations [\"system\"];
+  nixos = get f.nixosConfigurations [\"config\" \"system\" \"build\" \"toplevel\"];
+  hm = get hmFiltered [\"activationPackage\"];
+}"
+
+CUR=$(nix eval --impure --json --expr "$EXPR")
+OLD=$(nix eval --impure --json --expr "${EXPR//$FLAKE_DIR/git+file://$FLAKE_DIR?ref=$BASE_REF}" 2>/dev/null || echo "{}")
+
+# Calculate total comparable targets
+NUM=$(jq -n --argjson cur "$CUR" --argjson old "$OLD" '
+  [$cur | to_entries[] | .key as $t | .value | keys[] | select($old[$t][.])] | length
+')
+
+# 2. Collect diffs into a unified JSON
+echo "{}" >"$TMP/data.json"
+VALID_LABELS=()
+
+# Process each configuration
+for row in $(echo "$CUR" | jq -r 'to_entries[] | .key as $t | .value | to_entries[] | "\($t)/\(.key)|\(.value)"'); do
+  LABEL="${row%%|*}"
+  TYPE="${LABEL%%/*}"
+  NAME="${LABEL#*/}"
+  SAFE_NAME="${LABEL//\//_}"
+  FILE="$DIFF_DIR/$SAFE_NAME.diff"
+
+  OLD_DRV=$(echo "$OLD" | jq -r --arg t "$TYPE" --arg n "$NAME" ".[\$t][\$n] // empty")
+  [[ -z "$OLD_DRV" ]] && continue
+
+  VALID_LABELS+=("$LABEL")
+
+  if [[ ! -f "$FILE" ]]; then
+    echo "[INF] Processing $LABEL..." >&2
+    nix store diff-closures "$OLD_DRV" "${row#*|}" |
+      sed -E 's/[0-9a-z]{32}-//g; /[ε∅] → [ε∅]/d; /^source:/d; s/^[[:space:]]*//' >"$FILE"
+  fi
+  [[ ! -s "$FILE" ]] && continue
+
+  # Merge diff lines into JSON: { "pkg": { "label": "change" } }
+  jq --arg l "$LABEL" --rawfile d "$FILE" '
+      reduce ($d | split("\n")[] | select(. != "")) as $i (.;
+        ($i | split(": ")) as $p | .[$p[0]][$l] = $p[1]
+      )
+    ' "$TMP/data.json" >"$TMP/t.json" && mv "$TMP/t.json" "$TMP/data.json"
+done
+
+# 3. Output Markdown summary
+echo "## Nix Package Changes"
+[[ $NUM -eq 0 ]] && echo "No matching configurations found for $BASE_REF." && exit 0
+
+echo -e "\n### All"
+# Show packages present in all configurations with the exact same change
+jq -r --argjson n "$NUM" '
+  to_entries[] | 
+  select(.value | length == $n and (to_entries | map(.value) | unique | length == 1)) | 
+  "- \(.key): \(.value | to_entries[0].value)"
+' "$TMP/data.json" | sort -u | sed '/^$/d' || echo "_None._"
+
+for L in "${VALID_LABELS[@]}"; do
+  echo -e "\n### Unique to $L"
+  jq -r --arg l "$L" '
+      to_entries[] | 
+      select(.value | length == 1 and has($l)) | 
+      "- \(.key): \(.value[$l])"
+    ' "$TMP/data.json" | sort -u | sed '/^$/d' || echo "_None._"
+done

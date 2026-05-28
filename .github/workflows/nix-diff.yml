@@ -1,0 +1,55 @@
+name: Nix Package Diff
+on:
+  pull_request:
+    paths:
+      - etc/**
+      - home/nixos/.config/home-manager/packages/**
+      - home/nixos/.config/home-manager/hosts/**
+      - flake.lock
+      - flake.nix
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  diff:
+    name: Generate Summary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+      - uses: DeterminateSystems/nix-installer-action@1d87d45818068401a10cf16bdc5f00b24994a83f # main
+      - name: Generate Summary
+        id: summary
+        run: |
+          # Use the base ref of the PR
+          ./home/nixos/bin/nix-diff-summary origin/${{ github.base_ref }} > summary.md
+
+          # Check if there are changes
+          if grep -q "No package changes found" summary.md; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Comment on PR
+        if: steps.summary.outputs.has_changes == 'true'
+        run: |
+          # Use gh CLI to comment
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          TAG="<!-- nix_package_diff -->"
+
+          # Check if comment already exists
+          COMMENT_ID=$(gh pr view "$PR_NUMBER" --json comments -q ".comments[] | select(.body | contains(\"$TAG\")) | .id")
+
+          {
+            echo "$TAG"
+            cat summary.md
+          } > comment_body.md
+
+          if [ -n "$COMMENT_ID" ]; then
+            gh pr comment "$PR_NUMBER" --edit-id "$COMMENT_ID" --body-file comment_body.md
+          else
+            gh pr comment "$PR_NUMBER" --body-file comment_body.md
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
