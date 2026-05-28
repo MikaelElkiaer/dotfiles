@@ -1,0 +1,14 @@
+{
+  "general": {
+    "enableNotifications": true,
+    "notificationMethod": "bell"
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "ui": {
+    "theme": "ANSI"
+  }
+}
