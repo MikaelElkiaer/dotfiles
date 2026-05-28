@@ -97,6 +97,7 @@
     update-nix-fetchgit
     util-linux # common unix utilities
     uutils-coreutils-noprefix
+    uv
     viddy
     yaml-schema-router
     wget
