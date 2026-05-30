@@ -30,7 +30,8 @@
       depNameTemplate: 'nixpkgs_stable',
       packageNameTemplate: 'https://github.com/NixOS/nixpkgs',
       datasourceTemplate: 'git-refs',
-      versioningTemplate: 'loose',
+      versioningTemplate: 'nixpkgs',
+      autoReplaceStringTemplate: 'nixpkgs_stable.url = "github:nixos/nixpkgs/{{{newValue}}}";'
     },
   ],
 }
