@@ -13,8 +13,9 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
+  statuses: write # Required to post a status check to the newly pushed commit
 jobs:
   diff:
     name: Generate Summary
@@ -22,20 +23,71 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
       - uses: DeterminateSystems/nix-installer-action@1d87d45818068401a10cf16bdc5f00b24994a83f # main
-      - name: Generate Summary
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Update Lockfile (Renovate only)
+        if: github.actor == 'renovate[bot]'
+        run: |
+          nix flake lock --update-input nixpkgs_stable
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add flake.lock
+
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(deps): update flake.lock for nixpkgs_stable"
+            git push
+          fi
+      - name: Generate Summary and Auto-Heal Hashes
         id: summary
         run: |
-          # Use the base ref of the PR
-          ./home/nixos/bin/nix-diff-summary origin/${{ github.base_ref }} > summary.md
+          # 1. Try to run the package diff. If it fails, check if we can fix hash mismatches.
+          if ! ./home/nixos/bin/nix-diff-summary origin/${{ github.base_ref }} > summary.md; then
+            echo "::warning:: Evaluation failed. Attempting to auto-fix hashes..."
 
-          # Check if there are changes
+            # Run determinate-nixd to find and automatically rewrite incorrect hashes
+            determinate-nixd fix hashes --auto-apply
+
+            # Configure Git credentials
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+
+            # Check if any hashes were modified
+            if ! git diff --cached --quiet; then
+              git commit -m "chore(deps): automatically fix Nix expression hashes"
+              git push
+
+              # Capture the newly pushed commit SHA to register a successful status check later
+              NEW_SHA=$(git rev-parse HEAD)
+              echo "NEW_SHA=$NEW_SHA" >> $GITHUB_ENV
+            else
+              echo "::error:: Build failed but no hashes were fixed. Exiting."
+              exit 1
+            fi
+
+            # 2. Re-run the diff summary to verify the fixes and generate the correct markdown
+            echo "[INF] Re-evaluating package changes with fixed hashes..."
+            ./home/nixos/bin/nix-diff-summary origin/${{ github.base_ref }} > summary.md
+          fi
+
+          # 3. Check if there are changes
           if grep -q "No package changes found" summary.md; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
+
+      - name: Post Success Status to Fixed Commit
+        if: env.NEW_SHA != ''
+        run: |
+          curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/statuses/${{ env.NEW_SHA }}" \
+            -d '{"state": "success", "context": "Generate Summary", "description": "Hashes auto-fixed and verified!"}'
       - name: Comment on PR
         if: steps.summary.outputs.has_changes == 'true'
         run: |
