@@ -56,29 +56,17 @@ login-gh:
 # Build configuration and commit changes with diff
 build:
     #!/usr/bin/env bash
-    set -e
-    trap 'rm -f ./result ./diff' EXIT
-    echo "[INF] Building configuration for {{flake_target}}..."
-    {{build_cmd}}
-    echo "[INF] Comparing with current profile..."
-    nix store diff-closures {{current_profile}} ./result | \
-        sed -E -e '/[ε∅] → [ε∅]/d' -e '/^source:/d' > ./diff
-    
-    if [ -s ./diff ]; then
-        echo "[INF] Changes found:"
-        cat ./diff
-    else
-        echo "[INF] No changes found."
-        exit 0
-    fi
-    
+    set -Eeuo pipefail
+
     git add .
     if git diff --cached --exit-code &>/dev/null; then
         echo "[INF] No changes to commit"
         exit 0
     fi
-    
-    git commit --file=<(echo "feat(nix): Update configuration"; echo; cat ./diff)
+
+    diff="$(nix-diff-summary)"
+
+    git commit --template=<(echo "feat(nix): Update configuration"; echo; echo "$diff")
 
 # Apply configuration
 switch:
