@@ -93,7 +93,7 @@ jobs:
         run: |
           # Use gh CLI to comment
           PR_NUMBER=${{ github.event.pull_request.number }}
-          TAG="<!-- nix_package_diff -->"
+          TAG='<!-- nix_package_diff -->'
 
           # Check if comment already exists
           COMMENT_ID=$(gh pr view "$PR_NUMBER" --json comments -q ".comments[] | select(.body | contains(\"$TAG\")) | .id")
