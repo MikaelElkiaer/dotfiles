@@ -104,7 +104,7 @@ jobs:
           } > comment_body.md
 
           if [ -n "$COMMENT_ID" ]; then
-            gh pr comment "$PR_NUMBER" --edit-id "$COMMENT_ID" --body-file comment_body.md
+            gh api "repos/${{ github.repository }}/issues/comments/$COMMENT_ID" -X PATCH -F body=@comment_body.md
           else
             gh pr comment "$PR_NUMBER" --body-file comment_body.md
           fi
