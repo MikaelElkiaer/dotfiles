@@ -7,14 +7,13 @@ on:
       - home/nixos/.config/home-manager/hosts/**
       - flake.lock
       - flake.nix
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: write
   pull-requests: write
+  issues: write
   statuses: write # Required to post a status check to the newly pushed commit
 jobs:
   diff:
@@ -79,7 +78,6 @@ jobs:
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
-
       - name: Post Success Status to Fixed Commit
         if: env.NEW_SHA != ''
         run: |
@@ -96,7 +94,7 @@ jobs:
           TAG='<!-- nix_package_diff -->'
 
           # Check if comment already exists
-          COMMENT_ID=$(gh pr view "$PR_NUMBER" --json comments -q ".comments[] | select(.body | contains(\"$TAG\")) | .id")
+          COMMENT_ID=$(gh api "repos/${{ github.repository }}/issues/$PR_NUMBER/comments" --jq ".[] | select(.body | contains(\"$TAG\")) | .id" | head -n 1)
 
           {
             echo "$TAG"
