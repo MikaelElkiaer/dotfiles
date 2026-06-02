@@ -5,7 +5,7 @@ set -euo pipefail
 function main() {
   WINDOW_ID="$1"
 
-  IFS=$';' read -r path command title < <(tmux display-message -p -F '#{pane_current_path};#{pane_current_command};#{pane_title}' -t "$WINDOW_ID")
+  IFS=$';' read -r path command title bell < <(tmux display-message -p -F '#{pane_current_path};#{pane_current_command};#{pane_title};#{window_bell_flag}' -t "$WINDOW_ID")
 
   icon=$(get_app_icon "$command")
   RESULT="$(set-color 12)${icon}$(set-color reset)"
@@ -43,6 +43,10 @@ function main() {
       RESULT+="$(shortname "${PATH_PARTS[$i]}")/"
     fi
   done
+
+  if [ "$bell" -eq 1 ]; then
+    RESULT+=" $(set-color 1)󰈻$(set-color reset)"
+  fi
 
   echo "$RESULT"
 }
