@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+NAMESPACE="${NAMESPACE:-default}"
+
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+  -n | --namespace)
+    NAMESPACE="$2"
+    shift 2
+    ;;
+  --namespace=*)
+    NAMESPACE="${1#*=}"
+    shift
+    ;;
+  *)
+    echo "Unknown parameter passed: $1"
+    exit 1
+    ;;
+  esac
+done
+
+TOP_OUTPUT="$(kubectl top pod --namespace="${NAMESPACE}" --no-headers)"
+if [ -z "$TOP_OUTPUT" ]; then
+  exit 0
+fi
+
+TEMPFILE="$(mktemp)"
+trap 'rm -f "$TEMPFILE"' EXIT
+kubectl get pods --output=yaml --namespace="${NAMESPACE}" >"$TEMPFILE"
+
+{
+  printf "NAME\tREQUEST\tLIMIT\tUTILIZATION\n"
+
+  while read -u 3 -r entry; do
+    IFS=' ' read -r name _ memory <<<"$entry"
+    export name memory
+
+    limit="$(yq '.items | map(select(.metadata.name==strenv(name)) | .spec.containers[0].resources.limits.memory)[0]' "$TEMPFILE")"
+    if ! [ "$limit" = "null" ]; then
+      limit_bytes="$(numfmt --from=iec-i "$limit")"
+      memory_bytes="$(numfmt --from=iec-i "$memory")"
+      factor="$(bc <<<"scale=3; $memory_bytes / $limit_bytes * 100")"
+    else
+      factor=0
+    fi
+
+    printf "%s\t%s\t%s\t%.0f%%\n" "$name" "$memory" "$limit" "$factor"
+  done 3<<<"$TOP_OUTPUT"
+} | column -t | sort -k4 -n
