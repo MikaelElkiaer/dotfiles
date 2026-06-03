@@ -13,5 +13,9 @@ git:
       pager: ~/.config/lazygit/delta.sh --paging=never --true-color=never
     - colorArg: always
       externalDiffCommand: diffyml
+gui:
+  theme:
+    selectedLineBgColor:
+      - black
 services:
   git.netic.dk: bitbucketServer:git.netic.dk
