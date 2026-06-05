@@ -41,6 +41,7 @@
     ];
     # Delete undeclared brews and casks
     onActivation.cleanup = "zap";
+    onActivation.extraFlags = [ "--force-cleanup" ];
     taps = [
       "chainguard-dev/tap"
       "containdk/tap"
