@@ -4,7 +4,7 @@ requirements = [ "brew", "gh",]
 description = "List and upgrade Homebrew packages that have available updates."
 
 [source]
-command = "HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew upgrade --dry-run --quiet | grep -- '->'"
+command = "HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew upgrade --dry-run --quiet"
 display = "{0}"
 
 [preview]
