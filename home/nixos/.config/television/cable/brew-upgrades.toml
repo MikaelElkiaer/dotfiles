@@ -1,0 +1,19 @@
+[metadata]
+name = "brew-upgrades"
+requirements = [ "brew", "gh",]
+description = "List and upgrade Homebrew packages that have available updates."
+
+[source]
+command = "HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew upgrade --dry-run --quiet | grep -- '->'"
+display = "{0}"
+
+[preview]
+command = "HOMEBREW_COLOR=1 HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew info '{0}'"
+
+[keybindings]
+ctrl-u = "actions:upgrade"
+
+[actions.upgrade]
+description = "Upgrade the selected package"
+command = "HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew upgrade '{0}'"
+mode = "execute"
