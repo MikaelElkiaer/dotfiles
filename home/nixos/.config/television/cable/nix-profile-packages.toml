@@ -1,0 +1,19 @@
+[metadata]
+name = "nix-profile-packages"
+requirements = ["nix", "jq"]
+description = "Manage packages in your Nix profile."
+
+[source]
+command = "nix profile list --json | jq --raw-output '.elements | keys[]'"
+display = "{0}"
+
+[preview]
+command = "nix-search --details --name '{0}'"
+
+[keybindings]
+ctrl-x = "actions:delete"
+
+[actions.delete]
+description = "Remove the selected package from the profile"
+command = "nix profile remove '{0}'"
+mode = "execute"
