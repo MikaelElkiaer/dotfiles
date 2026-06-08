@@ -38,6 +38,139 @@ NUM=$(jq -n --argjson cur "$CUR" --argjson old "$OLD" '
   [$cur | to_entries[] | .key as $t | .value | keys[] | select($old[$t][.])] | length
 ')
 
+filter_diff_output() {
+  while IFS= read -r line; do
+    # Skip empty lines
+    [[ -z "$line" ]] && continue
+
+    # If the line doesn't contain a colon followed by space, print it as is
+    if [[ "$line" != *": "* ]]; then
+      echo "$line"
+      continue
+    fi
+
+    # Split into key and value
+    local key="${line%%: *}"
+    local val="${line#*: }"
+
+    # --- 1. KEY FILTERING ---
+    # Convert key to lowercase for comparison
+    local key_lower
+    key_lower=$(echo "$key" | tr '[:upper:]' '[:lower:]')
+
+    # Skip patch files
+    if [[ "$key_lower" == *".patch"* ]]; then
+      continue
+    fi
+
+    # Skip source archives
+    local skip_key=0
+    for ext in ".tar.gz" ".tgz" ".tar.xz" ".tar.bz2" ".zip" ".tar"; do
+      if [[ "$key_lower" == *"$ext"* ]]; then
+        skip_key=1
+        break
+      fi
+    done
+    [[ $skip_key -eq 1 ]] && continue
+
+    # Skip platform-specific source designations
+    if [[ "$key_lower" == *"_darwin_arm64" || "$key_lower" == *"_x86_64" ]]; then
+      continue
+    fi
+
+    # Skip source derivations
+    if [[ "$key_lower" == *"-source" || "$key_lower" == "source" || "$key_lower" == *"-source.drv" || "$key_lower" == "source.drv" ]]; then
+      continue
+    fi
+
+    # Skip Rust crate library sources
+    if [[ "$key_lower" == *"crate-"* ]]; then
+      continue
+    fi
+
+    # Helper function to filter a comma-separated list of versions
+    filter_versions() {
+      local raw_versions="$1"
+      local filtered=()
+
+      # Split by comma using pure bash
+      local OLD_IFS="$IFS"
+      IFS=','
+      read -ra items <<<"$raw_versions"
+      IFS="$OLD_IFS"
+
+      for item in "${items[@]}"; do
+        # Trim leading and trailing whitespace
+        item="${item#"${item%%[![:space:]]*}"}"
+        item="${item%"${item##*[![:space:]]}"}"
+        [[ -z "$item" ]] && continue
+
+        local item_lower
+        item_lower=$(echo "$item" | tr '[:upper:]' '[:lower:]')
+
+        # Check unwanted version patterns
+        local skip_ver=0
+        for pat in "-go-modules" "-vendor" ".tgz" ".tar." "-cargo-deps" "-cargo-vendor" "-source" ".patch"; do
+          if [[ "$item_lower" == *"$pat"* ]]; then
+            skip_ver=1
+            break
+          fi
+        done
+        if [[ $skip_ver -eq 0 ]]; then
+          filtered+=("$item")
+        fi
+      done
+
+      # Join array with ", "
+      local joined=""
+      for fit in "${filtered[@]}"; do
+        if [[ -z "$joined" ]]; then
+          joined="$fit"
+        else
+          joined="$joined, $fit"
+        fi
+      done
+      echo "$joined"
+    }
+
+    # --- 2. VALUE FILTERING ---
+    if [[ "$val" == *" → "* ]]; then
+      local old_part="${val%% → *}"
+      local new_part="${val#* → }"
+
+      local clean_old
+      clean_old=$(filter_versions "$old_part")
+      local clean_new
+      clean_new=$(filter_versions "$new_part")
+
+      if [[ -n "$clean_old" || -n "$clean_new" ]]; then
+        echo "$key: $clean_old → $clean_new"
+      fi
+    elif [[ "$val" == *" added" ]]; then
+      local part="${val% added}"
+      local clean_part
+      clean_part=$(filter_versions "$part")
+      if [[ -n "$clean_part" ]]; then
+        echo "$key: $clean_part added"
+      fi
+    elif [[ "$val" == *" removed" ]]; then
+      local part="${val% removed}"
+      local clean_part
+      clean_part=$(filter_versions "$part")
+      if [[ -n "$clean_part" ]]; then
+        echo "$key: $clean_part removed"
+      fi
+    else
+      # Fallback for other formats: filter the whole value
+      local clean_val
+      clean_val=$(filter_versions "$val")
+      if [[ -n "$clean_val" ]]; then
+        echo "$key: $clean_val"
+      fi
+    fi
+  done
+}
+
 # 2. Collect diffs into a unified JSON
 echo "{}" >"$TMP/data.json"
 VALID_LABELS=()
@@ -58,7 +191,8 @@ for row in $(echo "$CUR" | jq -r 'to_entries[] | .key as $t | .value | to_entrie
   if [[ ! -f "$FILE" ]]; then
     echo "[INF] Processing $LABEL..." >&2
     nix store diff-closures "$OLD_DRV" "${row#*|}" |
-      sed -E 's/[0-9a-z]{32}-//g; /[ε∅] → [ε∅]/d; /^source:/d; s/^[[:space:]]*//' >"$FILE"
+      sed -E 's/[0-9a-z]{32}-//g; /[ε∅] → [ε∅]/d; /^source:/d; s/^[[:space:]]*//' |
+      filter_diff_output >"$FILE"
   fi
   [[ ! -s "$FILE" ]] && continue
 
