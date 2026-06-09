@@ -94,8 +94,8 @@ function detect_mode {
 }
 
 function load {
-  get_tmux_windows &
-  wait
+  get_tmux_windows
+  get_git_repos
 }
 
 function change_border_label {
@@ -234,8 +234,12 @@ function get_git_repos {
   ICON="$(color yellow )"
   TYPE="g"
   fd -g .git -HL -t d -d 10 --prune ~/Repositories/ --exec dirname '{}' |
-    while read -r NAME; do
-      FULL="$NAME"
+    while read -r FULL; do
+      local PARENT CHILD
+      NORMALIZED="${FULL/*\/Repositories\//}"
+      PARENT="$(dirname "$NORMALIZED")"
+      CHILD="$(basename "$NORMALIZED")"
+      NAME="$(color graydark "$PARENT")/$CHILD"
       echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
     done
 }
@@ -306,6 +310,12 @@ function color {
     ;;
   default)
     color="$color_reset"
+    ;;
+  graydark)
+    color="$(tput setaf 8)"
+    ;;
+  graylight)
+    color="$(tput setaf 7)"
     ;;
   green)
     color="$(tput setaf 2)"
