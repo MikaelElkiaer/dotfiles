@@ -2,12 +2,38 @@
 
 set -Eeuo pipefail
 
-cmd="${1:-bash}"
-path="$(tmux display -p '#{pane_current_path}')"
-parent_window="$(tmux display -p '#{window_id}')"
-parent_session="$(tmux display -p '#{session_id}')"
-parent_client="$(tmux display -p '#{client_name}')"
+# Parse mode and arguments
+if [ "${1:-}" = "move" ]; then
+  mode="move"
+  src_pane="${2}"
+  cmd="$(tmux display-message -t "$src_pane" -p '#{pane_current_command}')"
+else
+  mode="launch"
+  cmd="${1:-bash}"
+fi
 
+# Query current parent client context
+path="$(tmux display-message -p '#{pane_current_path}')"
+parent_window="$(tmux display-message -p '#{window_id}')"
+
+# Safeguards
+if [ "$mode" = "move" ]; then
+  # 1. Ensure the pane was originally a popup
+  is_popup="$(tmux display-message -t "$src_pane" -p '#{@is_popup}')"
+  if [ "$is_popup" != "1" ]; then
+    tmux display-message "Only panes that were originally popups can be moved to a popup!"
+    exit 0
+  fi
+
+  # 2. Prevent moving the pane if it is the only pane in the window
+  panes_in_window="$(tmux display-message -t "$src_pane" -p '#{window_panes}')"
+  if [ "$panes_in_window" -eq 1 ]; then
+    tmux display-message "Cannot move the last remaining pane in the window to a popup!"
+    exit 0
+  fi
+fi
+
+# Calculate standard target session name
 if [ "$cmd" = "k9s" ]; then
   # INFO: Kubernetes context is per window
   sanitized_id="$(sed 's/[^a-zA-Z0-9]/%/g' <<<$parent_window)"
@@ -18,14 +44,33 @@ else
 fi
 session="_popup_${cmd}_${sanitized_id}"
 
-if [ "$cmd" = "bash" ]; then
-  wrapped_cmd=(bash)
-else
-  wrapped_cmd=(bash -i -c "${cmd}")
+# To avoid conflict with an existing popup, if the target session already exists
+# when moving a pane, generate a unique session name instead.
+if [ "$mode" = "move" ] && tmux has -t "$session" 2>/dev/null; then
+  pane_num="$(sed 's/[^0-9]//g' <<<$src_pane)"
+  session="_popup_${cmd}_pane_${pane_num}"
 fi
 
+# Create target session if it doesn't exist
 if ! tmux has -t "$session" 2>/dev/null; then
-  session_id="$(tmux new-session -dP -s "$session" -F '#{session_id}' -c "$path" -e "POPUPMUX_PARENT_WINDOW=$parent_window" "${wrapped_cmd[*]}")"
+  if [ "$mode" = "launch" ]; then
+    if [ "$cmd" = "bash" ]; then
+      wrapped_cmd=(bash)
+    else
+      wrapped_cmd=(bash -i -c "${cmd}")
+    fi
+    session_id="$(tmux new-session -dP -s "$session" -F '#{session_id}' -c "$path" -e "POPUPMUX_PARENT_WINDOW=$parent_window" "${wrapped_cmd[*]}")"
+    tmux set-option -p -t "$session_id" @is_popup 1
+  else
+    # Create target session with a default window
+    session_id="$(tmux new-session -dP -s "$session" -F '#{session_id}' -c "$path" -e "POPUPMUX_PARENT_WINDOW=$parent_window")"
+
+    # Move our pane into the new session and kill its default placeholder pane
+    tmux join-pane -d -s "$src_pane" -t "$session_id:0"
+    tmux kill-pane -t "$session_id:0.0"
+  fi
+
+  # Configure target session options and bindings
   tmux set-option -s -t "$session_id" key-table popup
   tmux set-option -s -t "$session_id" status off
   tmux set-option -s -t "$session_id" prefix None
@@ -37,15 +82,24 @@ if ! tmux has -t "$session" 2>/dev/null; then
     tmux bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "xclip -in -selection clipboard"
     tmux bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "xclip -in -selection clipboard"
   fi
-  # Bind key to move the popup window to the global/parent session
-  tmux bind-key -T popup M-p run-shell -t "#{pane_id}" 'tmux move-window -s '\''#{session_id}:#{window_id}'\'' -t '\''#{@popupmux_parent_session}:'\'' && tmux switch-client -c '\''#{@popupmux_parent_client}'\'' -t '\''#{window_id}'\'''
+
+  # Bind M-p inside the popup to join the pane back to the parent window
+  tmux bind-key -T popup M-p run-shell -t "#{pane_id}" 'tmux join-pane -s '\''#{session_id}:#{window_id}.#{pane_id}'\'' -t '\''#{@popupmux_parent_window}'\'''
   session="$session_id"
+else
+  # If target session already exists and we are in move mode, just join our pane into its window
+  if [ "$mode" = "move" ]; then
+    tmux join-pane -d -s "$src_pane" -t "$session:"
+  fi
 fi
 
 # Always update parent references for the session
 tmux set-environment -t "$session" POPUPMUX_PARENT_WINDOW "$parent_window"
 tmux set-option -t "$session" @popupmux_parent_window "$parent_window"
-tmux set-option -t "$session" @popupmux_parent_session "$parent_session"
-tmux set-option -t "$session" @popupmux_parent_client "$parent_client"
 
-exec tmux attach -t "$session" >/dev/null
+# Display the popup on the current client, attaching to the session
+if [ "$mode" = "move" ]; then
+  tmux display-popup -h 80% -w 80% -EE "tmux attach -t '$session'"
+else
+  exec tmux attach -t "$session" >/dev/null
+fi
