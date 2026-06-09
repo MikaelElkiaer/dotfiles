@@ -5,6 +5,9 @@ set -Eeuo pipefail
 cmd="${1:-bash}"
 path="$(tmux display -p '#{pane_current_path}')"
 parent_window="$(tmux display -p '#{window_id}')"
+parent_session="$(tmux display -p '#{session_id}')"
+parent_client="$(tmux display -p '#{client_name}')"
+
 if [ "$cmd" = "k9s" ]; then
   # INFO: Kubernetes context is per window
   sanitized_id="$(sed 's/[^a-zA-Z0-9]/%/g' <<<$parent_window)"
@@ -34,7 +37,15 @@ if ! tmux has -t "$session" 2>/dev/null; then
     tmux bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "xclip -in -selection clipboard"
     tmux bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "xclip -in -selection clipboard"
   fi
+  # Bind key to move the popup window to the global/parent session
+  tmux bind-key -T popup M-p run-shell -t "#{pane_id}" 'tmux move-window -s '\''#{session_id}:#{window_id}'\'' -t '\''#{@popupmux_parent_session}:'\'' && tmux switch-client -c '\''#{@popupmux_parent_client}'\'' -t '\''#{window_id}'\'''
   session="$session_id"
 fi
+
+# Always update parent references for the session
+tmux set-environment -t "$session" POPUPMUX_PARENT_WINDOW "$parent_window"
+tmux set-option -t "$session" @popupmux_parent_window "$parent_window"
+tmux set-option -t "$session" @popupmux_parent_session "$parent_session"
+tmux set-option -t "$session" @popupmux_parent_client "$parent_client"
 
 exec tmux attach -t "$session" >/dev/null
