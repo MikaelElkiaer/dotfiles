@@ -95,6 +95,9 @@
         localPkgs
         // {
           dagger = inputs.dagger.packages.${prev.system}.dagger;
+          kubernetes-helm = prev.kubernetes-helm.overrideAttrs (oldAttrs: {
+            doCheck = false;
+          });
           diffyml = (
             let
               pkgs = import nixpkgs_25__11 { system = prev.system; };
