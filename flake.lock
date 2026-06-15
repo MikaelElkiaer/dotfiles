@@ -134,6 +134,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_25__11": {
+      "locked": {
+        "lastModified": 1781509190,
+        "narHash": "sha256-uJZs9Di8I6ciTp6jiojj0HzlNpBkud8ax5aT/O5aJkw=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "d6df3513510aa548c83868fd22bfddd0a8c0a0d4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "release-25.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_master": {
       "locked": {
         "lastModified": 1780879593,
@@ -150,22 +166,6 @@
         "type": "github"
       }
     },
-    "nixpkgs_stable": {
-      "locked": {
-        "lastModified": 1780876002,
-        "narHash": "sha256-Pz0lflEGO81rFmx5a4LK5LspOkz2lbA5EedZh/rRHCw=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "46f8fec8e1f4c6a8c422cb4ba85da10a4574e5ee",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "release-26.05",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "dagger": "dagger",
@@ -174,8 +174,8 @@
         "nix-index-database": "nix-index-database",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
-        "nixpkgs_master": "nixpkgs_master",
-        "nixpkgs_stable": "nixpkgs_stable"
+        "nixpkgs_25__11": "nixpkgs_25__11",
+        "nixpkgs_master": "nixpkgs_master"
       }
     }
   },
