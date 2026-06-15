@@ -95,7 +95,6 @@ function detect_mode {
 
 function load {
   get_tmux_windows
-  get_git_repos
 }
 
 function change_border_label {
