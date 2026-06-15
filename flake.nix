@@ -5,7 +5,7 @@
     # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs_master.url = "github:nixos/nixpkgs/master";
-    nixpkgs_stable.url = "github:nixos/nixpkgs/release-26.05";
+    nixpkgs_25__11.url = "github:nixos/nixpkgs/release-25.11";
 
     # Darwin
     nix-darwin = {
@@ -41,7 +41,7 @@
       self,
       nixpkgs,
       nixpkgs_master,
-      nixpkgs_stable,
+      nixpkgs_25__11,
       nix-darwin,
       home-manager,
       nix-index-database,
@@ -95,9 +95,12 @@
         localPkgs
         // {
           dagger = inputs.dagger.packages.${prev.system}.dagger;
+          kubernetes-helm = prev.kubernetes-helm.overrideAttrs (oldAttrs: {
+            doCheck = false;
+          });
           diffyml = (
             let
-              pkgs = import nixpkgs_stable { system = prev.system; };
+              pkgs = import nixpkgs_25__11 { system = prev.system; };
             in
             pkgs.callPackage (hmDir + "/packages/diffyml.nix") {
               inherit (pkgs)
