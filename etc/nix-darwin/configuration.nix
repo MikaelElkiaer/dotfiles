@@ -16,8 +16,9 @@
   homebrew = {
     enable = true;
     brews = [
+      # Needs `brew trust chainguard-dev/tap`
       "chainguard-dev/tap/chainctl"
-      # Needs to be fetched manually:
+      # Needs to be trusted with `brew trust containdk/tap` and fetched manually
       # `HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew fetch containdk/tap/beagle`
       "containdk/tap/beagle"
       # `HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew fetch containdk/tap/conductor`
