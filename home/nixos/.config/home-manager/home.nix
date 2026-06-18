@@ -36,7 +36,6 @@
     dagger
     delta
     diffyml
-    docker-credential-ghcr-login
     docker-credential-helpers
     entr
     expect
