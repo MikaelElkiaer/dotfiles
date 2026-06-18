@@ -6,13 +6,13 @@
 
 buildGoModule (finalAttrs: {
   pname = "diffyml";
-  version = "1.6.1";
+  version = "1.6.2";
 
   src = fetchFromGitHub {
     owner = "szhekpisov";
     repo = "diffyml";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-Kv1+bC4oyjKXfbC6cS9OPyByqp4kELta43JZ0sGMyjM=";
+    hash = "sha256-/B/0ZhGLC7FWibbjdHoFkL0vuwhBP3E9HT35nDYYx18=";
   };
 
   vendorHash = "sha256-QE/EwVzMqUO24ZAl0WBibGx6x0kNo1AUTZtfnQvX50k=";

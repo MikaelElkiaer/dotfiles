@@ -5,13 +5,13 @@
 
 buildGoModule rec {
   pname = "docker-credential-ghcr-login";
-  version = "unstable-2026-05-26";
+  version = "unstable-2026-06-15";
 
   src = fetchFromGitHub {
     owner = "mikaelelkiaer";
     repo = "docker-credential-ghcr-login";
-    rev = "75da140761b7de39dfad8161e0d3ab4e62f701be"; # main
-    sha256 = "1vi7sk5cckr2vlm4kwalxa0gf47hk2y1dfkgi55h0kwgsf1bvanx";
+    rev = "8912eb508338a12c0f785b093396efce02cbb8d3"; # main
+    sha256 = "1arrzji05ks43896ga4a7yif6iffh56dy5js4iddn2p9qvi5cclq";
   };
 
   vendorHash = "sha256-n8PQv0IKcu+F16Opq6w9O5jew17YATufZPaFh2ZMbnM=";
