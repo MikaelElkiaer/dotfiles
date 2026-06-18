@@ -2,6 +2,9 @@
 # source: https://github.com/jesseduffield/lazygit/issues/4366#issuecomment-3496862317
 # ~/.config/lazygit/delta.sh - Make sure to chmod +x this file
 
+# TODO: Find a faster method
+exec delta --dark "$@"
+
 if [[ "$OSTYPE" == darwin* ]]; then
   # 1. Try Swift (Most reliable, handles Auto mode, Shortcuts, and Sequoia perfectly)
   if command -v swift >/dev/null 2>&1; then
