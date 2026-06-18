@@ -35,16 +35,6 @@ build_cmd := if system_os == "Darwin" {
     }
 }
 
-current_profile := if system_os == "Darwin" {
-    "/run/current-system"
-} else {
-    if is_nixos == "true" {
-        "/run/current-system"
-    } else {
-        home_dir() / ".local/state/nix/profiles/home-manager"
-    }
-}
-
 # Show help (default)
 default:
     @just --list
@@ -88,8 +78,7 @@ update:
     echo "[INF] Building and checking for changes..."
     {{build_cmd}}
     
-    nix store diff-closures {{current_profile}} ./result | \
-        sed -E -e '/[ε∅] → [ε∅]/d' -e '/^source:/d' > ./diff
+    nix-diff-summary > ./diff
     
     if ! [ -s ./diff ]; then
         echo "[INF] No updates found"
