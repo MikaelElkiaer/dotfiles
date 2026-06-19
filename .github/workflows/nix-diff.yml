@@ -25,7 +25,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
       - uses: DeterminateSystems/nix-installer-action@a7ad9c4f0c65208097f4d34f3cfa1913b80cce5c # main
-      - uses: DeterminateSystems/magic-nix-cache-action@14645543c3b214bedad3b9b49775cb042f4c1fc7 # main
+      - uses: DeterminateSystems/magic-nix-cache-action@659e09b432ddb0b3d78bba7540ef6593c6cb181b # main
       - name: Update Lockfile (Renovate only)
         if: github.actor == 'renovate[bot]'
         run: |
