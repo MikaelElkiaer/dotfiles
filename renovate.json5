@@ -4,6 +4,10 @@
     'mergeConfidence:all-badges',
     'config:best-practices',
   ],
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: 'before 6am every day',
+  },
   nix: {
     enabled: true,
   },
