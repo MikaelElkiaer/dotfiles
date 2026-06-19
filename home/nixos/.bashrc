@@ -310,6 +310,9 @@ fi
 if command -v tmux &>/dev/null; then
   # Actions to do only when inside tmux
   if [ -n "$TMUX" ]; then
+    # Automatically clean up child processes on exit/SIGHUP to prevent dangling processes in tmux
+    trap 'pkill -P $$ || true' EXIT SIGHUP
+
     # Create kubeconfig file per tmux window
     if [ -z "$KUBECONFIG" ]; then
       # Inherit from parent window in case of popup
