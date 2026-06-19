@@ -6,7 +6,7 @@
   ],
   lockFileMaintenance: {
     enabled: true,
-    schedule: 'before 6am every day',
+    schedule: 'before 6am',
   },
   nix: {
     enabled: true,
@@ -35,7 +35,7 @@
       packageNameTemplate: 'https://github.com/NixOS/nixpkgs',
       datasourceTemplate: 'git-refs',
       versioningTemplate: 'nixpkgs',
-      autoReplaceStringTemplate: 'nixpkgs_stable.url = "github:nixos/nixpkgs/{{{newValue}}}";'
+      autoReplaceStringTemplate: 'nixpkgs_stable.url = "github:nixos/nixpkgs/{{{newValue}}}";',
     },
   ],
 }
