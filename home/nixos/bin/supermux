@@ -86,6 +86,11 @@ function detect_mode {
     cmd="get_git_repos"
     prompt="git"
     ;;
+  'm ')
+    match=1
+    cmd="get_manpages"
+    prompt="manpages"
+    ;;
   *) ;;
   esac
   if [ -n "${match:-}" ]; then
@@ -111,6 +116,9 @@ function change_border_label {
     ;;
   k)
     echo " 󰌑 run "
+    ;;
+  m)
+    echo " 󰌑 open "
     ;;
   t)
     echo " 󰌑 switch "
@@ -144,6 +152,9 @@ function preview {
   k)
     tmux list-keys -Tprefix "${FULL//;/\\;}" | sed 's/bind-key\( -r\)\? -T prefix [^ ]\+ //'
     ;;
+  m)
+    man "$FULL" 2>/dev/null | nvimpager -c +"set ft=man"
+    ;;
   t)
     read -r ID _ <<<"$FULL"
     tmux capture-pane -p -e -t "$ID"
@@ -176,6 +187,9 @@ function action_primary {
     ;;
   k)
     eval "tmux $(tmux list-keys -Tprefix "${FULL//;/\\;}" | sed 's/bind-key\( -r\)\? -T prefix [^ ]\+ //')"
+    ;;
+  m)
+    man "$FULL"
     ;;
   t)
     tmux switch-client -t "$FULL"
@@ -249,6 +263,18 @@ function get_inventory {
   TYPE="i"
   ic get clusters -q -o json |
     jq -r '.clusters[].id' |
+    while read -r NAME; do
+      FULL="$NAME"
+      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
+    done
+}
+
+function get_manpages {
+  local FULL ICON NAME TYPE
+  ICON="$(color blue )"
+  TYPE="m"
+  # shellcheck disable=SC2046
+  find $(manpath | tr ':' ' ') -type f -name "*.[0-9]*" -exec sh -c 'for f; do echo "${f##*/}"; done' _ {} + 2>/dev/null |
     while read -r NAME; do
       FULL="$NAME"
       echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
