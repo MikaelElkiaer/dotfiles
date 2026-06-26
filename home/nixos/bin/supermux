@@ -61,6 +61,11 @@ function _exec_fzf {
 
 function detect_mode {
   case "$1" in
+  'b ')
+    match=1
+    cmd="get_brew_upgrades"
+    prompt="brew"
+    ;;
   'c ')
     match=1
     cmd="get_commands"
@@ -105,6 +110,9 @@ function load {
 function change_border_label {
   read -r TYPE FULL ICON NAME <<<"$1"
   case "$TYPE" in
+  b)
+    echo " 󰌑 upgrade "
+    ;;
   c)
     echo " 󰌑 run  prompt "
     ;;
@@ -135,6 +143,9 @@ function change_border_label {
 function preview {
   IFS=$'\t' read -r TYPE FULL ICON NAME <<<"$1"
   case "$TYPE" in
+  b)
+    HOMEBREW_COLOR=1 HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew info "$FULL"
+    ;;
   c)
     man "$NAME" 2>/dev/null | nvimpager -c +"set ft=man"
     ;;
@@ -174,6 +185,9 @@ function action_primary {
   IFS=$'\t' read -r TYPE FULL ICON NAME <<<"$1"
 
   case "$TYPE" in
+  b)
+    HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew upgrade "$FULL"
+    ;;
   c)
     exec "$FULL"
     ;;
@@ -219,6 +233,18 @@ function action_secondary {
     tmux new-window -c "$FULL" bash
     ;;
   esac
+}
+
+function get_brew_upgrades {
+  local FULL ICON NAME TYPE
+  ICON="$(color blue )"
+  TYPE="b"
+  HOMEBREW_NO_ENV_HINTS=1 HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew upgrade --dry-run --quiet 2>/dev/null | sed '/==> Would upgrade/d' |
+    awk '{print $1}' |
+    while read -r NAME; do
+      FULL="$NAME"
+      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
+    done
 }
 
 function get_commands {
