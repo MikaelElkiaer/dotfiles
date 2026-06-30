@@ -48,6 +48,8 @@ build:
     #!/usr/bin/env bash
     set -Eeuo pipefail
 
+    export NIX_CONFIG="access-tokens = github.com=$(gh auth token)"
+
     git add .
     if git diff --cached --exit-code &>/dev/null; then
         echo "[INF] No changes to commit"
@@ -68,6 +70,8 @@ update:
     #!/usr/bin/env bash
     set -Eeuo pipefail
     trap 'rm -f ./result ./diff' EXIT
+
+    export NIX_CONFIG="access-tokens = github.com=$(gh auth token)"
     
     echo "[INF] Updating custom packages..."
     ./home/nixos/bin/nix-package-update .
