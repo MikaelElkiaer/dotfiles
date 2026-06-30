@@ -284,11 +284,6 @@ EOF
   fi
 fi
 
-if [ "$(command -v tv)" ]; then
-  # shellcheck source=/dev/null
-  source <(tv init bash)
-fi
-
 # Load additional profiles
 # - These are not supposed to be source-controlled
 # shellcheck disable=SC2044

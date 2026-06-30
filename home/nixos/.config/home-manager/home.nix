@@ -88,7 +88,6 @@
     python3
     ripgrep
     skopeo
-    television
     tlrc # tldr (Rust)
     tmux
     tree
@@ -145,10 +144,6 @@
       ".config/nvimpager" = {
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/nvimpager";
-      };
-      ".config/television" = {
-        recursive = true;
-        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/television";
       };
       ".config/tmux" = {
         recursive = true;
