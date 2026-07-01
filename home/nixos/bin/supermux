@@ -300,7 +300,7 @@ function get_manpages {
   ICON="$(color blue )"
   TYPE="m"
   # shellcheck disable=SC2046
-  find $(manpath | tr ':' ' ') -type f -name "*.[0-9]*" -exec sh -c 'for f; do echo "${f##*/}"; done' _ {} + 2>/dev/null |
+  find -L $(manpath | tr ':' ' ') -type f \( -name "*.[0-9]" -or -name "*.[0-9].gz" \) -exec sh -c 'for f; do echo "${f##*/}"; done' _ {} + 2>/dev/null |
     while read -r NAME; do
       FULL="$NAME"
       echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
