@@ -51,7 +51,7 @@ plugins:
       - velero $(echo $RESOURCE_NAME | sed 's/s$//') logs --kubecontext $CONTEXT -n $NAMESPACE $NAME | less -R
   # external secrets commands
   externalsecret-force-sync:
-    shortCut: Shift-S
+    shortCut: Shift-R
     confirm: true
     scopes:
       - externalsecret
