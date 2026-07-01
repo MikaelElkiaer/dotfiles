@@ -95,9 +95,6 @@
         localPkgs
         // {
           dagger = inputs.dagger.packages.${prev.system}.dagger;
-          kubernetes-helm = prev.kubernetes-helm.overrideAttrs (oldAttrs: {
-            doCheck = false;
-          });
           diffyml = (
             let
               pkgs = import nixpkgs_25__11 { system = prev.system; };
@@ -110,6 +107,10 @@
               buildGoModule = pkgs.buildGoModule.override { go = pkgs.go_1_26; };
             }
           );
+          kubernetes-helm = prev.kubernetes-helm.overrideAttrs (oldAttrs: {
+            doCheck = false;
+          });
+          podman = nixpkgs_master.legacyPackages.${prev.system}.podman;
         };
 
       # Helper for standalone Home Manager configuration
