@@ -29,8 +29,7 @@ function main() {
 
         echo "Loading Kubernetes context..." >&2
         read -r KUBECONFIG NAME <<<"$(switcher set-context "$CHOICE" | sed -E 's/^__ (.*),(.*)/\1 \2/')"
-        # TODO: Remove KUBECACHEDIR once fixed
-        # - see https://github.com/derailed/k9s/issues/1895
+        # INFO: Needed due to https://github.com/derailed/k9s/issues/1895
         NEW_PANE_ID="$(tmux new-window -c "$HOME" -d -e "KUBECONFIG=$KUBECONFIG" -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{pane_id}' bash -i -c 'k9s;exec bash')"
         # INFO: Create symlink so temporary config can be cleaned up by a hook
         ln --symbolic --force "$KUBECONFIG" "/tmp/TMUX_${NEW_PANE_ID}_KUBECONFIG"
