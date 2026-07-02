@@ -210,7 +210,7 @@ function _exec_fzf() {
     --ansi \
     --multi \
     --bind="d:execute-silent(printf '%s\n' {+1} | _get id | _mark_done)+reload(_get_data)" \
-    --bind="o:become(_open \$(_get url <<<'{1}'))" \
+    --bind="o:become(_open \$(_get url <<<{1}))" \
     --bind="p:toggle-preview" \
     --bind="r:execute-silent(printf '%s\n' {+1} | _get id | _mark_read)+reload(_get_data)" \
     --bind="ctrl-p:transform-border-label(_toggle_option preview-diff)+refresh-preview" \
