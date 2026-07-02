@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -Eeuo pipefail
+
+# Source the helpers to import set-color and shortname as pure bash functions
+# with absolutely zero process fork overhead when executing them.
+source "$(dirname "${BASH_SOURCE[0]}")/set-color"
+source "$(dirname "${BASH_SOURCE[0]}")/shortname"
 
 function main() {
   WINDOW_ID="$1"

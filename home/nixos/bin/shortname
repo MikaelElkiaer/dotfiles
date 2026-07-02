@@ -1,42 +1,45 @@
 #!/usr/bin/env bash
 
-# use first arg or stdin
-if [ -n "$1" ] && [ "$1" != "-" ]; then
-  input="$1"
-else
-  input=$(cat)
-fi
+set -Eeu -o pipefail
 
-output=""
-
-# WARN: Copilot generated code, may need fixing
-while [[ -n "$input" ]]; do
-  if [[ "$input" =~ ^[a-zA-Z]+ ]]; then
-    chunk="${BASH_REMATCH[0]}"
-    if [[ "$chunk" =~ ^[A-Z] ]]; then
-      # PascalCase: keep all uppercase letters
-      keep=$(echo "$chunk" | grep -o '[A-Z]' | tr -d '\n')
-    elif [[ "$chunk" =~ ^[a-z] && "$chunk" =~ [A-Z] ]]; then
-      # camelCase: keep first lowercase and all uppercase letters
-      first_lower=$(echo "$chunk" | grep -o '^[a-z]')
-      uppers=$(echo "$chunk" | grep -o '[A-Z]' | tr -d '\n')
-      keep="${first_lower}${uppers}"
+function shortname() {
+  local input="$1"
+  local output=""
+  while [[ -n "$input" ]]; do
+    if [[ "$input" =~ ^[a-zA-Z]+ ]]; then
+      local chunk="${BASH_REMATCH[0]}"
+      local keep=""
+      if [[ "$chunk" =~ ^[A-Z] ]]; then
+        keep="${chunk//[!A-Z]/}"
+      elif [[ "$chunk" =~ ^[a-z] && "$chunk" =~ [A-Z] ]]; then
+        local rest="${chunk:1}"
+        keep="${chunk:0:1}${rest//[!A-Z]/}"
+      else
+        keep="${chunk:0:1}"
+      fi
+      output+="$keep"
+      input="${input:${#chunk}}"
+    elif [[ "$input" =~ ^[0-9]+ ]]; then
+      local chunk="${BASH_REMATCH[0]}"
+      output+="$chunk"
+      input="${input:${#chunk}}"
     else
-      # Regular letters: keep first character
-      keep="${chunk:0:1}"
+      local chunk="${input:0:1}"
+      output+="$chunk"
+      input="${input:1}"
     fi
-    output+="$keep"
-    input="${input:${#chunk}}"
-  elif [[ "$input" =~ ^[0-9]+ ]]; then
-    chunk="${BASH_REMATCH[0]}"
-    output+="$chunk"
-    input="${input:${#chunk}}"
-  else
-    chunk="${input:0:1}"
-    output+="$chunk"
-    input="${input:1}"
-  fi
-done
+  done
+  echo -n "$output"
+}
 
-# echo "${output}…"
-echo "${output}"
+# If run directly as a script
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  if [ -n "${1:-}" ] && [ "$1" != "-" ]; then
+    shortname "$1"
+    echo ""
+  else
+    input=$(cat)
+    shortname "$input"
+    echo ""
+  fi
+fi
