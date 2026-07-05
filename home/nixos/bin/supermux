@@ -302,7 +302,7 @@ function get_manpages {
   # shellcheck disable=SC2046
   find -L $(manpath | tr ':' ' ') -type f \( -name "*.[0-9]" -or -name "*.[0-9].gz" \) -exec sh -c 'for f; do echo "${f##*/}"; done' _ {} + 2>/dev/null |
     while read -r NAME; do
-      FULL="$NAME"
+      FULL="$(basename "$NAME" .gz)"
       echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
     done
 }
