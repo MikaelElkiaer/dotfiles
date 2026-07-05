@@ -100,12 +100,12 @@ update:
     fi
     
     LATEST_MSG="$(git show --format=format:%s --quiet)"
-    if [ "$LATEST_MSG" = "chore(nix): Update flake" ] && ! git log --exit-code origin/main..main &>/dev/null; then
+    if [ "$LATEST_MSG" = "chore(deps): Update Nix dependencies" ] && ! git log --exit-code origin/main..main &>/dev/null; then
         echo "[INF] Amending unpushed update commit..."
-        git commit --amend --file=<(echo "chore(nix): Update flake"; echo; cat ./diff)
+        git commit --amend --file=<(echo "chore(deps): Update Nix dependencies"; echo; cat ./diff)
     else
         echo "[INF] Creating new update commit..."
-        git commit --file=<(echo "chore(nix): Update flake"; echo; cat ./diff)
+        git commit --file=<(echo "chore(deps): Update Nix dependencies"; echo; cat ./diff)
     fi
 
 # Compatibility/Legacy targets

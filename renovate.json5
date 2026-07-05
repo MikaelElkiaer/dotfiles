@@ -4,38 +4,4 @@
     'mergeConfidence:all-badges',
     'config:best-practices',
   ],
-  lockFileMaintenance: {
-    enabled: true,
-    schedule: 'before 6am',
-  },
-  nix: {
-    enabled: true,
-  },
-  packageRules: [
-    {
-      matchManagers: [
-        'nix',
-      ],
-      matchDepNames: [
-        'nixpkgs_stable',
-      ],
-      enabled: false,
-    },
-  ],
-  customManagers: [
-    {
-      customType: 'regex',
-      managerFilePatterns: [
-        '/^flake\\.nix$/',
-      ],
-      matchStrings: [
-        'nixpkgs_stable\\.url\\s*=\\s*"github:nixos/nixpkgs/(?<currentValue>release-\\d\\d\\.\\d\\d)";',
-      ],
-      depNameTemplate: 'nixpkgs_stable',
-      packageNameTemplate: 'https://github.com/NixOS/nixpkgs',
-      datasourceTemplate: 'git-refs',
-      versioningTemplate: 'nixpkgs',
-      autoReplaceStringTemplate: 'nixpkgs_stable.url = "github:nixos/nixpkgs/{{{newValue}}}";',
-    },
-  ],
 }

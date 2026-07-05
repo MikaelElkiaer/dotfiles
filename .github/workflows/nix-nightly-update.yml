@@ -1,0 +1,82 @@
+name: Nix Nightly Update
+on:
+  schedule:
+    - cron: 0 5 * * *
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  update-packages:
+    name: Nightly Update
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: DeterminateSystems/nix-installer-action@a7ad9c4f0c65208097f4d34f3cfa1913b80cce5c # main
+      - uses: DeterminateSystems/magic-nix-cache-action@76aaf8814cdb385b86597c32b8c51b66b69b0839 # main
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Create Update Branch
+        run: |
+          git checkout -b nix-nightly-update
+      - name: Add bin to PATH
+        run: echo "${{ github.workspace }}/home/nixos/bin" >> $GITHUB_PATH
+      - name: Run Package and Flake Updates
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NIX_CONFIG: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Always fix hashes first
+          determinate-nixd fix hashes --auto-apply
+
+          # Commit any auto-fixed hashes
+          git add .
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(deps): Automatically fix Nix expression hashes"
+          fi
+
+          # Perform flake and package updates
+          just update
+      - name: Check for changes and Push
+        id: check_changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Fetch the main branch to ensure origin/main reference is present and correct
+          git fetch origin main
+
+          # Check if our local branch has new commits compared to origin/main
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo "changes_found=true" >> "$GITHUB_OUTPUT"
+            echo "Pushing changes to origin/nix-nightly-update..."
+            git push origin nix-nightly-update --force
+          else
+            echo "changes_found=false" >> "$GITHUB_OUTPUT"
+            echo "No changes were committed by 'just update'."
+          fi
+      - name: Create or Update Pull Request
+        if: steps.check_changes.outputs.changes_found == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git log -1 --format=%s > pr_title.txt
+          git log -1 --format=%b > pr_body.txt
+
+          # Check if PR already exists
+          PR_EXISTS=$(gh pr list --head nix-nightly-update --base main --state open --json number --jq '.[0].number')
+
+          if [ -n "$PR_EXISTS" ]; then
+            echo "Updating existing PR #$PR_EXISTS..."
+            gh pr edit "$PR_EXISTS" --title "$(cat pr_title.txt)" --body-file pr_body.txt
+          else
+            echo "Creating new PR..."
+            gh pr create --head nix-nightly-update --base main --title "$(cat pr_title.txt)" --body-file pr_body.txt
+          fi
