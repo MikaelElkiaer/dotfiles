@@ -52,7 +52,7 @@ stdenv.mkDerivation (finalAttrs: {
     homepage = "https://github.com/Operdies/velvet";
     license = lib.licenses.gpl3Only;
     maintainers = with lib.maintainers; [ ];
-    mainProgram = "vv"; # Custom Fix: The actual binary compiled and installed by velvet is named `vv`
+    mainProgram = "vv"; # INFO: The actual binary compiled and installed by velvet is named `vv`
     platforms = lib.platforms.all;
   };
 })
