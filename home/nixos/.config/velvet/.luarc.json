@@ -1,0 +1,8 @@
+{
+  "workspace.library": [
+    "~/.nix-profile/share/velvet/lua"
+  ],
+  "runtime": {
+    "version": "Lua 5.5"
+  }
+}
