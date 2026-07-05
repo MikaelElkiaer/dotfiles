@@ -97,6 +97,7 @@
     util-linux # common unix utilities
     uutils-coreutils-noprefix
     uv
+    velvet
     viddy
     yaml-schema-router
     wget
