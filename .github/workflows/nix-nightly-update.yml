@@ -29,6 +29,9 @@ jobs:
           git checkout -b nix-nightly-update
       - name: Add bin to PATH
         run: echo "${{ github.workspace }}/home/nixos/bin" >> $GITHUB_PATH
+      - name: Install required packages via Nix
+        run: |
+          nix profile install --inputs-from . nixpkgs#just nixpkgs#jq nixpkgs#update-nix-fetchgit nixpkgs#gh nixpkgs#home-manager nixpkgs#git
       - name: Run Package and Flake Updates
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
