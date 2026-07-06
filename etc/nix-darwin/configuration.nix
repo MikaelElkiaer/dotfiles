@@ -81,4 +81,13 @@
 
   # The platform the configuration will be used on.
   # nixpkgs.hostPlatform = "aarch64-darwin"; # Handled in flake.nix
+  #
+
+  # FIXME: 2026-07-05 Temporary work-around for nix-darwing build
+  # failure on nixpkgs-unstable
+  #
+  # https://github.com/nix-darwin/nix-darwin/issues/1817
+  #
+  documentation.enable = false;
+  system.tools.darwin-uninstaller.enable = false;
 }
