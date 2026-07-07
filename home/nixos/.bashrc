@@ -129,6 +129,12 @@ if ! [[ "$PATH" == *"$HOME/go/bin"* ]]; then
   export PATH="$PATH:$HOME/go/bin"
 fi
 
+# Ensure the nix-provided bash is used if available
+_SHELL=$(which bash)
+if [ -n "$_SHELL" ]; then
+  SHELL="$_SHELL"
+fi
+
 # Place completions here for lazy loading
 # - note that filename must match command name (with optional leading underscore)
 COMPLETION_PATH=~/.local/share/bash-completion/completions
