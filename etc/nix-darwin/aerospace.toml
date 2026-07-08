@@ -39,7 +39,8 @@ default-root-container-orientation = "auto"
 on-focused-monitor-changed = []
 on-focus-changed = ["move-mouse window-lazy-center"]
 
-focus-follows-mouse.enabled = true
+# WARN: Does not work well with floating windows or top bar menu
+focus-follows-mouse.enabled = false
 
 [gaps]
 inner.horizontal = 0
