@@ -1,8 +1,9 @@
 set shell := ["bash", "-c"]
 
 system_os := `uname`
-hostname := `hostname -s`
-user := `whoami`
+is_ci := env("GITHUB_ACTIONS", "false")
+hostname := if is_ci == "true" { "github-runner" } else { `hostname -s` }
+user := if is_ci == "true" { "runner" } else { `whoami` }
 is_nixos := `if [ -f /etc/NIXOS ]; then echo "true"; else echo "false"; fi`
 
 flake_target := if system_os == "Darwin" {

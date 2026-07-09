@@ -71,6 +71,13 @@
           isDarwin = false;
           isNixOS = true;
         };
+        "github-runner" = {
+          system = "x86_64-linux";
+          username = "runner";
+          homeDirectory = "/home/runner";
+          isDarwin = false;
+          isNixOS = false;
+        };
       };
 
       # Path to home-manager base directory
