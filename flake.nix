@@ -110,7 +110,6 @@
           kubernetes-helm = prev.kubernetes-helm.overrideAttrs (oldAttrs: {
             doCheck = false;
           });
-          podman = nixpkgs_master.legacyPackages.${prev.system}.podman;
         };
 
       # Helper for standalone Home Manager configuration
