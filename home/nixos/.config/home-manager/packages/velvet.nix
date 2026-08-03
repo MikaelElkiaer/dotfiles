@@ -4,7 +4,6 @@
   fetchFromGitHub,
   nix-update-script,
   git, # INFO: Required to fetch submodules / resolve versions during build
-  readline, # INFO: Required to compile the vendored lua-5.5.0 dependency
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -26,24 +25,10 @@ stdenv.mkDerivation (finalAttrs: {
     git
   ];
 
-  # INFO: Added readline to buildInputs because the vendored Lua submodule compiles with readline support
-  buildInputs = [
-    readline
-  ];
-
   # INFO: Overrode PREFIX to install directly into the Nix store instead of /usr/local
   makeFlags = [
     "PREFIX=$(out)"
   ];
-
-  # INFO: Lua's Makefile hardcodes the compile command as `gcc`.
-  # This preBuild hook dynamically symlinks the standard cc compiler wrapper (clang on macOS, gcc on Linux)
-  # to a temporary `gcc` binary and adds it to $PATH.
-  preBuild = ''
-    mkdir -p dev-bin
-    ln -s "$(type -p cc)" dev-bin/gcc
-    export PATH="$PWD/dev-bin:$PATH"
-  '';
 
   passthru.updateScript = nix-update-script { };
 
