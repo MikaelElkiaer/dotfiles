@@ -9,7 +9,7 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "velvet";
-  version = "0.3.0";
+  version = "0.4.0";
   __structuredAttrs = true;
   strictDeps = true;
 
@@ -17,7 +17,7 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "Operdies";
     repo = "velvet";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-qvjABq5Hr6kjygb7sxv4Tvf4g/L9blFQgFK+AYnZQBk=";
+    hash = "sha256-2M9yXRuD4a+CHwyUtgLmLBudLunufU7cDCKo4clbGWU=";
     fetchSubmodules = true;
   };
 
