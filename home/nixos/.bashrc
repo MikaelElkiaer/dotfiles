@@ -180,6 +180,27 @@ EOF
   fi
 fi
 
+# WARN: Also needed for atuin
+if ! [ -s ~/.bash-preexec.sh ]; then
+  curl https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh -o ~/.bash-preexec.sh
+fi
+source ~/.bash-preexec.sh
+
+__notify_start() {
+  CMD_START_TIME=$SECONDS
+}
+
+__notify_end() {
+  if [ -n "$CMD_START_TIME" ]; then
+    local elapsed=$((SECONDS - CMD_START_TIME))
+    [ $elapsed -ge 10 ] && tput bel
+    unset CMD_START_TIME
+  fi
+}
+
+preexec_functions+=("__notify_start")
+precmd_functions+=("__notify_end")
+
 # `delta` also uses this
 export BAT_THEME=base16
 
@@ -197,11 +218,6 @@ fi
 
 # [atuin](https://github.com/atuinsh/atuin)
 if [ "$(command -v atuin)" ]; then
-  if ! [ -s ~/.bash-preexec.sh ]; then
-    curl https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh -o ~/.bash-preexec.sh
-  fi
-  # shellcheck source=/dev/null
-  source ~/.bash-preexec.sh
   eval "$(atuin init bash --disable-up-arrow)"
 
   if ! [ -d "$HOME/.local/share/atuin" ]; then
