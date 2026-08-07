@@ -345,7 +345,7 @@ if command -v tmux &>/dev/null; then
   fi
 
   # WARN: Keep this at the bottom
-  if [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+  if [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ] && [ -z "$VELVET" ]; then
     if [[ $(tmux list-clients -F '#{session_attached}') -gt 0 ]]; then
       echo "$(tput bold)Another client is already attached to an existing tmux session - choose an option:$(tput sgr0)"
       echo "  [a]ttach to existing session (will detach other client)"
