@@ -35,6 +35,7 @@
     github-copilot-cli
     dagger
     delta
+    devbox
     diffyml
     docker-credential-helpers
     entr
@@ -219,6 +220,9 @@
       . ~/.bashrc_extra
     '';
   };
+
+  programs.direnv.enable = true;
+  programs.direnv.enableBashIntegration = true;
 
   programs.nix-index.enable = true;
 
