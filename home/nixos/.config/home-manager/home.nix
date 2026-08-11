@@ -72,6 +72,7 @@
     (wrapHelm kubernetes-helm {
       plugins = [
         kubernetes-helmPlugins.helm-diff
+        kubernetes-helmPlugins.helm-schema
       ];
     })
     kubeseal
