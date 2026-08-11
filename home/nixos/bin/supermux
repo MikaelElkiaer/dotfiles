@@ -269,15 +269,21 @@ function get_commands {
 }
 
 function get_git_repos {
-  local FULL ICON NAME TYPE
+  local FULL GIT_DIR NORMALIZED PARENT CHILD NAME ICON TYPE
   ICON="$(color yellow )"
   TYPE="g"
-  fd -g .git -HL -t d -d 10 --prune ~/Repositories/ --exec dirname '{}' |
-    while read -r FULL; do
-      local PARENT CHILD
+  fd -g .git -HL -t d -d 10 --prune ~/Repositories/ |
+    while read -r GIT_DIR; do
+      GIT_DIR="${GIT_DIR%/}"
+      FULL="${GIT_DIR%/.git}"
       NORMALIZED="${FULL/*\/Repositories\//}"
-      PARENT="$(dirname "$NORMALIZED")"
-      CHILD="$(basename "$NORMALIZED")"
+      if [[ "$NORMALIZED" == *"/"* ]]; then
+        PARENT="${NORMALIZED%/*}"
+        CHILD="${NORMALIZED##*/}"
+      else
+        PARENT="."
+        CHILD="$NORMALIZED"
+      fi
       NAME="$(color graydark "$PARENT")/$CHILD"
       echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
     done
