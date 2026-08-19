@@ -31,21 +31,34 @@ trap 'rm -f "$TEMPFILE"' EXIT
 kubectl get pods --output=yaml --namespace="${NAMESPACE}" >"$TEMPFILE"
 
 {
-  printf "NAME\tCURRENT\tLIMIT\tUTILIZATION\n"
+  printf "NAME\tMEM_R\tMEM_C\tMEM_L\tMEM_U\tCPU_R\tCPU_C\tCPU_L\tCPU_U\n"
 
   while read -u 3 -r entry; do
-    IFS=' ' read -r name _ memory <<<"$entry"
-    export name memory
+    IFS=' ' read -r name cpu memory <<<"$entry"
+    export name cpu memory
 
-    limit="$(yq '.items | map(select(.metadata.name==strenv(name)) | .spec.containers[0].resources.limits.memory)[0]' "$TEMPFILE")"
-    if ! [ "$limit" = "null" ]; then
-      limit_bytes="$(numfmt --from=iec-i "$limit")"
-      memory_bytes="$(numfmt --from=iec-i "$memory")"
-      factor="$(bc <<<"scale=3; $memory_bytes / $limit_bytes * 100")"
+    mem_request="$(yq '.items | map(select(.metadata.name==strenv(name)) | .spec.containers[0].resources.requests.memory)[0]' "$TEMPFILE")"
+
+    mem_limit="$(yq '.items | map(select(.metadata.name==strenv(name)) | .spec.containers[0].resources.limits.memory)[0]' "$TEMPFILE")"
+    if ! [ "$mem_limit" = "null" ]; then
+      mem_limit_bytes="$(numfmt --from=iec-i "$mem_limit")"
+      mem_bytes="$(numfmt --from=iec-i "$memory")"
+      mem_factor="$(bc <<<"scale=3; $mem_bytes / $mem_limit_bytes * 100")"
     else
-      factor=0
+      mem_factor=-1
     fi
 
-    printf "%s\t%s\t%s\t%.0f%%\n" "$name" "$memory" "$limit" "$factor"
+    cpu_request="$(yq '.items | map(select(.metadata.name==strenv(name)) | .spec.containers[0].resources.requests.cpu)[0]' "$TEMPFILE")"
+
+    cpu_limit="$(yq '.items | map(select(.metadata.name==strenv(name)) | .spec.containers[0].resources.limits.cpu)[0]' "$TEMPFILE")"
+    if ! [ "$cpu_limit" = "null" ]; then
+      cpu_limit_millicores="$(numfmt --from=iec-i "$cpu_limit")"
+      cpu_millicores="$(numfmt --from=iec-i "$cpu")"
+      cpu_factor="$(bc <<<"scale=3; $cpu_millicores / $cpu_limit_millicores * 100")"
+    else
+      cpu_factor=-1
+    fi
+
+    printf "%s\t%s\t%s\t%s\t%.0f%%\t%s\t%s\t%s\t%.0f%%\n" "$name" "$mem_request" "$memory" "$mem_limit" "$mem_factor" "$cpu_request" "$cpu" "$cpu_limit" "$cpu_factor"
   done 3<<<"$TOP_OUTPUT"
 } | column -t | sort -k4 -n
