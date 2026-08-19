@@ -31,7 +31,7 @@ trap 'rm -f "$TEMPFILE"' EXIT
 kubectl get pods --output=yaml --namespace="${NAMESPACE}" >"$TEMPFILE"
 
 {
-  printf "NAME\tREQUEST\tLIMIT\tUTILIZATION\n"
+  printf "NAME\tCURRENT\tLIMIT\tUTILIZATION\n"
 
   while read -u 3 -r entry; do
     IFS=' ' read -r name _ memory <<<"$entry"
