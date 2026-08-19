@@ -61,4 +61,4 @@ kubectl get pods --output=yaml --namespace="${NAMESPACE}" >"$TEMPFILE"
 
     printf "%s\t%s\t%s\t%s\t%.0f%%\t%s\t%s\t%s\t%.0f%%\n" "$name" "$mem_request" "$memory" "$mem_limit" "$mem_factor" "$cpu_request" "$cpu" "$cpu_limit" "$cpu_factor"
   done 3<<<"$TOP_OUTPUT"
-} | column -t | sort -k4 -n
+} | column -t | sort -k1 -n
