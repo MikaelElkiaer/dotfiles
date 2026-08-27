@@ -103,6 +103,7 @@
           kubernetes-helm = prev.kubernetes-helm.overrideAttrs (oldAttrs: {
             doCheck = false;
           });
+          neovim = nixpkgs_master.legacyPackages.${prev.system}.neovim;
         };
 
       # Helper for standalone Home Manager configuration
