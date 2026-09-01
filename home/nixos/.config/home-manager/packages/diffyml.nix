@@ -12,7 +12,7 @@ buildGoModule (finalAttrs: {
     owner = "szhekpisov";
     repo = "diffyml";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-1ZRv+5YaUGuzkLUt0Lw2RrJD1Jvt3H71ypUlhGVxM9A=";
+    hash = "sha256-UWO9sSTne+ylF+aihaaP7BUv0CN4vJhaOzcCmVh6bzs=";
   };
 
   vendorHash = "sha256-vjGhS7nhjXlms1ZsRG6Qy/7ategUIgwiBwk943cz9Lk=";
