@@ -12,6 +12,7 @@
     awscli2
     crane
     cilium-cli
+    code-review-graph
     google-cloud-sdk
     grizzly # Grafana manager - with jsonnet support
     hubble # Cilium debugging
