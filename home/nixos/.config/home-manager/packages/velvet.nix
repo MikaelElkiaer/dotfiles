@@ -1,9 +1,8 @@
 {
   lib,
   stdenv,
-  fetchFromGitHub,
+  fetchFromGitea,
   nix-update-script,
-  git, # INFO: Required to fetch submodules / resolve versions during build
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -12,18 +11,14 @@ stdenv.mkDerivation (finalAttrs: {
   __structuredAttrs = true;
   strictDeps = true;
 
-  src = fetchFromGitHub {
-    owner = "Operdies";
+  src = fetchFromGitea {
+    domain = "codeberg.org";
+    owner = "alexnlarsen";
     repo = "velvet";
     tag = "v${finalAttrs.version}";
     hash = "sha256-2M9yXRuD4a+CHwyUtgLmLBudLunufU7cDCKo4clbGWU=";
     fetchSubmodules = true;
   };
-
-  # INFO: Added git to nativeBuildInputs to provide submodule/vcs build tools
-  nativeBuildInputs = [
-    git
-  ];
 
   # INFO: Overrode PREFIX to install directly into the Nix store instead of /usr/local
   makeFlags = [
@@ -34,7 +29,8 @@ stdenv.mkDerivation (finalAttrs: {
 
   meta = {
     description = "A scriptable terminal multiplexer";
-    homepage = "https://github.com/Operdies/velvet";
+    homepage = "https://codeberg.org/alexnlarsen/velvet";
+    changelog = "https://codeberg.org/alexnlarsen/velvet/releases/tag/${finalAttrs.src.tag}";
     license = lib.licenses.gpl3Only;
     maintainers = with lib.maintainers; [ ];
     mainProgram = "vv"; # INFO: The actual binary compiled and installed by velvet is named `vv`
