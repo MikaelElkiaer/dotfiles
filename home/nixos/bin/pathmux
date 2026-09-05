@@ -1,32 +1,55 @@
 #!/usr/bin/env bash
 
-_PATH=$1
+set -Eeuo pipefail
 
-if [ -z "$_PATH" ]; then
-  echo "Usage: $0 <path>"
-  exit 1
-fi
+# Source the helpers to import set-color and shortname as pure bash functions
+# with absolutely zero process fork overhead when executing them.
+source "$(dirname "${BASH_SOURCE[0]}")/set-color"
+source "$(dirname "${BASH_SOURCE[0]}")/shortname"
 
-if [[ "$_PATH" == "$HOME"* ]]; then
-  _PATH="${_PATH/$HOME/'~'}"
-fi
+function main() {
+  WINDOW_ID="$1"
 
-RESULT=" "
-IFS='/' read -ra PATH_PARTS <<<"$_PATH"
-if [[ "${#PATH_PARTS[@]}" -gt 1 ]]; then
-  RESULT+="#[fg=colour7,dim]"
-fi
-for i in "${!PATH_PARTS[@]}"; do
-  if [[ -z "${PATH_PARTS[$i]}" ]]; then
-    continue
-  elif [[ "$i" -eq 0 ]]; then
-    RESULT+="${PATH_PARTS[$i]}/"
-  elif [[ "$i" -eq $(("${#PATH_PARTS[@]}" - 1)) ]]; then
-    RESULT+="#[fg=default,nodim]"
-    RESULT+="${PATH_PARTS[$i]}/"
-  else
-    RESULT+="${PATH_PARTS[$i]:0:1}/"
+  IFS=$';' read -r path command title bell < <(tmux display-message -p -F '#{pane_current_path};#{pane_current_command};#{pane_title};#{window_bell_flag}' -t "$WINDOW_ID")
+
+  if [[ "$path" == "$HOME"* ]]; then
+    path="${path/$HOME/'~'}"
   fi
-done
 
-echo "$RESULT"
+  RESULT=""
+  if [ "$command" == "ssh" ]; then
+    local _host _path
+    _host="${title%%:*}"
+    _host="${_host#*@}"
+    _path="${title#*:}"
+    path="$_path"
+    RESULT="${_host} "
+  fi
+
+  IFS='/' read -ra PATH_PARTS <<<"$path"
+  if [[ "${#PATH_PARTS[@]}" -gt 1 ]]; then
+    RESULT+="$(set-color 8)"
+  fi
+  for i in "${!PATH_PARTS[@]}"; do
+    if [[ -z "${PATH_PARTS[$i]}" ]]; then
+      continue
+    elif [[ "$i" -eq 0 ]]; then
+      RESULT+="${PATH_PARTS[$i]}/"
+    elif [[ "$i" -eq $(("${#PATH_PARTS[@]}" - 1)) ]]; then
+      RESULT+="$(set-color reset)"
+      RESULT+="${PATH_PARTS[$i]}/"
+    elif [[ -v NOSHORT ]]; then
+      RESULT+="${PATH_PARTS[$i]}/"
+    else
+      RESULT+="$(shortname "${PATH_PARTS[$i]}")/"
+    fi
+  done
+
+  if [ "$bell" -eq 1 ]; then
+    RESULT+=" $(set-color 1)󰈻$(set-color reset)"
+  fi
+
+  echo "$RESULT"
+}
+
+main "$@"

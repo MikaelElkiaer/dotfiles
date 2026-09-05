@@ -6,7 +6,10 @@ set -euo pipefail
 # with absolutely zero process fork overhead when executing it.
 source "$(dirname "${BASH_SOURCE[0]}")/set-color"
 
-export KUBECONFIG="$HOME/.kube/config-tmux-$1"
+# Strip leading dollar sign or @ sign from the session/window identifier
+SESS_ID="${1#\$}"
+SESS_ID="${SESS_ID#@}"
+export KUBECONFIG="$HOME/.kube/config-tmux-$SESS_ID"
 
 if [ ! -f "$KUBECONFIG" ]; then
   exit 0

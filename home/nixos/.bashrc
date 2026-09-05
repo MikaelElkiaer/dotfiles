@@ -330,17 +330,11 @@ if command -v tmux &>/dev/null; then
     # Automatically clean up child processes on exit/SIGHUP to prevent dangling processes in tmux
     trap 'pkill -P $$ || true' EXIT SIGHUP
 
-    # Create kubeconfig file per tmux window
+    # Create kubeconfig file per tmux session
     if [ -z "$KUBECONFIG" ]; then
-      # Inherit from parent window in case of popup
-      if [ -n "$POPUPMUX_PARENT_WINDOW" ]; then
-        WINDOW_ID="$POPUPMUX_PARENT_WINDOW"
-      else
-        WINDOW_ID="$(tmux display-message -p '#{window_id}')"
-      fi
-      KUBECONFIG_PREFIX="$HOME/.kube/config-tmux"
-      export KUBECONFIG="$KUBECONFIG_PREFIX-$WINDOW_ID"
-      tmux set-option window-unlinked "run-shell 'rm -f $KUBECONFIG_PREFIX-#{hook_window}'"
+      SESSION_ID="$(tmux display-message -p '#{session_id}')"
+      SESSION_NUM="${SESSION_ID#\$}"
+      export KUBECONFIG="$HOME/.kube/config-tmux-$SESSION_NUM"
     fi
   fi
 
