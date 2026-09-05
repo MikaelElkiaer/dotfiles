@@ -1,3 +1,5 @@
 home/nixos/.config/lazygit/state.yml
 home/nixos/.config/navi/navi.log
 home/nixos/.config/tmux/plugins/
+# Added by code-review-graph
+.code-review-graph/
