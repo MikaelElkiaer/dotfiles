@@ -381,23 +381,32 @@ function get_tmux_sessions {
   local FULL ICON NAME TYPE
   ICON="$(color cyan )"
   TYPE="s"
-  tmux list-sessions -F "#{session_id};#{session_name}" -f '#{?#{m:_popup_*,#{session_name}},0,1}' |
-    while IFS=';' read -r sess_id sess_name || [[ -n "$sess_name" ]]; do
+  local current_sess_name
+  current_sess_name="$(tmux display-message -p '#{client_session}')"
+
+  tmux list-sessions -F "#{session_id};#{session_name};#{session_activity};#{session_active}" -f '#{?#{m:_popup_*,#{session_name}},0,1}' | \
+    sort -t';' -k3 -n -r | \
+    while IFS=';' read -r sess_id sess_name sess_activity sess_active || [[ -n "$sess_active" ]]; do
+      if [ "$sess_name" = "$current_sess_name" ]; then
+        continue
+      fi
       FULL="$sess_id"
       local kube_ctx
       kube_ctx=$(kubemux "$sess_id" || true)
       local active_win_id
       active_win_id="$(tmux display-message -p -t "$sess_id" '#{window_id}' 2>/dev/null || true)"
-      local win_icons win_path
+      local win_path
       if [ -n "$active_win_id" ]; then
-        win_icons="$(windowmux "$active_win_id" active)"
         win_path="$(pathmux "$active_win_id")"
       else
-        win_icons=""
         win_path=""
       fi
-      # Display: session_name | icons path kube_ctx
-      NAME="$sess_name | ${win_icons}${win_path:+ $win_path}${kube_ctx:+ $kube_ctx}"
+      # Display: path kube_ctx (no session number, no current command icons!)
+      if [ -n "$win_path" ]; then
+        NAME="${win_path}${kube_ctx:+ $kube_ctx}"
+      else
+        NAME="$sess_name${kube_ctx:+ $kube_ctx}"
+      fi
       echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
     done
 }
