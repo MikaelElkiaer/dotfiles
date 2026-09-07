@@ -94,15 +94,10 @@ function format_window_list() {
     icon=$(get_app_icon "$pane_command")
 
     if [ "$status" = "active" ]; then
-      if [ "$pane_active" -eq 1 ]; then
-        # Active pane in active window -> colored blue (color 12)
-        result+="$(set-color 12)${icon} $(set-color reset)"
-      else
-        # Inactive pane in active window -> white by default (color 15)
-        result+="$(set-color 15)${icon} $(set-color reset)"
-      fi
+      # All panes in active window are white (color 15) with space inside reset to prevent collapse
+      result+="$(set-color 15)${icon} $(set-color reset)"
     else
-      # Window is inactive -> dimmed (color 8)
+      # All panes in inactive windows are dimmed (color 8) with space inside reset to prevent collapse
       result+="$(set-color 8)${icon} $(set-color reset)"
     fi
   done < <(tmux list-panes -t "$window_id" -F "#{pane_active};#{pane_current_command}")
