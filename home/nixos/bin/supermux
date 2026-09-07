@@ -54,6 +54,7 @@ function _exec_fzf {
     --bind="ctrl-p:toggle-preview" \
     --bind='ctrl-g:become(launch_or_select lazygit)' \
     --bind='ctrl-i:become(launch_or_select k9s)' \
+    --cycle \
     --delimiter='\t' \
     --nth=2 \
     --preview='(preview {})' \
