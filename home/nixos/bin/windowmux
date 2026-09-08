@@ -102,6 +102,13 @@ function format_window_list() {
     fi
   done < <(tmux list-panes -t "$window_id" -F "#{pane_active};#{pane_current_command}")
 
+  # Check window bell flag
+  local bell
+  bell="$(tmux display-message -p -t "$window_id" '#{window_bell_flag}' 2>/dev/null || echo 0)"
+  if [ "$bell" -eq 1 ]; then
+    result+=" $(set-color 1)󰈻$(set-color reset)"
+  fi
+
   # Append Braille empty block (U+2800) to prevent tmux from stripping the trailing space
   echo -n "${result}⠀"
 }

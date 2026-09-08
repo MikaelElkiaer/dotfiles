@@ -424,6 +424,7 @@ function get_tmux_windows {
       win_id_clean="$(echo "$win_id" | tr -d "'")"
       win_icons="$(windowmux "$win_id_clean" active)"
       win_path="$(pathmux "$win_id_clean")"
+      win_path="${win_path%% *󰈻*}"
       NAME="${win_icons}${win_path:+ $win_path}${kube_ctx:+ $kube_ctx}"
       echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
     done
