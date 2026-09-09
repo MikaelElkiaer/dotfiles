@@ -20,7 +20,7 @@ jobs:
           ref: main
           fetch-depth: 0
       - uses: DeterminateSystems/nix-installer-action@b67ad2f0e8376a0bc947db191e4484285b6f5b56 # main
-      - uses: DeterminateSystems/magic-nix-cache-action@2cdbb78a6eed25b3bc8b97f863549be5f6567e55 # main
+      - uses: DeterminateSystems/magic-nix-cache-action@fa09681925d1168f06a354b19c9b26a3fd560db7 # main
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
