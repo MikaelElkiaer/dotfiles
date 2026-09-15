@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+# This script gracefully terminates all processes running in tmux panes
+# before killing the target pane, window, or session.
+# It can also clean up a specific TTY without killing tmux structures.
+
+function show_help {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  -t, --tty <tty_path>      Gracefully clean up processes on a specific TTY (no tmux kill)"
+    echo "  -p, --pane <pane_id>      Gracefully clean up and kill a specific pane"
+    echo "  -w, --window <window_id>  Gracefully clean up and kill all panes in a window"
+    echo "  -s, --session <session_id> Gracefully clean up and kill all panes in a session"
+    echo "  -h, --help                Show this help message"
+}
+
+target_type=""
+target_id=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -t|--tty)
+            target_type="tty"
+            target_id="$2"
+            shift 2
+            ;;
+        -p|--pane)
+            target_type="pane"
+            target_id="$2"
+            shift 2
+            ;;
+        -w|--window)
+            target_type="window"
+            target_id="$2"
+            shift 2
+            ;;
+        -s|--session)
+            target_type="session"
+            target_id="$2"
+            shift 2
+            ;;
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1" >&2
+            show_help >&2
+            exit 1
+            ;;
+    esac
+done
+
+# If no target specified, default to the current pane
+if [ -z "$target_type" ]; then
+    target_type="pane"
+    target_id=$(tmux display-message -p '#{pane_id}' 2>/dev/null || true)
+fi
+
+if [ -z "$target_id" ]; then
+    echo "Error: Could not determine target ID." >&2
+    exit 1
+fi
+
+# Get the list of TTYs associated with the target
+pane_ttys=""
+if [ -n "$target_id" ]; then
+    case "$target_type" in
+        tty)
+            pane_ttys="$target_id"
+            ;;
+        pane)
+            pane_ttys=$(tmux display-message -t "$target_id" -p "#{pane_tty}" 2>/dev/null || true)
+            ;;
+        window)
+            pane_ttys=$(tmux list-panes -t "$target_id" -F "#{pane_tty}" 2>/dev/null || true)
+            ;;
+        session)
+            pane_ttys=$(tmux list-panes -s -t "$target_id" -F "#{pane_tty}" 2>/dev/null || true)
+            ;;
+    esac
+fi
+
+# If we found TTYs, find and terminate processes running on them
+if [ -n "$pane_ttys" ]; then
+    my_pid=$$
+    my_ppid=$PPID
+    pids_to_kill=""
+
+    for tty_path in $pane_ttys; do
+        tty_name="${tty_path#/dev/}"
+        if [ -z "$tty_name" ]; then
+            continue
+        fi
+        
+        # Get PIDs running on this TTY
+        pids=$(ps -o pid=,comm= -t "$tty_name" 2>/dev/null || ps -o pid=,comm= -t "/dev/$tty_name" 2>/dev/null || true)
+        
+        if [ -n "$pids" ]; then
+            while read -r pid comm; do
+                [ -z "$pid" ] && continue
+                # Exclude tmux
+                if [[ "$comm" == *tmux* ]]; then
+                    continue
+                fi
+                # Exclude this script's PID and parent's PID
+                if [ "$pid" -eq "$my_pid" ] || [ "$pid" -eq "$my_ppid" ]; then
+                    continue
+                fi
+                pids_to_kill="$pids_to_kill $pid"
+            done <<< "$pids"
+        fi
+    done
+
+    # Trim spaces
+    pids_to_kill=$(echo "$pids_to_kill" | xargs)
+
+    if [ -n "$pids_to_kill" ]; then
+        # Send SIGTERM first
+        kill -15 $pids_to_kill 2>/dev/null || true
+        
+        # Wait up to 0.5 seconds for processes to exit
+        sleep 0.5
+        
+        # Check if any processes are still alive and SIGKILL them
+        remaining_pids=""
+        for tty_path in $pane_ttys; do
+            tty_name="${tty_path#/dev/}"
+            pids=$(ps -o pid=,comm= -t "$tty_name" 2>/dev/null || ps -o pid=,comm= -t "/dev/$tty_name" 2>/dev/null || true)
+            if [ -n "$pids" ]; then
+                while read -r pid comm; do
+                    [ -z "$pid" ] && continue
+                    if [[ "$comm" == *tmux* ]]; then
+                        continue
+                    fi
+                    if [ "$pid" -eq "$my_pid" ] || [ "$pid" -eq "$my_ppid" ]; then
+                        continue
+                    fi
+                    remaining_pids="$remaining_pids $pid"
+                done <<< "$pids"
+            fi
+        done
+        remaining_pids=$(echo "$remaining_pids" | xargs)
+        
+        if [ -n "$remaining_pids" ]; then
+            kill -9 $remaining_pids 2>/dev/null || true
+        fi
+    fi
+fi
+
+# Finally, kill the target in tmux if it's not just a TTY cleanup
+if [ -n "$target_id" ]; then
+    case "$target_type" in
+        pane)
+            tmux kill-pane -t "$target_id" 2>/dev/null || true
+            ;;
+        window)
+            tmux kill-window -t "$target_id" 2>/dev/null || true
+            ;;
+        session)
+            tmux kill-session -t "$target_id" 2>/dev/null || true
+            ;;
+        tty)
+            # No tmux structures to kill for pure TTY cleanup
+            ;;
+    esac
+fi
