@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+# Source the helpers to import set-color as pure bash function
+# with absolutely zero process fork overhead when executing them.
+source "$(dirname "${BASH_SOURCE[0]}")/set-color"
+
+function main() {
+  local bell_count
+  bell_count=$(tmux list-windows -a -F '#{window_bell_flag}' 2>/dev/null | awk '/1/{c++} END{print c+0}')
+
+  if [ "$bell_count" -gt 0 ]; then
+    echo -n " $(set-color 1) ${bell_count}$(set-color reset)"
+  fi
+}
+
+main "$@"
