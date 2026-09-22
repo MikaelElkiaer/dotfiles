@@ -19,6 +19,7 @@
     ic
     jsonnet
     jsonnet-bundler
+    kafkatool
     kubectl-slice
     kubelogin # Azure
     kubelogin-oidc
