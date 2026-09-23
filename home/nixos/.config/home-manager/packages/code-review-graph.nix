@@ -7,7 +7,7 @@
 
 python3Packages.buildPythonApplication (finalAttrs: {
   pname = "code-review-graph";
-  version = "2.3.8";
+  version = "2.3.9";
   pyproject = true;
   __structuredAttrs = true;
 
@@ -15,7 +15,7 @@ python3Packages.buildPythonApplication (finalAttrs: {
     owner = "tirth8205";
     repo = "code-review-graph";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-NhssTYN0McUEpxAlb4bWDrdlCA6jFmXj9Cn9IxdkcUg=";
+    hash = "sha256-UiQg1ygebw6PePJVHNNOUsL6buw1/oMzX34jloui9Bg=";
   };
 
   postPatch = ''

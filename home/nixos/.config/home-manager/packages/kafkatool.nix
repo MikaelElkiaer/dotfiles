@@ -8,14 +8,14 @@
 
 buildGoModule (finalAttrs: {
   pname = "kafkatool";
-  version = "3.2.1";
+  version = "distributed-6.3.0-weekly.413";
   __structuredAttrs = true;
 
   src = fetchFromGitHub {
     owner = "grafana";
     repo = "mimir";
     tag = "mimir-${finalAttrs.version}";
-    hash = "sha256-/i4nF4YGKvNRt/JkB4pOIIrXvZhPTvM8GEePEGP7hY8=";
+    hash = "sha256-CAQL/55EODXjpRTd3+intAtTdwa3J+slHLynPscq+us=";
   };
 
   vendorHash = null;
