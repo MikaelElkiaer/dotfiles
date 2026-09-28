@@ -1,10 +1,10 @@
 {
   lib,
-  buildGoModule,
+  buildGo127Module,
   fetchFromGitHub,
 }:
 
-buildGoModule rec {
+buildGo127Module rec {
   pname = "ic";
   version = "0.11.2";
 
@@ -15,7 +15,7 @@ buildGoModule rec {
     hash = "sha256-rYzypU6VtGJTBrfAlw+vGvaB4XVGxkp3tozSLNtQZr0=";
   };
 
-  vendorHash = "sha256-SVrWlbVspACaMW1jT8MPL/t3pcE60T/6a9sEY9NSS3w=";
+  vendorHash = "sha256-6bC9z0N5xCNXSMPioXA6XT17zE0XSdRBFyl38kbtb4o=";
 
   ldflags = [
     "-w"
