@@ -31,6 +31,7 @@ python3Packages.buildPythonApplication (finalAttrs: {
   ];
 
   dependencies = with python3Packages; [
+    anyio
     fastmcp
     mcp
     networkx
@@ -44,6 +45,10 @@ python3Packages.buildPythonApplication (finalAttrs: {
   optional-dependencies = with python3Packages; {
     all = [
       code-review-graph
+    ];
+    browser-test = [
+      playwright
+      pytest-playwright
     ];
     communities = [
       igraph
