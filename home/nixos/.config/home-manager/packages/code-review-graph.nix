@@ -23,7 +23,7 @@ python3Packages.buildPythonApplication (finalAttrs: {
       --replace-fail '"tree-sitter-language-pack>=0.3.0,<1"' '"tree-sitter-language-pack>=0.3.0"'
 
     substituteInPlace code_review_graph/parser.py \
-      --replace-fail '[sys.executable, "-c", code, grammar],' '[sys.executable, "-c", code, grammar], env=dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path)),'
+      --replace-fail 'env=_parser_probe_env(),' 'env=dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path)),'
   '';
 
   build-system = [
