@@ -2,22 +2,27 @@
   lib,
   buildGoModule,
   fetchFromGitHub,
+  nix-update-script,
 }:
 
 buildGoModule (finalAttrs: {
   pname = "yaml-schema-router";
-  version = "0.2.0";
+  version = "0-unstable-2026-10-01";
+  __structuredAttrs = true;
 
   src = fetchFromGitHub {
-    owner = "traiproject";
+    # WARN: Using fork while waiting for https://github.com/tepea-code/yaml-schema-router/pull/4
+    owner = "mikaelelkiaer";
     repo = "yaml-schema-router";
-    tag = "v${finalAttrs.version}";
-    hash = "sha256-GFe5NPW8nxv+bQsG5G26WCf2Z6qrW1WAZBMWFZD8MFI=";
+    rev = "d73ccf7f920976251692b85264d575b1d5161d7e";
+    hash = "sha256-b3aWOt+k3OI/83Otpuodba+Pefrmr5U7WpE1d6EcP6s=";
   };
 
   vendorHash = null;
 
-  ldflags = [ ];
+  ldflags = [ "-s" ];
+
+  passthru.updateScript = nix-update-script { };
 
   meta = {
     description = "Content-based JSON schema routing for YAML LSP (Neovim/Helix/Emacs";
