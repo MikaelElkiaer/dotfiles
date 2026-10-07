@@ -51,7 +51,7 @@ build:
 
     export NIX_CONFIG="access-tokens = github.com=$(gh auth token)"
 
-    git add .
+    git add -u .
     if git diff --cached --exit-code &>/dev/null; then
         echo "[INF] No changes to commit"
         exit 0
