@@ -123,6 +123,10 @@
       ".config/containers/auth.json" = {
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/auth.json";
       };
+      ".config/gh-dash" = {
+        recursive = true;
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/gh-dash";
+      };
       ".config/home-manager" = {
         recursive = true;
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/home-manager";
