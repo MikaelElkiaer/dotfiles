@@ -48,6 +48,7 @@
     gemini-cli
     gh
     gh-dash
+    gh-enhance
     gh-markdown-preview
     git
     glow
