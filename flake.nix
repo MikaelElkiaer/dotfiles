@@ -104,6 +104,15 @@
             doCheck = false;
           });
           neovim = nixpkgs_master.legacyPackages.${prev.system}.neovim;
+          tmux = prev.tmux.overrideAttrs (oldAttrs: rec {
+            version = "3.8";
+            src = prev.fetchFromGitHub {
+              owner = "tmux";
+              repo = "tmux";
+              tag = version;
+              hash = "sha256-pv2wlr3coo+E0pfpb58giJJQn9PGgMFqtVA6nk+9JdE=";
+            };
+          });
         };
 
       # Helper for standalone Home Manager configuration
@@ -255,7 +264,7 @@
         let
           pkgs = nixpkgs.legacyPackages.${system}.extend customPackages;
         in
-        nixpkgs.lib.genAttrs ([ "dagger" ] ++ localPackages) (name: pkgs.${name})
+        nixpkgs.lib.genAttrs ([ "dagger" "tmux" ] ++ localPackages) (name: pkgs.${name})
       );
     };
 }
