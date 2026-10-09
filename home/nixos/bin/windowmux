@@ -64,19 +64,19 @@ function main() {
 function get_app_icon() {
   case "$1" in
   "bash" | "sh")
-    echo ""
+    echo " "
     ;;
   "k9s"|".k9s-wrapped")
-    echo "󱃾"
+    echo "󱃾 "
     ;;
   "nvim")
-    echo ""
+    echo " "
     ;;
   "ssh")
-    echo "󰍹"
+    echo "󰍹 "
     ;;
   "lazygit")
-    echo ""
+    echo " "
     ;;
   *)
     echo " "
@@ -95,10 +95,10 @@ function format_window_list() {
 
     if [ "$status" = "active" ]; then
       # All panes in active window are white (color 15) with space inside reset to prevent collapse
-      result+="$(set-color 15)${icon} $(set-color reset)"
+      result+="$(set-color 15)${icon}$(set-color reset)"
     else
       # All panes in inactive windows are dimmed (color 8) with space inside reset to prevent collapse
-      result+="$(set-color 8)${icon} $(set-color reset)"
+      result+="$(set-color 8)${icon}$(set-color reset)"
     fi
   done < <(tmux list-panes -t "$window_id" -F "#{pane_active};#{pane_current_command}")
 
@@ -109,8 +109,7 @@ function format_window_list() {
     result+=" $(set-color 1)󰈻$(set-color reset)"
   fi
 
-  # Append Braille empty block (U+2800) to prevent tmux from stripping the trailing space
-  echo -n "${result}⠀"
+  echo -n "${result}"
 }
 
 main "$@"
