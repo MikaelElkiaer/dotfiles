@@ -52,27 +52,14 @@ function _exec_fzf {
     --bind='enter:become(action_primary {})' \
     --bind='tab:become(action_secondary {})' \
     --bind="ctrl-p:toggle-preview" \
-    --bind='ctrl-g:become(launch_or_select lazygit)' \
-    --bind='ctrl-i:become(launch_or_select k9s)' \
+    --bind='ctrl-g:become(popupmux launch lazygit)' \
+    --bind='ctrl-i:become(popupmux launch k9s)' \
     --cycle \
     --delimiter='\t' \
     --nth=2 \
     --preview='(preview {})' \
     --preview-window=up,wrap \
     --with-nth=3,4
-}
-
-function launch_or_select {
-  local cmd="$1"
-  local target_win
-  target_win="$(tmux list-windows -F "#{window_id};#{window_name};#{pane_current_command}" | \
-    awk -v cmd="$cmd" -F';' '$2 == cmd || $3 == cmd {print $1; exit}')"
-
-  if [ -n "$target_win" ]; then
-    tmux select-window -t "$target_win"
-  else
-    tmux new-window -c "$PWD" -n "$cmd" "bash -i -c '$cmd; exec bash'"
-  fi
 }
 
 function detect_mode {

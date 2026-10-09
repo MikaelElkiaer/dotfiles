@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+function action_toggle {
+  local pane_id pane_title pane_floating is_popup pane_path
+  IFS=';' read -r pane_id pane_title pane_floating is_popup pane_path < <(tmux display-message -p '#{pane_id};#{pane_title};#{pane_floating_flag};#{@initially_popup};#{pane_current_path}')
+
+  if [ "$is_popup" = "1" ]; then
+    # Move tool popup to its own window at full size
+    tmux break-pane -d -s "$pane_id"
+  elif [ "$pane_title" = "supermux" ]; then
+    # Close supermux picker pane
+    tmux kill-pane -t "$pane_id"
+  else
+    # Open supermux floating pane
+    tmux new-pane -c "$pane_path" -x 80% -y 80% -T supermux "supermux" \; move-pane -P centre
+  fi
+}
+
+function action_launch {
+  local cmd="$1"
+  local cur_id cur_win cur_float cur_title
+  IFS=';' read -r cur_id cur_win cur_float cur_title < <(tmux display-message -p '#{pane_id};#{window_id};#{pane_floating_flag};#{pane_title}')
+
+  local target_pane="" target_win="" is_floating="" was_popup=""
+  local best_score=-1
+
+  while IFS=';' read -r p_id w_id p_float p_was_popup p_popup_cmd p_title p_curr_cmd || [ -n "$p_id" ]; do
+    [ -z "$p_id" ] && continue
+    [ "$p_id" = "$cur_id" ] && continue
+
+    if [ "$p_popup_cmd" = "$cmd" ] || [ "$p_title" = "$cmd" ] || [ "$p_curr_cmd" = "$cmd" ]; then
+      local score=0
+      if [ "$p_was_popup" = "1" ]; then
+        if [ "$w_id" = "$cur_win" ]; then
+          score=4
+        else
+          score=3
+        fi
+      else
+        if [ "$w_id" = "$cur_win" ]; then
+          score=2
+        else
+          score=1
+        fi
+      fi
+
+      if [ "$score" -gt "$best_score" ]; then
+        best_score="$score"
+        target_pane="$p_id"
+        target_win="$w_id"
+        is_floating="$p_float"
+        was_popup="$p_was_popup"
+      fi
+    fi
+  done < <(tmux list-panes -s -F "#{pane_id};#{window_id};#{pane_floating_flag};#{@initially_popup};#{@popup_cmd};#{pane_title};#{pane_current_command}" 2>/dev/null || true)
+
+  if [ -n "$target_pane" ]; then
+    if [ "$was_popup" = "1" ]; then
+      if [ "$cur_title" = "supermux" ]; then
+        # In supermux floating pane: atomically swap and kill supermux pane, auto-size to 80%
+        tmux swap-pane -s "$target_pane" -t "$cur_id" \; kill-pane -t "$cur_id" \; resize-pane -t "$target_pane" -x 80% -y 80% \; move-pane -t "$target_pane" -P centre \; select-pane -t "$target_pane"
+        exit 0
+      elif [ "$target_win" != "$cur_win" ]; then
+        tmux join-pane -d -v -l 80% -s "$target_pane" -t "$cur_id" \; break-pane -W -s "$target_pane" -x 80% -y 80% \; move-pane -t "$target_pane" -P centre \; select-pane -t "$target_pane"
+      else
+        local is_zoomed
+        is_zoomed="$(tmux display-message -p -t "$target_win" '#{window_zoomed_flag}' 2>/dev/null || echo 0)"
+        if [ "$is_zoomed" = "1" ]; then
+          tmux resize-pane -Z -t "$target_pane"
+        fi
+        tmux break-pane -W -s "$target_pane" -x 80% -y 80% \; move-pane -t "$target_pane" -P centre \; select-pane -t "$target_pane"
+      fi
+    else
+      # Not initially a popup: do NOT break to popup
+      if [ "$cur_title" = "supermux" ]; then
+        tmux kill-pane -t "$cur_id" 2>/dev/null || true
+      fi
+      if [ "$target_win" != "$cur_win" ]; then
+        tmux select-window -t "$target_win"
+      fi
+      tmux select-pane -t "$target_pane"
+      exit 0
+    fi
+  else
+    # No existing pane exists
+    if [ "$cur_title" = "supermux" ]; then
+      tmux set-option -p -t "$cur_id" @initially_popup 1
+      tmux set-option -p -t "$cur_id" @popup_cmd "$cmd"
+      tmux select-pane -t "$cur_id" -T "$cmd"
+      exec bash -i -c "$cmd; exec bash"
+    else
+      local new_pane
+      new_pane="$(tmux new-pane -P -F '#{pane_id}' -t "$cur_id" -c "$PWD" -x 80% -y 80% -T "$cmd" "bash -i -c '$cmd; exec bash'")"
+      if [ -n "$new_pane" ]; then
+        tmux move-pane -t "$new_pane" -P centre 2>/dev/null || true
+        tmux set-option -p -t "$new_pane" @initially_popup 1
+        tmux set-option -p -t "$new_pane" @popup_cmd "$cmd"
+        tmux select-pane -t "$new_pane"
+      fi
+    fi
+  fi
+}
+
+function main {
+  case "${1:-toggle}" in
+  toggle)
+    action_toggle
+    ;;
+  launch|launch_or_select)
+    shift
+    action_launch "$@"
+    ;;
+  *)
+    action_toggle
+    ;;
+  esac
+}
+
+main "$@"
