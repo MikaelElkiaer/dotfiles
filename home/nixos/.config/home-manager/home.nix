@@ -91,6 +91,7 @@
     python3
     ripgrep
     skopeo
+    sofka
     tlrc # tldr (Rust)
     tmux
     tree

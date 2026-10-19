@@ -33,6 +33,11 @@
       url = "github:dagger/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sofka = {
+      url = "github:nklmilojevic/sofka";
+      inputs.home-manager.follows = "home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -44,6 +49,7 @@
       home-manager,
       nix-index-database,
       dagger,
+      sofka,
       ...
     }:
     let
@@ -104,6 +110,7 @@
             doCheck = false;
           });
           neovim = nixpkgs_master.legacyPackages.${prev.system}.neovim;
+          sofka = inputs.sofka.packages.${prev.system}.sofka;
           tmux = prev.tmux.overrideAttrs (oldAttrs: rec {
             version = "3.8";
             src = prev.fetchFromGitHub {
@@ -264,7 +271,7 @@
         let
           pkgs = nixpkgs.legacyPackages.${system}.extend customPackages;
         in
-        nixpkgs.lib.genAttrs ([ "dagger" "tmux" ] ++ localPackages) (name: pkgs.${name})
+        nixpkgs.lib.genAttrs ([ "dagger" "sofka" "tmux" ] ++ localPackages) (name: pkgs.${name})
       );
     };
 }
