@@ -134,6 +134,7 @@
           modules = [
             {
               nixpkgs.config.allowUnfree = true;
+              home.backupFileExtension = "backup";
             }
             nix-index-database.homeModules.nix-index
             (hmDir + "/home.nix")
@@ -165,6 +166,7 @@
             home-manager.nixosModules.home-manager
             {
               nixpkgs.config.allowUnfree = true;
+              home-manager.backupFileExtension = "backup";
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = false;
               home-manager.users.${info.username} = {
@@ -217,6 +219,7 @@
             # Integrate Home Manager
             home-manager.darwinModules.home-manager
             {
+              home-manager.backupFileExtension = "backup";
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = false;
               home-manager.users.${info.username} = {
