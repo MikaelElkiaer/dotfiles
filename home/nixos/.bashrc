@@ -136,7 +136,7 @@ if [ -n "$_SHELL" ]; then
 fi
 
 # Place completions here for lazy loading
-# - note that filename must match command name (with optional leading underscore)
+# - note that filename must match command name
 COMPLETION_PATH=~/.local/share/bash-completion/completions
 mkdir --parents "$COMPLETION_PATH"
 function _add_completion() {
@@ -154,7 +154,7 @@ if [ -d /opt/homebrew/etc/bash_completion.d ]; then
     if [ "$name" == "lpass_bash_completion" ]; then
       name="lpass"
     fi
-    ln -sf "$f" "$COMPLETION_PATH/_$name"
+    ln -sf "$f" "$COMPLETION_PATH/$name"
   done
 fi
 
@@ -166,16 +166,16 @@ if [ "$(command -v switcher)" ]; then
 fi
 
 if [ "$(command -v kubectl)" ]; then
-  _add_completion _kubectl "kubectl completion bash"
+  _add_completion kubectl "kubectl completion bash"
   alias k=kubectl
-  if ! [ -s "$COMPLETION_PATH/_k" ]; then
-    cat <<-EOF >"$COMPLETION_PATH/_k"
-			if type _init_completion > /dev/null 2>&1; then
-			  # Load the kubectl completion if not already loaded
+  if ! [ -s "$COMPLETION_PATH/k" ]; then
+    cat <<-EOF >"$COMPLETION_PATH/k"
+			if declare -F _comp_load >/dev/null 2>&1; then
+			  _comp_load kubectl
+			elif declare -F _completion_loader >/dev/null 2>&1; then
 			  _completion_loader kubectl
-			  # Link 'k' to the kubectl completion function
-			  complete -o default -F __start_kubectl k
 			fi
+			complete -o default -F __start_kubectl k
 EOF
   fi
 fi
@@ -227,7 +227,7 @@ fi
 
 # [dagger](https://github.com/dagger/dagger)
 if [ "$(command -v dagger)" ]; then
-  _add_completion _dagger "dagger completion bash --silent"
+  _add_completion dagger "dagger completion bash --silent"
 fi
 
 if [ "$(command -v nvim)" ]; then
@@ -246,18 +246,18 @@ fi
 
 # [fzf](https://github.com/junegunn/fzf)
 if [ "$(command -v fzf)" ]; then
-  _add_completion _fzf "fzf --bash"
+  _add_completion fzf "fzf --bash"
   export FZF_DEFAULT_OPTS="--ansi --border=bottom --cycle --header-first --bind=\"ctrl-d:preview-page-down,ctrl-u:preview-page-up\""
 fi
 
 # [bws](https://bitwarden.com/products/secrets-manager/)
 if [ "$(command -v bws)" ]; then
-  _add_completion _bws "bws completions bash"
+  _add_completion bws "bws completions bash"
 fi
 
 # [ic](https://github.com/containdk/ic)
 if [ "$(command -v ic)" ]; then
-  _add_completion _ic "ic completion bash"
+  _add_completion ic "ic completion bash"
 
   # shellcheck disable=SC2329
   function _generate_ic_picker_completions {
@@ -288,7 +288,7 @@ complete -F __ic_picker_completions ic-picker
 EOF
   }
 
-  _add_completion _ic-picker "_generate_ic_picker_completions"
+  _add_completion ic-picker "_generate_ic_picker_completions"
 fi
 
 # [docker-credential-magic](https://github.com/docker-credential-magic/docker-credential-magic)
