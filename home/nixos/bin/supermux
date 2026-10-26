@@ -53,7 +53,7 @@ function _exec_fzf {
     --bind='tab:become(action_secondary {})' \
     --bind="ctrl-p:toggle-preview" \
     --bind='ctrl-g:become(popupmux launch lazygit)' \
-    --bind='ctrl-i:become(popupmux launch k9s)' \
+    --bind='ctrl-i:become(popupmux launch sofka)' \
     --cycle \
     --delimiter='\t' \
     --nth=2 \
@@ -133,7 +133,7 @@ function change_border_label {
     echo " 󰌑 nvim  prompt "
     ;;
   i)
-    echo " 󰌑 k9s  prompt "
+    echo " 󰌑 sofka  prompt "
     ;;
   k)
     echo " 󰌑 run "
@@ -221,7 +221,7 @@ function action_primary {
     ;;
   i)
     local new_id new_name
-    new_id="$(tmux new-session -c "$HOME" -d -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{session_id}' bash -i -c 'sleep 0.1; k9s; exec bash')"
+    new_id="$(tmux new-session -c "$HOME" -d -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{session_id}' bash -i -c 'sleep 0.1; sofka; exec bash')"
     new_name="${new_id#\$}"
     ic get cluster-kubeconfig --cluster-name "$FULL" >"$HOME/.kube/config-tmux-${new_name}"
     tmux switch-client -t "$new_id"
