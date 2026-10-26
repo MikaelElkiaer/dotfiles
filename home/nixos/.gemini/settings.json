@@ -8,6 +8,20 @@
       "selectedType": "oauth-personal"
     }
   },
+  "tools": {
+    "allowed": [
+      "run_shell_command(flux get)",
+      "run_shell_command(git branch)",
+      "run_shell_command(git diff)",
+      "run_shell_command(git log)",
+      "run_shell_command(git status)",
+      "run_shell_command(kubectl config current-context)",
+      "run_shell_command(kubectl describe)",
+      "run_shell_command(kubectl get)",
+      "run_shell_command(kubectl logs)",
+      "run_shell_command(kubectl top)"
+    ]
+  },
   "ui": {
     "theme": "ANSI"
   }
