@@ -149,22 +149,6 @@
         "type": "github"
       }
     },
-    "nixpkgs_atuin": {
-      "locked": {
-        "lastModified": 1791594108,
-        "narHash": "sha256-XK4KceonkwD8LuMAt/vNrz982mXJM5jeHAxMwsUXXAQ=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "6510408d147d8c5e6d76043e899e9251756f6a75",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "6510408d147d8c5e6d76043e899e9251756f6a75",
-        "type": "github"
-      }
-    },
     "nixpkgs_master": {
       "locked": {
         "lastModified": 1793166571,
@@ -189,7 +173,6 @@
         "nix-index-database": "nix-index-database",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
-        "nixpkgs_atuin": "nixpkgs_atuin",
         "nixpkgs_master": "nixpkgs_master",
         "sofka": "sofka"
       }

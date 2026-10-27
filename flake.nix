@@ -5,7 +5,6 @@
     # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs_master.url = "github:nixos/nixpkgs/master";
-    nixpkgs_atuin.url = "github:nixos/nixpkgs/6510408d147d8c5e6d76043e899e9251756f6a75";
 
     # Darwin
     nix-darwin = {
@@ -45,7 +44,6 @@
     inputs@{
       self,
       nixpkgs,
-      nixpkgs_atuin,
       nixpkgs_master,
       nix-darwin,
       home-manager,
@@ -107,8 +105,6 @@
         in
         localPkgs
         // {
-          # FIXME: Revert to unstable following https://github.com/NixOS/nixpkgs/issues/575388
-          atuin = nixpkgs_atuin.legacyPackages.${prev.system}.atuin;
           dagger = inputs.dagger.packages.${prev.system}.dagger;
           neovim = nixpkgs_master.legacyPackages.${prev.system}.neovim;
           sofka = inputs.sofka.packages.${prev.system}.sofka;
