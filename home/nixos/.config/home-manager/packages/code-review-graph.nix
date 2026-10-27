@@ -5,7 +5,19 @@
   nix-update-script,
 }:
 
-python3Packages.buildPythonApplication (finalAttrs: {
+let
+  pyPkgs =
+    if python3Packages ? mcp_1 && lib.versionAtLeast python3Packages.mcp.version "2" then
+      python3Packages.overrideScope (
+        pySelf: pyPrev: {
+          mcp = pyPrev.mcp_1;
+          fastmcp-slim = pyPrev.fastmcp-slim.override { mcp = pyPrev.mcp_1; };
+        }
+      )
+    else
+      python3Packages;
+in
+pyPkgs.buildPythonApplication (finalAttrs: {
   pname = "code-review-graph";
   version = "2.3.9";
   pyproject = true;
@@ -27,10 +39,10 @@ python3Packages.buildPythonApplication (finalAttrs: {
   '';
 
   build-system = [
-    python3Packages.hatchling
+    pyPkgs.hatchling
   ];
 
-  dependencies = with python3Packages; [
+  dependencies = with pyPkgs; [
     anyio
     fastmcp
     mcp
@@ -42,7 +54,7 @@ python3Packages.buildPythonApplication (finalAttrs: {
     watchdog
   ];
 
-  optional-dependencies = with python3Packages; {
+  optional-dependencies = with pyPkgs; {
     all = [
       code-review-graph
     ];
