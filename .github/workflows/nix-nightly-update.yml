@@ -33,7 +33,7 @@ jobs:
       - name: Install required packages via Nix
         run: |
           nix profile install --inputs-from . nixpkgs#just nixpkgs#jq nixpkgs#update-nix-fetchgit nixpkgs#gh nixpkgs#home-manager nixpkgs#git
-      - name: Run Package and Flake Updates
+      - name: Run Flake Update
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NIX_CONFIG: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
@@ -47,7 +47,7 @@ jobs:
             git commit -m "chore(deps): Automatically fix Nix expression hashes"
           fi
 
-          # Perform flake and package updates
+          # Perform flake update
           just update
       - name: Check for changes and Push
         id: check_changes

@@ -66,16 +66,13 @@ switch:
     @echo "[INF] Switching to new configuration for {{flake_target}}..."
     {{switch_cmd}}
 
-# Update flake and custom packages, then build/diff/commit
+# Update root flake, then build/diff/commit
 update:
     #!/usr/bin/env bash
     set -Eeuo pipefail
     trap 'rm -f ./result ./diff' EXIT
 
-    export NIX_CONFIG="access-tokens = github.com=$(gh auth token)"
-    
-    echo "[INF] Updating custom packages..."
-    ./home/nixos/bin/nix-package-update .
+    export NIX_CONFIG="${NIX_CONFIG:-access-tokens = github.com=$(gh auth token 2>/dev/null || echo '')}"
     
     echo "[INF] Updating root flake..."
     nix flake update
@@ -93,7 +90,7 @@ update:
     echo "[INF] Updates found:"
     cat ./diff
     
-    git add flake.lock home/nixos/.config/home-manager/packages/
+    git add flake.lock
     
     if git diff --cached --exit-code &>/dev/null; then
         echo "[INF] No changes to commit"
@@ -108,6 +105,60 @@ update:
         echo "[INF] Creating new update commit..."
         git commit --file=<(echo "chore(deps): Update Nix dependencies"; echo; cat ./diff)
     fi
+
+# Update a custom package, then build/diff/commit
+update-package package:
+    #!/usr/bin/env bash
+    set -Eeuo pipefail
+    trap 'rm -f ./result ./diff' EXIT
+
+    export NIX_CONFIG="${NIX_CONFIG:-access-tokens = github.com=$(gh auth token 2>/dev/null || echo '')}"
+    
+    echo "[INF] Updating custom package {{package}}..."
+    ./home/nixos/bin/nix-package-update . {{package}}
+    
+    if git diff --quiet -- home/nixos/.config/home-manager/packages/ flake.nix; then
+        echo "[INF] No updates found for {{package}}"
+        exit 0
+    fi
+    
+    echo "[INF] Building and checking for changes..."
+    {{build_cmd}}
+    
+    nix-diff-summary > ./diff 2>/dev/null || git diff > ./diff
+    
+    if ! [ -s ./diff ]; then
+        echo "[INF] No updates found"
+        exit 0
+    fi
+    
+    echo "[INF] Updates found:"
+    cat ./diff
+    
+    git add home/nixos/.config/home-manager/packages/ flake.nix
+    
+    if git diff --cached --exit-code &>/dev/null; then
+        echo "[INF] No changes to commit"
+        exit 0
+    fi
+    
+    LATEST_MSG="$(git show --format=format:%s --quiet)"
+    if [ "$LATEST_MSG" = "chore(deps): Update {{package}}" ] && ! git log --exit-code origin/main..main &>/dev/null; then
+        echo "[INF] Amending unpushed update commit..."
+        git commit --amend --file=<(echo "chore(deps): Update {{package}}"; echo; cat ./diff)
+    else
+        echo "[INF] Creating new update commit..."
+        git commit --file=<(echo "chore(deps): Update {{package}}"; echo; cat ./diff)
+    fi
+
+# Update all custom packages
+update-packages:
+    #!/usr/bin/env bash
+    set -Eeuo pipefail
+    for pkg in $(./home/nixos/bin/nix-package-update . --list | jq -r '.[]'); do
+        echo "[INF] Updating $pkg..."
+        just update-package "$pkg" || echo "[WARN] Failed to update $pkg" >&2
+    done
 
 # Compatibility/Legacy targets
 alias darwin-switch := switch

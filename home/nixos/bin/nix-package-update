@@ -3,16 +3,39 @@
 set -Eeuo pipefail
 
 # Determine if we should filter
-ONLY_TAGGED="${ONLY_TAGGET:-false}"
+ONLY_TAGGED="${ONLY_TAGGED:-false}"
 ONLY_REV="${ONLY_REV:-false}"
 
-FLAKE_DIR="${1?Usage: $0 <flake-dir>}"
+LIST_ONLY="false"
+TARGET_PKG=""
+FLAKE_DIR="."
+
+for arg in "$@"; do
+  if [ "$arg" = "--list" ]; then
+    LIST_ONLY="true"
+  elif [ -d "$arg" ]; then
+    FLAKE_DIR="$arg"
+  else
+    TARGET_PKG="$arg"
+  fi
+done
 
 cd "$FLAKE_DIR"
 
 SYSTEM=$(nix eval --raw --impure --expr 'builtins.currentSystem')
 
-for pkg in $(nix eval ".#packages.$SYSTEM" --apply 'builtins.attrNames' --json | jq -r '.[]'); do
+if [ "$LIST_ONLY" = "true" ]; then
+  nix eval ".#packages.$SYSTEM" --apply 'pkgs: builtins.filter (pkg: let src = pkgs.${pkg}.src or {}; is_tagged = src ? tag && src.tag != null; is_rev = (src ? rev && src.rev != null) && !is_tagged; in (is_tagged || is_rev)) (builtins.attrNames pkgs)' --json
+  exit 0
+fi
+
+if [ -n "$TARGET_PKG" ]; then
+  PKGS=("$TARGET_PKG")
+else
+  mapfile -t PKGS < <(nix eval ".#packages.$SYSTEM" --apply 'pkgs: builtins.filter (pkg: let src = pkgs.${pkg}.src or {}; is_tagged = src ? tag && src.tag != null; is_rev = (src ? rev && src.rev != null) && !is_tagged; in (is_tagged || is_rev)) (builtins.attrNames pkgs)' --json | jq -r '.[]')
+fi
+
+for pkg in "${PKGS[@]}"; do
   # A package is "tagged" if it has a non-null tag attribute
   is_tagged=$(nix eval ".#packages.$SYSTEM.$pkg.src" --apply 'x: x ? tag && x.tag != null' 2>/dev/null || echo "false")
   # A package is "rev" if it has a rev but NO tag (to avoid matching tagged packages which also have a rev)

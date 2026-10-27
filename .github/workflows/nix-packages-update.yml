@@ -1,0 +1,107 @@
+name: Nix Custom Packages Update
+on:
+  schedule:
+    - cron: 47 2 * * *
+      timezone: "Europe/Copenhagen"
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "Package to update (empty for all)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  discover-packages:
+    name: Discover Packages
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.set-packages.outputs.packages }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+      - uses: DeterminateSystems/nix-installer-action@9383ce2bf08796b65508822f5982f49151badc4e # main
+      - uses: DeterminateSystems/magic-nix-cache-action@f69a2d3e148e90223fe63ab6e3f6331f2e7e33dc # main
+      - id: set-packages
+        run: |
+          if [ -n "${{ github.event.inputs.package }}" ]; then
+            echo "packages=[\"${{ github.event.inputs.package }}\"]" >> "$GITHUB_OUTPUT"
+          else
+            PACKAGES=$(./home/nixos/bin/nix-package-update . --list)
+            echo "packages=$PACKAGES" >> "$GITHUB_OUTPUT"
+          fi
+
+  update-package:
+    name: Update ${{ matrix.package }}
+    needs: discover-packages
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ matrix.package }}
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.discover-packages.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: DeterminateSystems/nix-installer-action@9383ce2bf08796b65508822f5982f49151badc4e # main
+      - uses: DeterminateSystems/magic-nix-cache-action@f69a2d3e148e90223fe63ab6e3f6331f2e7e33dc # main
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Create Package Update Branch
+        run: |
+          git checkout -b "nix-update-${{ matrix.package }}"
+      - name: Add bin to PATH
+        run: echo "${{ github.workspace }}/home/nixos/bin" >> $GITHUB_PATH
+      - name: Install required packages via Nix
+        run: |
+          nix profile install --inputs-from . nixpkgs#just nixpkgs#jq nixpkgs#update-nix-fetchgit nixpkgs#gh nixpkgs#home-manager nixpkgs#git
+      - name: Update Package and Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NIX_CONFIG: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+        run: |
+          just update-package "${{ matrix.package }}"
+      - name: Check for changes and Push
+        id: check_changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch origin main
+          BRANCH="nix-update-${{ matrix.package }}"
+
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo "changes_found=true" >> "$GITHUB_OUTPUT"
+            echo "Pushing changes to origin/$BRANCH..."
+            git push origin "$BRANCH" --force
+          else
+            echo "changes_found=false" >> "$GITHUB_OUTPUT"
+            echo "No changes were committed for ${{ matrix.package }}."
+          fi
+      - name: Create or Update Pull Request
+        if: steps.check_changes.outputs.changes_found == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="nix-update-${{ matrix.package }}"
+          git log -1 --format=%s > pr_title.txt
+          git log -1 --format=%b > pr_body.txt
+
+          PR_EXISTS=$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number')
+
+          if [ -n "$PR_EXISTS" ]; then
+            echo "Updating existing PR #$PR_EXISTS..."
+            gh pr edit "$PR_EXISTS" --title "$(cat pr_title.txt)" --body-file pr_body.txt
+          else
+            echo "Creating new PR..."
+            gh pr create --head "$BRANCH" --base main --title "$(cat pr_title.txt)" --body-file pr_body.txt
+          fi
