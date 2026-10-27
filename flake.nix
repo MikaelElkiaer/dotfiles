@@ -110,9 +110,6 @@
           # FIXME: Revert to unstable following https://github.com/NixOS/nixpkgs/issues/575388
           atuin = nixpkgs_atuin.legacyPackages.${prev.system}.atuin;
           dagger = inputs.dagger.packages.${prev.system}.dagger;
-          kubernetes-helm = prev.kubernetes-helm.overrideAttrs (oldAttrs: {
-            doCheck = false;
-          });
           neovim = nixpkgs_master.legacyPackages.${prev.system}.neovim;
           sofka = inputs.sofka.packages.${prev.system}.sofka;
           tmux = prev.tmux.overrideAttrs (oldAttrs: rec {
