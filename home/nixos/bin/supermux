@@ -2,481 +2,609 @@
 
 set -Eeuo pipefail
 
-function _main {
-  _init_args "$@"
-  _export_functions
-  _exec_fzf && EXIT_CODE=0 || EXIT_CODE=$?
+SELF="$(command -v supermux 2>/dev/null || echo "$0")"
 
-  # Ignore escape and interrupts
-  if [ "$EXIT_CODE" -ne 130 ]; then
-    exit "$EXIT_CODE"
+SCRIPT_DIR="$(cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")" && pwd)"
+source "$SCRIPT_DIR/shortname" 2>/dev/null || true
+source "$SCRIPT_DIR/set-color" 2>/dev/null || true
+
+COLOR_MUTED=$'\033[38;5;8m'
+COLOR_RESET=$'\033[0m'
+COLOR_BELL=$'\033[38;5;1m'
+
+function shorten_path {
+  local p="$1"
+  local home_dir="${HOME:-}"
+  if [ -n "$home_dir" ] && [[ "$p" == "$home_dir"* ]]; then
+    p="~${p#$home_dir}"
   fi
-}
-
-function _init_args {
-  optspec="x-:"
-  while getopts "$optspec" optchar; do
-    case "${optchar}" in
-    -)
-      case "${OPTARG}" in
-      *)
-        if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then
-          echo "Unknown option --${OPTARG}" >&2
-        fi
-        ;;
-      esac
-      ;;
-    *)
-      if [ "$OPTERR" != 1 ] || [ "${optspec:0:1}" = ":" ]; then
-        echo "Non-option argument: '-${OPTARG}'" >&2
-      fi
-      ;;
-    esac
-  done
-}
-
-function _export_functions {
-  functions=()
-  for f in $(declare -F | sed --quiet --regexp-extended 's/declare -f ([^_].*)/\1/p'); do
-    functions+=("$f")
-  done
-  eval export -f "${functions[*]}"
-}
-
-function _exec_fzf {
-  echo -n "" | fzf \
-    --bind='backward-eof:change-prompt(> )+reload(load)+rebind(change)+unbind(backward-eof)' \
-    --bind='change:transform(detect_mode {q})' \
-    --bind='focus:transform-border-label(change_border_label {})' \
-    --bind='load:reload(load)+unbind(load)+unbind(backward-eof)' \
-    --bind='enter:become(action_primary {})' \
-    --bind='tab:become(action_secondary {})' \
-    --bind="ctrl-p:toggle-preview" \
-    --bind='ctrl-g:become(popupmux launch lazygit)' \
-    --bind='ctrl-i:become(popupmux launch sofka)' \
-    --cycle \
-    --delimiter='\t' \
-    --nth=2 \
-    --preview='(preview {})' \
-    --preview-window=up,wrap \
-    --with-nth=3,4
-}
-
-function detect_mode {
-  case "$1" in
-  'b ')
-    match=1
-    cmd="get_brew_upgrades"
-    prompt="brew"
-    ;;
-  'c ')
-    match=1
-    cmd="get_commands"
-    prompt="commands"
-    ;;
-  's ')
-    match=1
-    cmd="get_tmux_sessions"
-    prompt="sessions"
-    ;;
-  'w ')
-    match=1
-    cmd="get_tmux_windows"
-    prompt="windows"
-    ;;
-  'z ')
-    match=1
-    cmd="get_zoxide"
-    prompt="zoxide"
-    ;;
-  'i ')
-    match=1
-    cmd="get_inventory"
-    prompt="inventory"
-    ;;
-  'k ')
-    match=1
-    cmd="get_tmux_keys"
-    prompt="keys"
-    ;;
-  'g ')
-    match=1
-    cmd="get_git_repos"
-    prompt="git"
-    ;;
-  'm ')
-    match=1
-    cmd="get_manpages"
-    prompt="manpages"
-    ;;
-  *) ;;
-  esac
-  if [ -n "${match:-}" ]; then
-    echo "clear-query+change-prompt($prompt> )+reload($cmd)+unbind(change)+rebind(backward-eof)"
+  local IFS='/'
+  local parts
+  read -ra parts <<<"$p"
+  local last_idx=$((${#parts[@]} - 1))
+  local result=""
+  if [ "$last_idx" -gt 0 ]; then
+    result+="$COLOR_MUTED"
   fi
-}
-
-function load {
-  get_tmux_sessions
-}
-
-function change_border_label {
-  read -r TYPE FULL ICON NAME <<<"$1"
-  case "$TYPE" in
-  b)
-    echo " 󰌑 upgrade "
-    ;;
-  c)
-    echo " 󰌑 run  prompt "
-    ;;
-  g)
-    echo " 󰌑 nvim  prompt "
-    ;;
-  i)
-    echo " 󰌑 sofka  prompt "
-    ;;
-  k)
-    echo " 󰌑 run "
-    ;;
-  m)
-    echo " 󰌑 open "
-    ;;
-  s)
-    echo " 󰌑 switch "
-    ;;
-  t)
-    echo " 󰌑 switch "
-    ;;
-  z)
-    echo " 󰌑 nvim  prompt "
-    ;;
-  *)
-    echo ""
-    ;;
-  esac
-}
-
-function preview {
-  IFS=$'\t' read -r TYPE FULL ICON NAME <<<"$1"
-  case "$TYPE" in
-  b)
-    HOMEBREW_COLOR=1 HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew info "$FULL"
-    ;;
-  c)
-    man "$NAME" 2>/dev/null | nvimpager -c +"set ft=man"
-    ;;
-  g)
-    README="$(find "$FULL" -maxdepth 1 -type f -iname readme.md)"
-    if [ -n "$README" ]; then
-      nvimpager -c "$README" +"set ft=markdown"
+  for i in "${!parts[@]}"; do
+    if [ -z "${parts[$i]}" ]; then
+      continue
+    elif [ "$i" -eq 0 ]; then
+      result+="${parts[$i]}/"
+    elif [ "$i" -eq "$last_idx" ]; then
+      result+="${COLOR_RESET}${parts[$i]}"
     else
-      tree -a -C -I '.git' -L 5 "$FULL"
+      local s
+      s="$(shortname "${parts[$i]}" 2>/dev/null || echo "${parts[$i]:0:1}")"
+      result+="${s}/"
     fi
-    ;;
-  i)
-    ic get cluster -q "$FULL"
-    ;;
-  k)
-    tmux list-keys -Tprefix "${FULL//;/\\;}" | sed 's/bind-key\( -r\)\? -T prefix [^ ]\+ //'
-    ;;
-  m)
-    man "$FULL" 2>/dev/null | nvimpager -c +"set ft=man"
-    ;;
-  s)
-    local active_pane
-    active_pane="$(tmux display-message -p -F '#{pane_id}' -t "$FULL" 2>/dev/null || true)"
-    if [ -n "$active_pane" ]; then
-      tmux capture-pane -p -e -t "$active_pane"
-    fi
-    ;;
-  t)
-    read -r ID _ <<<"$FULL"
-    tmux capture-pane -p -e -t "$ID"
-    ;;
-  z)
-    README="$(find "$FULL" -maxdepth 1 -type f -iname readme.md)"
-    if [ -n "$README" ]; then
-      nvimpager -c "$README" +"set ft=markdown"
+  done
+  echo "$result"
+}
+
+function format_pane_path {
+  local path="$1"
+  local command="$2"
+  local title="$3"
+  local bell="${4:-0}"
+
+  if [[ "$path" == "$HOME"* ]]; then
+    path="${path/$HOME/'~'}"
+  fi
+
+  local result=""
+  if [ "$command" == "ssh" ]; then
+    local _host _path
+    _host="${title%%:*}"
+    _host="${_host#*@}"
+    _path="${title#*:}"
+    path="$_path"
+    result="${_host} "
+  fi
+
+  local IFS='/'
+  local parts
+  read -ra parts <<<"$path"
+  local last_idx=$((${#parts[@]} - 1))
+  if [ "$last_idx" -gt 0 ]; then
+    result+="$COLOR_MUTED"
+  fi
+  for i in "${!parts[@]}"; do
+    if [ -z "${parts[$i]}" ]; then
+      continue
+    elif [ "$i" -eq 0 ]; then
+      result+="${parts[$i]}/"
+    elif [ "$i" -eq "$last_idx" ]; then
+      result+="${COLOR_RESET}${parts[$i]}/"
+    elif [ -v NOSHORT ]; then
+      result+="${parts[$i]}/"
     else
-      tree -a -C -I '.git' -L 5 "$FULL"
+      local s
+      s="$(shortname "${parts[$i]}" 2>/dev/null || echo "${parts[$i]:0:1}")"
+      result+="${s}/"
     fi
-    ;;
-  esac
+  done
+
+  if [ "$bell" -eq 1 ]; then
+    result+=" ${COLOR_BELL}󰈻${COLOR_RESET}"
+  fi
+
+  echo "$result"
 }
 
-function action_primary {
-  IFS=$'\t' read -r TYPE FULL ICON NAME <<<"$1"
-
-  case "$TYPE" in
-  b)
-    HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew upgrade "$FULL"
-    ;;
-  c)
-    exec "$FULL"
-    ;;
-  g)
-    local new_id
-    new_id="$(tmux new-session -d -c "$FULL" -P -F '#{session_id}' bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash")"
-    tmux switch-client -t "$new_id"
-    ;;
-  i)
-    local new_id new_name
-    new_id="$(tmux new-session -c "$HOME" -d -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{session_id}' bash -i -c 'sleep 0.1; sofka; exec bash')"
-    new_name="${new_id#\$}"
-    ic get cluster-kubeconfig --cluster-name "$FULL" >"$HOME/.kube/config-tmux-${new_name}"
-    tmux switch-client -t "$new_id"
-    ;;
-  k)
-    eval "tmux $(tmux list-keys -Tprefix "${FULL//;/\\;}" | sed 's/bind-key\( -r\)\? -T prefix [^ ]\+ //')"
-    ;;
-  m)
-    man "$FULL"
-    ;;
-  s)
-    tmux switch-client -t "$FULL"
-    ;;
-  t)
-    tmux switch-client -t "$FULL"
-    ;;
-  z)
-    local new_id
-    new_id="$(tmux new-session -d -c "$FULL" -P -F '#{session_id}' bash -i -c "nvim -c ':lua require(\"persistence\").load()';exec bash")"
-    tmux switch-client -t "$new_id"
-    ;;
-  esac
-}
-
-function action_secondary {
-  IFS=$'\t' read -r TYPE FULL ICON NAME <<<"$1"
-
-  case "$TYPE" in
-  c)
-    bash_prompt "$NAME"
-    ;;
-  g)
-    local new_id
-    new_id="$(tmux new-session -d -c "$FULL" -P -F '#{session_id}' bash)"
-    tmux switch-client -t "$new_id"
-    ;;
-  i)
-    local new_id new_name
-    new_id="$(tmux new-session -c "$HOME" -d -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{session_id}' bash -i -c 'sleep 0.1; exec bash')"
-    new_name="${new_id#\$}"
-    ic get cluster-kubeconfig --cluster-name "$FULL" >"$HOME/.kube/config-tmux-${new_name}"
-    tmux switch-client -t "$new_id"
-    ;;
-  s)
-    tmux switch-client -t "$FULL"
-    ;;
-  z)
-    local new_id
-    new_id="$(tmux new-session -d -c "$FULL" -P -F '#{session_id}' bash)"
-    tmux switch-client -t "$new_id"
-    ;;
-  esac
-}
-
-function get_brew_upgrades {
-  local FULL ICON NAME TYPE
-  ICON="$(color blue )"
-  TYPE="b"
-  HOMEBREW_NO_ENV_HINTS=1 HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew upgrade --dry-run --quiet 2>/dev/null | sed '/==> Would upgrade/d' |
-    awk '{print $1}' |
-    while read -r NAME; do
-      FULL="$NAME"
-      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
-    done
-}
-
-function get_commands {
-  local EXTRA_ICONS FULL ICON NAME TYPE
-  ICON="$(color magenta 󰘔)"
-  TYPE="c"
-  compgen -c |
-    sort --unique |
-    while read -r NAME; do
-      FULL="$(type -p "$NAME")"
-      if [ -z "$FULL" ]; then
-        continue
-      fi
-      local EXTRA_ICONS=""
-      if [ "$FULL" = "$HOME/.nix-profile/bin/$NAME" ]; then
-        EXTRA_ICONS+=" $(color cyan 󱄅)"
-      elif [ "$FULL" = "$HOME/bin/$NAME" ]; then
-        EXTRA_ICONS+=" $(color green )"
-      fi
-      echo -e "$TYPE\t$FULL\t$ICON$EXTRA_ICONS\t$NAME"
-    done
-}
-
-function get_git_repos {
-  local FULL GIT_DIR NORMALIZED PARENT CHILD NAME ICON TYPE
-  ICON="$(color yellow )"
-  TYPE="g"
-  fd -g .git -HL -t d -d 10 --prune ~/Repositories/ |
-    while read -r GIT_DIR; do
-      GIT_DIR="${GIT_DIR%/}"
-      FULL="${GIT_DIR%/.git}"
-      NORMALIZED="${FULL/*\/Repositories\//}"
-      if [[ "$NORMALIZED" == *"/"* ]]; then
-        PARENT="${NORMALIZED%/*}"
-        CHILD="${NORMALIZED##*/}"
-      else
-        PARENT="."
-        CHILD="$NORMALIZED"
-      fi
-      NAME="$(color graydark "$PARENT")/$CHILD"
-      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
-    done
-}
-
-function get_inventory {
-  local FULL ICON NAME TYPE
-  ICON="$(color magenta )"
-  TYPE="i"
-  ic get clusters -q -o json |
-    jq -r '.clusters[].id' |
-    while read -r NAME; do
-      FULL="$NAME"
-      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
-    done
-}
-
-function get_manpages {
-  local FULL ICON NAME TYPE
-  ICON="$(color blue )"
-  TYPE="m"
-  # shellcheck disable=SC2046
-  find -L $(manpath | tr ':' ' ') -type f \( -name "*.[0-9]" -or -name "*.[0-9].gz" \) -exec sh -c 'for f; do echo "${f##*/}"; done' _ {} + 2>/dev/null |
-    while read -r NAME; do
-      FULL="$(basename "$NAME" .gz)"
-      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
-    done
-}
-
-function get_tmux_keys {
-  local FULL ICON NAME TYPE
-  ICON="$(color magenta )"
-  TYPE="k"
-  tmux list-keys -N -Tprefix |
-    while read -r FULL NAME; do
-      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
-    done
+function get_pad_width {
+  local pane_w
+  pane_w="$(tmux display-message -p '#{pane_width}' 2>/dev/null || echo "")"
+  local width="${pane_w:-${COLUMNS:-$(tput cols 2>/dev/null || echo 120)}}"
+  echo $(( width + 20 ))
 }
 
 function get_tmux_sessions {
-  local FULL ICON NAME TYPE
-  ICON="$(color cyan )"
-  TYPE="s"
-  local current_sess_name
-  current_sess_name="$(tmux display-message -p '#{client_session}')"
+  local current_sess_id
+  current_sess_id="$(tmux display-message -p '#{session_id}' 2>/dev/null || true)"
 
-  tmux list-sessions -F "#{session_id};#{session_name};#{session_activity};#{session_active}" -f '#{?#{m:_popup_*,#{session_name}},0,1}' | \
-    sort -t';' -k3 -n -r | \
-    while IFS=';' read -r sess_id sess_name sess_activity sess_active || [[ -n "$sess_active" ]]; do
-      if [ "$sess_name" = "$current_sess_name" ]; then
+  local pad
+  pad="$(printf '%*s' "$(get_pad_width)" '')"
+
+  tmux list-sessions -F "#{session_id};#{session_name};#{session_activity};#{session_active};#{window_id};#{pane_current_path};#{pane_current_command};#{pane_title};#{window_bell_flag}" -f '#{?#{m:_popup_*,#{session_name}},0,1}' 2>/dev/null | \
+    while IFS=';' read -r sess_id sess_name sess_activity sess_active win_id pane_path pane_cmd pane_title win_bell || [[ -n "$sess_id" ]]; do
+      if [ -n "$current_sess_id" ] && [ "$sess_id" = "$current_sess_id" ]; then
         continue
       fi
-      FULL="$sess_id"
-      local kube_ctx
-      kube_ctx=$(kubemux "$sess_id" || true)
-      local active_win_id
-      active_win_id="$(tmux display-message -p -t "$sess_id" '#{window_id}' 2>/dev/null || true)"
-      local win_path
-      if [ -n "$active_win_id" ]; then
-        win_path="$(pathmux "$active_win_id")"
-      else
-        win_path=""
+      local kube_ctx=""
+      local clean_id="${sess_id#\$}"
+      if [ -f "$HOME/.kube/config-tmux-$clean_id" ]; then
+        kube_ctx=$(kubemux "$sess_id" 2>/dev/null || true)
       fi
-      # Display: path kube_ctx (no session number, no current command icons!)
+      local win_path=""
+      if [ -n "$pane_path" ]; then
+        win_path="$(format_pane_path "$pane_path" "$pane_cmd" "$pane_title" "$win_bell")"
+      fi
+      local display_name
       if [ -n "$win_path" ]; then
-        NAME="${win_path}${kube_ctx:+ $kube_ctx}"
+        display_name="${win_path}${kube_ctx:+ $kube_ctx}"
       else
-        NAME="$sess_name${kube_ctx:+ $kube_ctx}"
+        display_name="$sess_name${kube_ctx:+ $kube_ctx}"
       fi
-      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
+
+      local unshortened_path="$pane_path"
+      if [ -n "${HOME:-}" ] && [[ "$unshortened_path" == "$HOME"* ]]; then
+        unshortened_path="~${unshortened_path#$HOME}"
+      fi
+      local search_text="$unshortened_path $pane_path $sess_name"
+      local name="${display_name}${pad}${search_text}"
+
+      echo -e "$sess_id\t$name\t${sess_activity:-0}"
     done
 }
 
 function get_tmux_windows {
-  local FULL ICON NAME TYPE
-  ICON="$(color green )"
-  TYPE="t"
-  tmux list-windows -F "#{window_id};#{session_id}" |
-    while IFS=';' read -r win_id sess_id || [[ -n "$sess_id" ]]; do
-      FULL="$win_id"
-      local kube_ctx
-      kube_ctx=$(kubemux "$sess_id" || true)
-      local win_id_clean win_icons win_path
-      win_id_clean="$(echo "$win_id" | tr -d "'")"
-      win_icons="$(windowmux "$win_id_clean" active)"
-      win_path="$(pathmux "$win_id_clean")"
-      win_path="${win_path%% *󰈻*}"
-      NAME="${win_icons}${win_path:+ $win_path}${kube_ctx:+ $kube_ctx}"
-      echo -e "$TYPE\t$FULL\t$ICON\t$NAME"
-    done
-}
+  local pad
+  pad="$(printf '%*s' "$(get_pad_width)" '')"
 
-function get_zoxide {
-  local EXTRA_ICONS FULL ICON NAME TYPE
-  ICON="$(color blue )"
-  TYPE="z"
-  zoxide query --list |
-    while read -r NAME; do
-      EXTRA_ICONS=""
-      FULL="$NAME"
-      if [ -d "$NAME/.git" ]; then
-        EXTRA_ICONS+=" $(color yellow )"
+  declare -A win_cmds
+  while IFS=';' read -r wid cmd; do
+    [ -n "$wid" ] && win_cmds["$wid"]="${win_cmds["$wid"]:-} $cmd"
+  done < <(tmux list-panes -s -F "#{window_id};#{pane_current_command}" 2>/dev/null || true)
+
+  tmux list-windows -F "#{window_id};#{window_active};#{session_id};#{window_activity};#{window_name};#{pane_current_path};#{pane_current_command};#{pane_title};#{window_bell_flag}" 2>/dev/null | \
+    while IFS=';' read -r win_id win_active sess_id win_act win_name pane_path pane_cmd pane_title win_bell || [[ -n "$sess_id" ]]; do
+      if [ "$win_active" = "1" ]; then
+        continue
       fi
-      echo -e "$TYPE\t$FULL\t$ICON$EXTRA_ICONS\t$NAME"
+      local kube_ctx=""
+      local clean_sess_id="${sess_id#\$}"
+      if [ -f "$HOME/.kube/config-tmux-$clean_sess_id" ]; then
+        kube_ctx=$(kubemux "$sess_id" 2>/dev/null || true)
+      fi
+      local win_id_clean="${win_id//\'/}"
+      local win_icons win_path
+      win_icons="$(windowmux "$win_id_clean" active 2>/dev/null || true)"
+      if [ -n "$pane_path" ]; then
+        win_path="$(format_pane_path "$pane_path" "$pane_cmd" "$pane_title" 0)"
+      else
+        win_path=""
+      fi
+      # Display path BEFORE pane icons
+      local display_name="${win_path:+${win_path} }${win_icons}${kube_ctx:+ $kube_ctx}"
+
+      local unshortened_path="$pane_path"
+      if [ -n "${HOME:-}" ] && [[ "$unshortened_path" == "$HOME"* ]]; then
+        unshortened_path="~${unshortened_path#$HOME}"
+      fi
+      local procs="${win_cmds["$win_id"]:-$pane_cmd}"
+      local search_text="$unshortened_path $pane_path $procs $win_name $pane_title"
+      local name="${display_name}${pad}${search_text}"
+
+      echo -e "$win_id\t$name\t${win_act:-0}"
     done
 }
 
-function color {
-  declare -x color_reset color
-  color=
-  color_reset="$(tput sgr0)"
+function zoxide_query {
+  local pad_w
+  pad_w="$(get_pad_width)"
+  zoxide query --list --score 2>/dev/null | awk -v home="${HOME:-}" -v pad_w="$pad_w" '
+  function shortname(str,    out, chunk, keep, rest, i, c) {
+    out = ""
+    while (length(str) > 0) {
+      if (match(str, /^[a-zA-Z]+/)) {
+        chunk = substr(str, RSTART, RLENGTH)
+        str = substr(str, RSTART + RLENGTH)
+        if (chunk ~ /^[A-Z]/) {
+          keep = ""
+          for (i = 1; i <= length(chunk); i++) {
+            c = substr(chunk, i, 1)
+            if (c ~ /[A-Z]/) keep = keep c
+          }
+        } else if (chunk ~ /^[a-z]/ && chunk ~ /[A-Z]/) {
+          keep = substr(chunk, 1, 1)
+          rest = substr(chunk, 2)
+          for (i = 1; i <= length(rest); i++) {
+            c = substr(rest, i, 1)
+            if (c ~ /[A-Z]/) keep = keep c
+          }
+        } else {
+          keep = substr(chunk, 1, 1)
+        }
+        out = out keep
+      } else if (match(str, /^[0-9]+/)) {
+        chunk = substr(str, RSTART, RLENGTH)
+        str = substr(str, RSTART + RLENGTH)
+        out = out chunk
+      } else {
+        out = out substr(str, 1, 1)
+        str = substr(str, 2)
+      }
+    }
+    return out
+  }
 
-  case $1 in
-  black)
-    color="$(tput setaf 0)"
-    ;;
-  blue)
-    color="$(tput setaf 4)"
-    ;;
-  cyan)
-    color="$(tput setaf 6)"
-    ;;
-  default)
-    color="$color_reset"
-    ;;
-  graydark)
-    color="$(tput setaf 8)"
-    ;;
-  graylight)
-    color="$(tput setaf 7)"
-    ;;
-  green)
-    color="$(tput setaf 2)"
-    ;;
-  magenta)
-    color="$(tput setaf 5)"
-    ;;
-  red)
-    color="$(tput setaf 1)"
-    ;;
-  yellow)
-    color="$(tput setaf 3)"
-    ;;
-  white)
-    color="$(tput setaf 15)"
-    ;;
-  *)
-    echo "[WRN] Color must be one of: black, blue, cyan, default, green, magenta, red, yellow, white" >&2
-    ;;
-  esac
+  function shorten_path(p,    n, parts, i, res, c_muted, c_reset) {
+    c_muted = "\033[38;5;8m"
+    c_reset = "\033[0m"
+    if (home != "" && substr(p, 1, length(home)) == home) {
+      p = "~" substr(p, length(home) + 1)
+    }
+    n = split(p, parts, "/")
+    if (n <= 1) return p
+    res = c_muted
+    for (i = 1; i < n; i++) {
+      if (parts[i] == "") continue
+      if (i == 1) {
+        res = res parts[i] "/"
+      } else {
+        res = res shortname(parts[i]) "/"
+      }
+    }
+    res = res c_reset parts[n]
+    return res
+  }
 
-  echo -e "$color$2$color_reset"
+  {
+    score = $1
+    sub(/^[[:space:]]*[0-9.]+ +/, "", $0)
+    full_path = $0
+    if (full_path != "") {
+      tilda_path = full_path
+      if (home != "" && substr(full_path, 1, length(home)) == home) {
+        tilda_path = "~" substr(full_path, length(home) + 1)
+      }
+      short_path = shorten_path(full_path)
+      pad = sprintf("%*s", pad_w, "")
+      search_meta = tilda_path " " full_path
+      print full_path "\t" short_path pad search_meta "\t" score
+    }
+  }
+  ' || true
 }
 
-_main "$@"
+function tmux_new_session {
+  local dir="$1"
+  local cmd="${2:-}"
+  local new_id
+  if [ -n "$cmd" ]; then
+    new_id="$(tmux new-session -d -c "$dir" -P -F '#{session_id}' bash -i -c "$cmd; exec bash")"
+  else
+    new_id="$(tmux new-session -d -c "$dir" -P -F '#{session_id}' bash)"
+  fi
+  tmux switch-client -t "$new_id"
+}
+
+function ic_connect {
+  local cluster="$1"
+  local cmd="${2:-}"
+  local new_id
+  new_id="$(tmux new-session -c "$HOME" -d -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{session_id}' bash -i -c "${cmd:+$cmd; }exec bash")"
+  local new_name="${new_id#\$}"
+  ic get cluster-kubeconfig --cluster-name "$cluster" >"$HOME/.kube/config-tmux-${new_name}"
+  tmux switch-client -t "$new_id"
+}
+
+export -f shorten_path format_pane_path get_pad_width get_tmux_sessions get_tmux_windows zoxide_query tmux_new_session ic_connect
+
+# -----------------------------------------------------------------------------
+# Mode DSL Configuration Helpers
+# -----------------------------------------------------------------------------
+
+function mode_prompt {
+  PROMPT="$1"
+}
+
+function mode_preview {
+  PREVIEW_CMD="$1"
+}
+
+function mode_source {
+  RAW_SOURCE_CMD="$1"
+  shift
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --delimiter)
+        DELIM="$2"
+        shift 2
+        ;;
+      --display)
+        DISPLAY_FIELDS="$2"
+        shift 2
+        ;;
+      --search)
+        SEARCH_FIELDS="$2"
+        shift 2
+        ;;
+      --order-by)
+        ORDER_BY="$2"
+        shift 2
+        ;;
+      --order-opts)
+        ORDER_OPTS="$2"
+        shift 2
+        ;;
+      --output)
+        OUTPUT_FIELD="$2"
+        shift 2
+        ;;
+      --no-sort|+s)
+        NO_SORT=1
+        shift
+        ;;
+      *)
+        shift
+        ;;
+    esac
+  done
+}
+
+function mode_action {
+  # Usage: mode_action <key> <description> <mode:become|reload> <command>
+  ACTION_KEYS+=("$1")
+  ACTION_DESCS+=("$2")
+  ACTION_MODES+=("${3:-become}")
+  ACTION_CMDS+=("$4")
+}
+
+function mode_bind {
+  # Usage: mode_bind <key> <description> <target>
+  KB_KEYS+=("$1")
+  KB_DESCS+=("${2:-}")
+  KB_ACTIONS+=("$3")
+}
+
+# -----------------------------------------------------------------------------
+# Mode Definitions
+# -----------------------------------------------------------------------------
+
+function mode_sessions {
+  mode_prompt "sessions> "
+  mode_source "get_tmux_sessions" \
+    --delimiter $'\t' \
+    --display 2 \
+    --order-by 3 \
+    --order-opts "-n -r" \
+    --output 1
+  mode_preview "tmux capture-pane -p -e -t {1}"
+
+  mode_action enter   "select"  become "tmux switch-client -t {1}"
+  mode_action ctrl-x  "delete"  reload "tmux_cleanup -s {1}"
+
+  mode_bind ctrl-w      "windows"   mode:windows
+  mode_bind ctrl-o      "zoxide"    mode:zoxide
+  mode_bind ctrl-i      "inventory" mode:inventory
+  mode_bind ctrl-s      "sofka"     "popupmux launch sofka"
+  mode_bind ctrl-g      "lazygit"   "popupmux launch lazygit"
+  mode_bind esc         "exit"      abort
+}
+
+function mode_windows {
+  mode_prompt "windows> "
+  mode_source "get_tmux_windows" \
+    --delimiter $'\t' \
+    --display 2 \
+    --order-by 3 \
+    --order-opts "-n -r" \
+    --output 1
+  mode_preview "tmux capture-pane -p -e -t {1}"
+
+  mode_action enter   "select"  become "tmux switch-client -t {1}"
+  mode_action ctrl-x  "delete"  reload "tmux_cleanup -w {1}"
+
+  mode_bind esc         "sessions"  mode:sessions
+  mode_bind ctrl-o      "zoxide"    mode:zoxide
+  mode_bind ctrl-i      "inventory" mode:inventory
+}
+
+function mode_zoxide {
+  mode_prompt "zoxide> "
+  mode_source "zoxide_query" \
+    --delimiter $'\t' \
+    --display 2 \
+    --order-by 3 \
+    --order-opts "-n -r" \
+    --output 1 \
+    --no-sort
+  mode_preview 'test -f {1}/README.md && nvimpager -c {1}/README.md +"set ft=markdown" || test -f {1}/readme.md && nvimpager -c {1}/readme.md +"set ft=markdown" || tree -a -C -I .git -L 4 {1} 2>/dev/null || ls -la {1}'
+
+  mode_action enter   "nvim"    become "tmux_new_session {1} 'nvim -c \":lua require(\\\"persistence\\\").load()\"'"
+  mode_action tab     "bash"    become "tmux_new_session {1}"
+  mode_action ctrl-x  "remove"  reload "zoxide remove {1}"
+
+  mode_bind esc         "sessions"  mode:sessions
+  mode_bind ctrl-w      "windows"   mode:windows
+  mode_bind ctrl-i      "inventory" mode:inventory
+  mode_bind ctrl-o      "sort"      toggle-sort
+}
+
+function mode_inventory {
+  mode_prompt "inventory> "
+  mode_source "ic get clusters -q -o json 2>/dev/null | jq -r '.clusters[].id' 2>/dev/null || true" \
+    --delimiter $'\t' \
+    --display 1 \
+    --search 1 \
+    --output 1
+  mode_preview "ic get cluster -q {1}"
+
+  mode_action enter   "sofka"   become "ic_connect {1} 'sleep 0.1; sofka'"
+  mode_action tab     "bash"    become "ic_connect {1}"
+
+  mode_bind esc         "sessions"  mode:sessions
+  mode_bind ctrl-w      "windows"   mode:windows
+  mode_bind ctrl-o      "zoxide"    mode:zoxide
+}
+
+# -----------------------------------------------------------------------------
+# Runner
+# -----------------------------------------------------------------------------
+
+function _exec_fzf {
+  local mode="$1"
+  local query="$2"
+
+  tmux set-option -p @supermux_mode "$mode" 2>/dev/null || true
+
+  # Reset DSL state
+  PROMPT="${mode}> "
+  DELIM=$'\t'
+  DISPLAY_FIELDS=""
+  SEARCH_FIELDS=""
+  ORDER_BY=""
+  ORDER_OPTS=""
+  OUTPUT_FIELD=1
+  NO_SORT=0
+  PREVIEW_CMD=""
+  RAW_SOURCE_CMD=""
+
+  ACTION_KEYS=()
+  ACTION_DESCS=()
+  ACTION_MODES=()
+  ACTION_CMDS=()
+  ACTION_LABELS=()
+  ACTION_BINDS=()
+
+  KB_KEYS=()
+  KB_DESCS=()
+  KB_ACTIONS=()
+  KB_LABELS=()
+  KB_BINDS=()
+
+  local mode_fn="mode_${mode}"
+  if ! declare -F "$mode_fn" >/dev/null 2>&1; then
+    echo "supermux: unknown mode '$mode'" >&2
+    exit 1
+  fi
+
+  "$mode_fn"
+
+  # Build full source pipeline with ordering if specified
+  local full_source_cmd="$RAW_SOURCE_CMD"
+  local sort_delim="$DELIM"
+  if [ "$sort_delim" = '\t' ] || [ "$sort_delim" = "\\t" ]; then
+    sort_delim=$'\t'
+  fi
+  if [ -n "$ORDER_BY" ]; then
+    full_source_cmd="$full_source_cmd | sort -t'$sort_delim' -k${ORDER_BY},${ORDER_BY} $ORDER_OPTS"
+  fi
+
+  # Replace placeholder in preview command
+  if [ -n "$PREVIEW_CMD" ]; then
+    PREVIEW_CMD="${PREVIEW_CMD//\{\}/\{$OUTPUT_FIELD\}}"
+  fi
+
+  # Build action bindings
+  for idx in "${!ACTION_KEYS[@]}"; do
+    local key="${ACTION_KEYS[$idx]}"
+    local desc="${ACTION_DESCS[$idx]}"
+    local act_mode="${ACTION_MODES[$idx]}"
+    local cmd="${ACTION_CMDS[$idx]}"
+    cmd="${cmd//\{\}/\{$OUTPUT_FIELD\}}"
+
+    local display_key="${key/ctrl-/^}"
+    ACTION_LABELS+=("${display_key}:${desc}")
+
+    if [ "$act_mode" = "reload" ]; then
+      ACTION_BINDS+=(--bind="$key:execute($cmd)+reload($full_source_cmd)")
+    else
+      ACTION_BINDS+=(--bind="$key:become($cmd)")
+    fi
+  done
+
+  # Build keybinding bindings
+  for idx in "${!KB_KEYS[@]}"; do
+    local kb="${KB_KEYS[$idx]}"
+    local desc="${KB_DESCS[$idx]}"
+    local kb_action="${KB_ACTIONS[$idx]}"
+
+    local display_kb="${kb/ctrl-/^}"
+    [ -n "$desc" ] && KB_LABELS+=("${display_kb}:${desc}")
+
+    if [[ "$kb_action" == mode:* ]]; then
+      local target="${kb_action#mode:}"
+      KB_BINDS+=(--bind="$kb:become($SELF --mode $target --query {q})")
+    elif [ "$kb_action" = "abort" ]; then
+      KB_BINDS+=(--bind="$kb:abort")
+    elif [[ "$kb_action" == toggle-* ]] || [[ "$kb_action" == fzf:* ]]; then
+      local act="${kb_action#fzf:}"
+      KB_BINDS+=(--bind="$kb:$act")
+    else
+      KB_BINDS+=(--bind="$kb:become($kb_action)")
+    fi
+  done
+
+  local border_label="${ACTION_LABELS[*]}  ${KB_LABELS[*]}"
+
+  local fzf_args=(
+    --ansi
+    --no-hscroll
+    --prompt="$PROMPT"
+    --cycle
+    --delimiter="$DELIM"
+    --border=bottom
+    --border-label=" $border_label "
+    --bind="ctrl-p:toggle-preview"
+    --bind="resize:reload($full_source_cmd)"
+    "${ACTION_BINDS[@]}"
+    "${KB_BINDS[@]}"
+  )
+
+  if [ "$NO_SORT" -eq 1 ]; then
+    fzf_args+=(--no-sort)
+  fi
+
+  if [ -n "$DISPLAY_FIELDS" ]; then
+    fzf_args+=(--with-nth="$DISPLAY_FIELDS")
+  fi
+
+  if [ -n "$SEARCH_FIELDS" ]; then
+    fzf_args+=(--nth="$SEARCH_FIELDS")
+  fi
+
+  if [ -n "$PREVIEW_CMD" ]; then
+    fzf_args+=(
+      --preview="($PREVIEW_CMD)"
+      --preview-window="up,wrap"
+    )
+  fi
+
+  if [ -n "$query" ]; then
+    fzf_args+=(--query="$query")
+  fi
+
+  if [ -n "${SUPERMUX_DRY_RUN:-}" ]; then
+    echo "MODE: $mode"
+    echo "PROMPT: $PROMPT"
+    echo "SOURCE: $full_source_cmd"
+    echo "BORDER_LABEL: $border_label"
+    echo "FZF_ARGS: ${fzf_args[*]}"
+    return 0
+  fi
+
+  local exit_code=0
+  eval "$full_source_cmd" | fzf "${fzf_args[@]}" || exit_code=$?
+
+  if [ "$exit_code" -ne 130 ]; then
+    exit "$exit_code"
+  fi
+}
+
+function main {
+  local mode="sessions"
+  local query=""
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -m|--mode)
+        mode="$2"
+        shift 2
+        ;;
+      -q|--query)
+        query="$2"
+        shift 2
+        ;;
+      *)
+        shift
+        ;;
+    esac
+  done
+
+  _exec_fzf "$mode" "$query"
+}
+
+main "$@"
