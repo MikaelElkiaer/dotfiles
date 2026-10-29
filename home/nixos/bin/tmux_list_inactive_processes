@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+# Get active TTYs from running tmux sessions (e.g., ttys003, ttys005)
+active_ttys=$(tmux list-panes -a -F '#{pane_tty}' 2>/dev/null | sed 's|/dev/||' | paste -sd'|')
+
+if [ -n "$active_ttys" ]; then
+    # List processes on a tty that are NOT in the active tmux TTY list
+    ps -u $(id -u) -o pid,tty,comm | grep -E "ttys" | grep -v -E "$active_ttys" | grep -v -E "tmux"
+else
+    # If the tmux server is completely dead, any process still attached to a ttys is dangling
+    ps -u $(id -u) -o pid,tty,comm | grep -E "ttys" | grep -v -E "tmux"
+fi
