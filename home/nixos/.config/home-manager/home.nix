@@ -50,6 +50,7 @@
     gh-dash
     gh-enhance
     gh-markdown-preview
+    gh-stack
     git
     glow
     gnused
