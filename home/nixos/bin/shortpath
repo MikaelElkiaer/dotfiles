@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")" && pwd)"
+source "$SCRIPT_DIR/shortname" 2>/dev/null || true
+
+function shortpath() {
+  local color_mode="${COLORMODE:-ansi}"
+  local trailing_slash=1
+  local bell=0
+  local no_short=0
+  local path=""
+
+  [[ -v NOSHORT ]] && no_short=1
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -m|--mode|--color-mode)
+        color_mode="$2"
+        shift 2
+        ;;
+      -s|--slash|--trailing-slash)
+        trailing_slash=1
+        shift
+        ;;
+      -S|--no-slash|--no-trailing-slash)
+        trailing_slash=0
+        shift
+        ;;
+      -b|--bell)
+        bell=1
+        shift
+        ;;
+      --no-short)
+        no_short=1
+        shift
+        ;;
+      -h|--help)
+        echo "Usage: shortpath [OPTIONS] [PATH]"
+        echo ""
+        echo "Options:"
+        echo "  -m, --mode <ansi|tmux|none>   Color mode (default: ansi, or COLORMODE env)"
+        echo "  -s, --slash                   Include trailing slash on last component (default)"
+        echo "  -S, --no-slash                Omit trailing slash on last component"
+        echo "  -b, --bell                    Append bell indicator (󰈻)"
+        echo "      --no-short                Do not abbreviate intermediate directories"
+        echo "  -h, --help                    Show this help message"
+        return 0
+        ;;
+      --)
+        shift
+        path="${1:-}"
+        break
+        ;;
+      -*)
+        echo "shortpath: unknown option '$1'" >&2
+        return 1
+        ;;
+      *)
+        path="$1"
+        shift
+        ;;
+    esac
+  done
+
+  # If path is empty, check stdin
+  if [ -z "$path" ]; then
+    if [ ! -t 0 ]; then
+      while IFS= read -r line || [ -n "$line" ]; do
+        shortpath "$line"
+      done
+      return 0
+    else
+      return 0
+    fi
+  fi
+
+  # Replace $HOME with ~
+  local home_dir="${HOME:-}"
+  if [ -n "$home_dir" ] && [[ "$path" == "$home_dir"* ]]; then
+    path="~${path#$home_dir}"
+  fi
+
+  # Determine colors based on color_mode
+  local color_muted="" color_reset="" color_bell=""
+  case "$color_mode" in
+    tmux)
+      color_muted="#[default]#[fg=colour8]"
+      color_reset="#[default]"
+      color_bell="#[fg=colour1]"
+      ;;
+    none)
+      color_muted=""
+      color_reset=""
+      color_bell=""
+      ;;
+    *) # ansi
+      color_muted=$'\033[38;5;8m'
+      color_reset=$'\033[0m'
+      color_bell=$'\033[38;5;1m'
+      ;;
+  esac
+
+  local IFS='/'
+  local parts
+  read -ra parts <<<"$path"
+  local last_idx=$((${#parts[@]} - 1))
+  local result=""
+
+  if [ "$last_idx" -gt 0 ]; then
+    result+="$color_muted"
+  fi
+
+  for i in "${!parts[@]}"; do
+    if [ -z "${parts[$i]}" ]; then
+      continue
+    elif [ "$i" -eq 0 ]; then
+      result+="${parts[$i]}/"
+    elif [ "$i" -eq "$last_idx" ]; then
+      result+="${color_reset}${parts[$i]}"
+      if [ "$trailing_slash" -eq 1 ]; then
+        result+="/"
+      fi
+    elif [ "$no_short" -eq 1 ]; then
+      result+="${parts[$i]}/"
+    else
+      local s
+      s="$(shortname "${parts[$i]}" 2>/dev/null || echo "${parts[$i]:0:1}")"
+      result+="${s}/"
+    fi
+  done
+
+  if [ "$bell" -eq 1 ]; then
+    result+=" ${color_bell}󰈻${color_reset}"
+  fi
+
+  echo -n "$result"
+}
+
+# If run directly as a script
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  if [ "$#" -eq 0 ] && [ -t 0 ]; then
+    shortpath --help
+    exit 0
+  fi
+  shortpath "$@"
+  echo ""
+fi

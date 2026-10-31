@@ -7,39 +7,10 @@ SELF="$(command -v supermux 2>/dev/null || echo "$0")"
 SCRIPT_DIR="$(cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")" && pwd)"
 source "$SCRIPT_DIR/shortname" 2>/dev/null || true
 source "$SCRIPT_DIR/set-color" 2>/dev/null || true
-
-COLOR_MUTED=$'\033[38;5;8m'
-COLOR_RESET=$'\033[0m'
-COLOR_BELL=$'\033[38;5;1m'
+source "$SCRIPT_DIR/shortpath" 2>/dev/null || true
 
 function shorten_path {
-  local p="$1"
-  local home_dir="${HOME:-}"
-  if [ -n "$home_dir" ] && [[ "$p" == "$home_dir"* ]]; then
-    p="~${p#$home_dir}"
-  fi
-  local IFS='/'
-  local parts
-  read -ra parts <<<"$p"
-  local last_idx=$((${#parts[@]} - 1))
-  local result=""
-  if [ "$last_idx" -gt 0 ]; then
-    result+="$COLOR_MUTED"
-  fi
-  for i in "${!parts[@]}"; do
-    if [ -z "${parts[$i]}" ]; then
-      continue
-    elif [ "$i" -eq 0 ]; then
-      result+="${parts[$i]}/"
-    elif [ "$i" -eq "$last_idx" ]; then
-      result+="${COLOR_RESET}${parts[$i]}"
-    else
-      local s
-      s="$(shortname "${parts[$i]}" 2>/dev/null || echo "${parts[$i]:0:1}")"
-      result+="${s}/"
-    fi
-  done
-  echo "$result"
+  shortpath -S "$1"
 }
 
 function format_pane_path {
@@ -48,48 +19,24 @@ function format_pane_path {
   local title="$3"
   local bell="${4:-0}"
 
-  if [[ "$path" == "$HOME"* ]]; then
-    path="${path/$HOME/'~'}"
-  fi
-
-  local result=""
+  local prefix=""
   if [ "$command" == "ssh" ]; then
     local _host _path
     _host="${title%%:*}"
     _host="${_host#*@}"
     _path="${title#*:}"
     path="$_path"
-    result="${_host} "
+    prefix="${_host} "
   fi
 
-  local IFS='/'
-  local parts
-  read -ra parts <<<"$path"
-  local last_idx=$((${#parts[@]} - 1))
-  if [ "$last_idx" -gt 0 ]; then
-    result+="$COLOR_MUTED"
-  fi
-  for i in "${!parts[@]}"; do
-    if [ -z "${parts[$i]}" ]; then
-      continue
-    elif [ "$i" -eq 0 ]; then
-      result+="${parts[$i]}/"
-    elif [ "$i" -eq "$last_idx" ]; then
-      result+="${COLOR_RESET}${parts[$i]}/"
-    elif [ -v NOSHORT ]; then
-      result+="${parts[$i]}/"
-    else
-      local s
-      s="$(shortname "${parts[$i]}" 2>/dev/null || echo "${parts[$i]:0:1}")"
-      result+="${s}/"
-    fi
-  done
-
+  local bell_opt=()
   if [ "$bell" -eq 1 ]; then
-    result+=" ${COLOR_BELL}󰈻${COLOR_RESET}"
+    bell_opt=(-b)
   fi
 
-  echo "$result"
+  local sp
+  sp="$(shortpath "${bell_opt[@]}" "$path")"
+  echo "$prefix$sp"
 }
 
 function get_pad_width {
@@ -280,7 +227,7 @@ function ic_connect {
   tmux switch-client -t "$new_id"
 }
 
-export -f shorten_path format_pane_path get_pad_width get_tmux_sessions get_tmux_windows zoxide_query tmux_new_session ic_connect
+export -f shortpath shorten_path format_pane_path get_pad_width get_tmux_sessions get_tmux_windows zoxide_query tmux_new_session ic_connect
 
 # -----------------------------------------------------------------------------
 # Mode DSL Configuration Helpers
