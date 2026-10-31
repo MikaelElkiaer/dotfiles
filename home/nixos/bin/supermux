@@ -100,81 +100,19 @@ function get_tmux_windows {
 }
 
 function zoxide_query {
-  local pad_w
-  pad_w="$(get_pad_width)"
-  zoxide query --list --score 2>/dev/null | awk -v home="${HOME:-}" -v pad_w="$pad_w" '
-  function shortname(str,    out, chunk, keep, rest, i, c) {
-    out = ""
-    while (length(str) > 0) {
-      if (match(str, /^[a-zA-Z]+/)) {
-        chunk = substr(str, RSTART, RLENGTH)
-        str = substr(str, RSTART + RLENGTH)
-        if (chunk ~ /^[A-Z]/) {
-          keep = ""
-          for (i = 1; i <= length(chunk); i++) {
-            c = substr(chunk, i, 1)
-            if (c ~ /[A-Z]/) keep = keep c
-          }
-        } else if (chunk ~ /^[a-z]/ && chunk ~ /[A-Z]/) {
-          keep = substr(chunk, 1, 1)
-          rest = substr(chunk, 2)
-          for (i = 1; i <= length(rest); i++) {
-            c = substr(rest, i, 1)
-            if (c ~ /[A-Z]/) keep = keep c
-          }
-        } else {
-          keep = substr(chunk, 1, 1)
-        }
-        out = out keep
-      } else if (match(str, /^[0-9]+/)) {
-        chunk = substr(str, RSTART, RLENGTH)
-        str = substr(str, RSTART + RLENGTH)
-        out = out chunk
-      } else {
-        out = out substr(str, 1, 1)
-        str = substr(str, 2)
-      }
-    }
-    return out
-  }
+  local pad
+  pad="$(printf '%*s' "$(get_pad_width)" '')"
 
-  function shorten_path(p,    n, parts, i, res, c_muted, c_reset) {
-    c_muted = "\033[38;5;8m"
-    c_reset = "\033[0m"
-    if (home != "" && substr(p, 1, length(home)) == home) {
-      p = "~" substr(p, length(home) + 1)
-    }
-    n = split(p, parts, "/")
-    if (n <= 1) return p
-    res = c_muted
-    for (i = 1; i < n; i++) {
-      if (parts[i] == "") continue
-      if (i == 1) {
-        res = res parts[i] "/"
-      } else {
-        res = res shortname(parts[i]) "/"
-      }
-    }
-    res = res c_reset parts[n]
-    return res
-  }
-
-  {
-    score = $1
-    sub(/^[[:space:]]*[0-9.]+ +/, "", $0)
-    full_path = $0
-    if (full_path != "") {
-      tilda_path = full_path
-      if (home != "" && substr(full_path, 1, length(home)) == home) {
-        tilda_path = "~" substr(full_path, length(home) + 1)
-      }
-      short_path = shorten_path(full_path)
-      pad = sprintf("%*s", pad_w, "")
-      search_meta = tilda_path " " full_path
-      print full_path "\t" short_path pad search_meta "\t" score
-    }
-  }
-  ' || true
+  zoxide query --list --score 2>/dev/null | while read -r score full_path || [ -n "$full_path" ]; do
+    [ -z "$full_path" ] && continue
+    local short_p
+    short_p="$(shortpath -S "$full_path")"
+    local tilda_p="$full_path"
+    if [ -n "${HOME:-}" ] && [[ "$tilda_p" == "$HOME"* ]]; then
+      tilda_p="~${tilda_p#$HOME}"
+    fi
+    echo -e "$full_path\t${short_p}${pad}${tilda_p} ${full_path}\t$score"
+  done || true
 }
 
 function tmux_new_session {
