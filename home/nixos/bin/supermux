@@ -8,35 +8,12 @@ SCRIPT_DIR="$(cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")" && pwd)"
 source "$SCRIPT_DIR/shortname" 2>/dev/null || true
 source "$SCRIPT_DIR/set-color" 2>/dev/null || true
 source "$SCRIPT_DIR/shortpath" 2>/dev/null || true
+source "$SCRIPT_DIR/pathmux" 2>/dev/null || true
+source "$SCRIPT_DIR/windowmux" 2>/dev/null || true
+source "$SCRIPT_DIR/kubemux" 2>/dev/null || true
 
 function shorten_path {
   shortpath -S "$1"
-}
-
-function format_pane_path {
-  local path="$1"
-  local command="$2"
-  local title="$3"
-  local bell="${4:-0}"
-
-  local prefix=""
-  if [ "$command" == "ssh" ]; then
-    local _host _path
-    _host="${title%%:*}"
-    _host="${_host#*@}"
-    _path="${title#*:}"
-    path="$_path"
-    prefix="${_host} "
-  fi
-
-  local bell_opt=()
-  if [ "$bell" -eq 1 ]; then
-    bell_opt=(-b)
-  fi
-
-  local sp
-  sp="$(shortpath "${bell_opt[@]}" "$path")"
-  echo "$prefix$sp"
 }
 
 function get_pad_width {
@@ -61,11 +38,11 @@ function get_tmux_sessions {
       local kube_ctx=""
       local clean_id="${sess_id#\$}"
       if [ -f "$HOME/.kube/config-tmux-$clean_id" ]; then
-        kube_ctx=$(kubemux "$sess_id" 2>/dev/null || true)
+        kube_ctx=$(kubemux "$sess_id")
       fi
       local win_path=""
       if [ -n "$pane_path" ]; then
-        win_path="$(format_pane_path "$pane_path" "$pane_cmd" "$pane_title" "$win_bell")"
+        win_path="$(format_path "$pane_path" "$pane_cmd" "$pane_title" "$win_bell")"
       fi
       local display_name
       if [ -n "$win_path" ]; then
@@ -99,21 +76,16 @@ function get_tmux_windows {
       if [ "$win_active" = "1" ]; then
         continue
       fi
-      local kube_ctx=""
-      local clean_sess_id="${sess_id#\$}"
-      if [ -f "$HOME/.kube/config-tmux-$clean_sess_id" ]; then
-        kube_ctx=$(kubemux "$sess_id" 2>/dev/null || true)
-      fi
       local win_id_clean="${win_id//\'/}"
       local win_icons win_path
-      win_icons="$(windowmux "$win_id_clean" active 2>/dev/null || true)"
+      win_icons="$(windowmux "$win_id_clean" active)"
       if [ -n "$pane_path" ]; then
-        win_path="$(format_pane_path "$pane_path" "$pane_cmd" "$pane_title" 0)"
+        win_path="$(format_path "$pane_path" "$pane_cmd" "$pane_title" 0)"
       else
         win_path=""
       fi
-      # Display path BEFORE pane icons
-      local display_name="${win_path:+${win_path} }${win_icons}${kube_ctx:+ $kube_ctx}"
+      # Display path BEFORE pane icons (no kubemux)
+      local display_name="${win_path:+${win_path} }${win_icons}"
 
       local unshortened_path="$pane_path"
       if [ -n "${HOME:-}" ] && [[ "$unshortened_path" == "$HOME"* ]]; then
@@ -227,7 +199,7 @@ function ic_connect {
   tmux switch-client -t "$new_id"
 }
 
-export -f shortpath shorten_path format_pane_path get_pad_width get_tmux_sessions get_tmux_windows zoxide_query tmux_new_session ic_connect
+export -f shortpath shorten_path format_path get_pad_width get_tmux_sessions get_tmux_windows zoxide_query tmux_new_session ic_connect
 
 # -----------------------------------------------------------------------------
 # Mode DSL Configuration Helpers

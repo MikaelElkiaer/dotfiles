@@ -2,45 +2,8 @@
 
 set -Eeuo pipefail
 
-# Source the helpers to import set-color and shortname as pure bash functions
-# with absolutely zero process fork overhead when executing them.
 source "$(dirname "${BASH_SOURCE[0]}")/set-color"
-source "$(dirname "${BASH_SOURCE[0]}")/shortpath"
-
-function main() {
-  WINDOW_ID="$1"
-  STATE="${2:-}"
-
-  if [[ "$STATE" == "active" || "$STATE" == "inactive" ]]; then
-    format_window_list "$WINDOW_ID" "$STATE"
-    return
-  fi
-
-  # Original backward-compatible behavior (path + icon)
-  IFS=$';' read -r path command title bell < <(tmux display-message -p -F '#{pane_current_path};#{pane_current_command};#{pane_title};#{window_bell_flag}' -t "$WINDOW_ID")
-
-  local icon
-  icon=$(get_app_icon "$command")
-  local prefix="$(set-color 12)${icon} $(set-color reset)"
-
-  if [ "$command" == "ssh" ]; then
-    local _host _path
-    _host="${title%%:*}"
-    _host="${_host#*@}"
-    _path="${title#*:}"
-    path="$_path"
-    prefix+="${_host}"
-  fi
-
-  local bell_opt=()
-  if [ "$bell" -eq 1 ]; then
-    bell_opt=(-b)
-  fi
-
-  echo -n "$prefix"
-  shortpath "${bell_opt[@]}" "$path"
-  echo ""
-}
+source "$(dirname "${BASH_SOURCE[0]}")/pathmux"
 
 function get_app_icon() {
   case "$1" in
@@ -75,10 +38,8 @@ function format_window_list() {
     icon=$(get_app_icon "$pane_command")
 
     if [ "$status" = "active" ]; then
-      # All panes in active window are white (color 15) with space inside reset to prevent collapse
       result+="$(set-color 15)${icon}$(set-color reset)"
     else
-      # All panes in inactive windows are dimmed (color 8) with space inside reset to prevent collapse
       result+="$(set-color 8)${icon}$(set-color reset)"
     fi
   done < <(tmux list-panes -t "$window_id" -F "#{pane_active};#{pane_current_command}")
@@ -93,4 +54,28 @@ function format_window_list() {
   echo -n "${result}"
 }
 
-main "$@"
+function windowmux() {
+  local window_id="$1"
+  local state="${2:-}"
+
+  if [[ "$state" == "active" || "$state" == "inactive" ]]; then
+    format_window_list "$window_id" "$state"
+    return
+  fi
+
+  # Original backward-compatible behavior (path + icon)
+  local path command title bell
+  IFS=$';' read -r path command title bell < <(tmux display-message -p -F '#{pane_current_path};#{pane_current_command};#{pane_title};#{window_bell_flag}' -t "$window_id")
+
+  local icon
+  icon=$(get_app_icon "$command")
+  local icon_str="$(set-color 12)${icon} $(set-color reset)"
+
+  echo -n "$icon_str"
+  format_path "$path" "$command" "$title" "$bell"
+  echo ""
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  windowmux "$@"
+fi

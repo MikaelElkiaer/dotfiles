@@ -6,66 +6,74 @@ set -euo pipefail
 # with absolutely zero process fork overhead when executing it.
 source "$(dirname "${BASH_SOURCE[0]}")/set-color"
 
-# Strip leading dollar sign or @ sign from the session/window identifier
-SESS_ID="${1#\$}"
-SESS_ID="${SESS_ID#@}"
-export KUBECONFIG="$HOME/.kube/config-tmux-$SESS_ID"
+function kubemux() {
+  local target="${1:-}"
+  local sess_id="${target#\$}"
+  sess_id="${sess_id#@}"
+  local kubeconfig="$HOME/.kube/config-tmux-$sess_id"
 
-if [ ! -f "$KUBECONFIG" ]; then
-  exit 0
-fi
-
-# Extract current-context
-current_context=""
-while IFS= read -r line || [[ -n "$line" ]]; do
-  if [[ "$line" =~ ^current-context:[[:space:]]*[\"\']?([^\"\'[:space:]]+) ]]; then
-    current_context="${BASH_REMATCH[1]}"
-    break
+  if [ ! -f "$kubeconfig" ]; then
+    return 0
   fi
-done <"$KUBECONFIG"
 
-if [ -z "$current_context" ]; then
-  exit 0
-fi
+  # Extract current-context
+  local current_context=""
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" =~ ^current-context:[[:space:]]*[\"\']?([^\"\'[:space:]]+) ]]; then
+      current_context="${BASH_REMATCH[1]}"
+      break
+    fi
+  done <"$kubeconfig"
 
-# Extract namespace for this context
-namespace=$(awk -v target="$current_context" '
-  BEGIN { in_contexts = 0; curr_name = ""; curr_ns = ""; ns = "" }
-  /^contexts:/ { in_contexts = 1; next }
-  /^[a-zA-Z]/ && !/^contexts:/ { in_contexts = 0 }
+  if [ -z "$current_context" ]; then
+    return 0
+  fi
 
-  in_contexts {
-    if ($1 == "-" || $1 == "- context:") {
+  # Extract namespace for this context
+  local namespace
+  namespace=$(awk -v target="$current_context" '
+    BEGIN { in_contexts = 0; curr_name = ""; curr_ns = ""; ns = "" }
+    /^contexts:/ { in_contexts = 1; next }
+    /^[a-zA-Z]/ && !/^contexts:/ { in_contexts = 0 }
+
+    in_contexts {
+      if ($1 == "-" || $1 == "- context:") {
+        if (curr_name == target && curr_ns != "") {
+          ns = curr_ns
+          exit
+        }
+        curr_name = ""
+        curr_ns = ""
+      }
+      if ($1 == "name:" || $2 == "name:") {
+        val = ($1 == "name:") ? $2 : $3
+        gsub(/["\x27]/, "", val)
+        curr_name = val
+      }
+      if ($1 == "namespace:" || $2 == "namespace:") {
+        val = ($1 == "namespace:") ? $2 : $3
+        gsub(/["\x27]/, "", val)
+        curr_ns = val
+      }
+    }
+    END {
       if (curr_name == target && curr_ns != "") {
         ns = curr_ns
-        exit
       }
-      curr_name = ""
-      curr_ns = ""
+      if (ns != "") {
+        print ns
+      }
     }
-    if ($1 == "name:" || $2 == "name:") {
-      val = ($1 == "name:") ? $2 : $3
-      gsub(/["\x27]/, "", val)
-      curr_name = val
-    }
-    if ($1 == "namespace:" || $2 == "namespace:") {
-      val = ($1 == "namespace:") ? $2 : $3
-      gsub(/["\x27]/, "", val)
-      curr_ns = val
-    }
-  }
-  END {
-    if (curr_name == target && curr_ns != "") {
-      ns = curr_ns
-    }
-    if (ns != "") {
-      print ns
-    }
-  }
-' "$KUBECONFIG")
+  ' "$kubeconfig")
 
-RESULT="$(set-color 13)${NOICON- 󱃾 }$current_context$(set-color reset)"
-if [ -n "$namespace" ]; then
-  RESULT="$RESULT(${namespace})"
+  local result
+  result="$(set-color 13)${NOICON- 󱃾 }$current_context$(set-color reset)"
+  if [ -n "$namespace" ]; then
+    result="$result(${namespace})"
+  fi
+  echo "$result"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  kubemux "$@"
 fi
-echo "$RESULT"

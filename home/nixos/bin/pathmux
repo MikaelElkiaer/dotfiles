@@ -4,10 +4,11 @@ set -Eeuo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/shortpath"
 
-function main() {
-  local window_id="$1"
-
-  IFS=$';' read -r path command title bell < <(tmux display-message -p -F '#{pane_current_path};#{pane_current_command};#{pane_title};#{window_bell_flag}' -t "$window_id")
+function format_path() {
+  local path="$1"
+  local command="${2:-}"
+  local title="${3:-}"
+  local bell="${4:-0}"
 
   local prefix=""
   if [ "$command" == "ssh" ]; then
@@ -24,9 +25,19 @@ function main() {
     bell_opt=(-b)
   fi
 
-  echo -n "$prefix"
-  shortpath "${bell_opt[@]}" "$path"
-  echo ""
+  local sp
+  sp="$(shortpath "${bell_opt[@]}" "$path")"
+  echo "${prefix}${sp}"
 }
 
-main "$@"
+function pathmux() {
+  local window_id="$1"
+  local path command title bell
+  IFS=$';' read -r path command title bell < <(tmux display-message -p -F '#{pane_current_path};#{pane_current_command};#{pane_title};#{window_bell_flag}' -t "$window_id")
+
+  format_path "$path" "$command" "$title" "$bell"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  pathmux "$@"
+fi
