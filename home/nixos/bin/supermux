@@ -137,7 +137,66 @@ function ic_connect {
   tmux switch-client -t "$new_id"
 }
 
-export -f shortpath shorten_path format_path get_pad_width get_tmux_sessions get_tmux_windows zoxide_query tmux_new_session ic_connect
+function get_github_user {
+  local user=""
+  if [ -f "$HOME/.config/gh/hosts.yml" ]; then
+    while IFS= read -r line; do
+      if [[ "$line" =~ ^[[:space:]]*user:[[:space:]]*([^[:space:]]+) ]]; then
+        user="${BASH_REMATCH[1]}"
+        break
+      fi
+    done <"$HOME/.config/gh/hosts.yml"
+  fi
+  if [ -z "$user" ]; then
+    user="$(gh api user -q .login 2>/dev/null || echo "")"
+  fi
+  echo "$user"
+}
+
+function github_clone_and_open {
+  local full_name="$1"
+  local cmd="${2:-}"
+
+  [ -z "$full_name" ] && return 0
+
+  local owner="${full_name%%/*}"
+  local name="${full_name#*/}"
+  local user
+  user="$(get_github_user)"
+
+  local subpath
+  if [ -n "$user" ] && [ "$user" = "$owner" ]; then
+    subpath="$name"
+  else
+    subpath="$owner/$name"
+  fi
+
+  local base_dir="${HOME}/Repositories/GitHub"
+  local target_dir="$base_dir/$subpath"
+
+  if [ ! -d "$target_dir" ]; then
+    mkdir -p "$(dirname "$target_dir")"
+    gh repo clone "$full_name" "$target_dir"
+    if command -v zoxide &>/dev/null; then
+      zoxide add "$target_dir" 2>/dev/null || true
+    fi
+  fi
+
+  tmux_new_session "$target_dir" "$cmd"
+}
+
+function supermux_github_query {
+  local query="$1"
+  pkill -f supermux-gh-query 2>/dev/null || true
+  exec -a supermux-gh-query bash -c '
+    q="$1"
+    [ -z "$q" ] && exit 0
+    sleep 1
+    gh search repos --json=name,owner --jq="map(\"\(.owner.login)/\(.name)\")[]" --match=name "$q" 2>/dev/null || true
+  ' _ "$query"
+}
+
+export -f shortpath shorten_path format_path get_pad_width get_tmux_sessions get_tmux_windows zoxide_query tmux_new_session ic_connect get_github_user github_clone_and_open supermux_github_query
 
 # -----------------------------------------------------------------------------
 # Mode DSL Configuration Helpers
@@ -184,6 +243,10 @@ function mode_source {
         NO_SORT=1
         shift
         ;;
+      --live)
+        IS_LIVE=1
+        shift
+        ;;
       *)
         shift
         ;;
@@ -226,6 +289,7 @@ function mode_sessions {
   mode_bind ctrl-w      "windows"   mode:windows
   mode_bind ctrl-o      "zoxide"    mode:zoxide
   mode_bind ctrl-i      "inventory" mode:inventory
+  mode_bind ctrl-h      "github"    mode:github
   mode_bind ctrl-s      "sofka"     "popupmux launch sofka"
   mode_bind ctrl-g      "lazygit"   "popupmux launch lazygit"
   mode_bind esc         "exit"      abort
@@ -247,6 +311,7 @@ function mode_windows {
   mode_bind esc         "sessions"  mode:sessions
   mode_bind ctrl-o      "zoxide"    mode:zoxide
   mode_bind ctrl-i      "inventory" mode:inventory
+  mode_bind ctrl-h      "github"    mode:github
 }
 
 function mode_zoxide {
@@ -267,6 +332,7 @@ function mode_zoxide {
   mode_bind esc         "sessions"  mode:sessions
   mode_bind ctrl-w      "windows"   mode:windows
   mode_bind ctrl-i      "inventory" mode:inventory
+  mode_bind ctrl-h      "github"    mode:github
   mode_bind ctrl-o      "sort"      toggle-sort
 }
 
@@ -285,6 +351,21 @@ function mode_inventory {
   mode_bind esc         "sessions"  mode:sessions
   mode_bind ctrl-w      "windows"   mode:windows
   mode_bind ctrl-o      "zoxide"    mode:zoxide
+  mode_bind ctrl-h      "github"    mode:github
+}
+
+function mode_github {
+  mode_prompt "github> "
+  mode_source "supermux_github_query {q}" --live
+  mode_preview "gh repo view {1}"
+
+  mode_action enter   "nvim"  become "github_clone_and_open {1} 'nvim -c \":lua require(\\\"persistence\\\").load()\"'"
+  mode_action tab     "bash"  become "github_clone_and_open {1}"
+
+  mode_bind esc       "sessions"  mode:sessions
+  mode_bind ctrl-w    "windows"   mode:windows
+  mode_bind ctrl-o    "zoxide"    mode:zoxide
+  mode_bind ctrl-i    "inventory" mode:inventory
 }
 
 # -----------------------------------------------------------------------------
@@ -306,6 +387,7 @@ function _exec_fzf {
   ORDER_OPTS=""
   OUTPUT_FIELD=1
   NO_SORT=0
+  IS_LIVE=0
   PREVIEW_CMD=""
   RAW_SOURCE_CMD=""
 
@@ -332,12 +414,16 @@ function _exec_fzf {
 
   # Build full source pipeline with ordering if specified
   local full_source_cmd="$RAW_SOURCE_CMD"
-  local sort_delim="$DELIM"
-  if [ "$sort_delim" = '\t' ] || [ "$sort_delim" = "\\t" ]; then
-    sort_delim=$'\t'
-  fi
-  if [ -n "$ORDER_BY" ]; then
-    full_source_cmd="$full_source_cmd | sort -t'$sort_delim' -k${ORDER_BY},${ORDER_BY} $ORDER_OPTS"
+  if [ "$IS_LIVE" -eq 1 ]; then
+    full_source_cmd="echo -n"
+  else
+    local sort_delim="$DELIM"
+    if [ "$sort_delim" = '\t' ] || [ "$sort_delim" = "\\t" ]; then
+      sort_delim=$'\t'
+    fi
+    if [ -n "$ORDER_BY" ]; then
+      full_source_cmd="$full_source_cmd | sort -t'$sort_delim' -k${ORDER_BY},${ORDER_BY} $ORDER_OPTS"
+    fi
   fi
 
   # Replace placeholder in preview command
@@ -396,21 +482,27 @@ function _exec_fzf {
     --border=bottom
     --border-label=" $border_label "
     --bind="ctrl-p:toggle-preview"
-    --bind="resize:reload($full_source_cmd)"
     "${ACTION_BINDS[@]}"
     "${KB_BINDS[@]}"
   )
 
-  if [ "$NO_SORT" -eq 1 ]; then
-    fzf_args+=(--no-sort)
-  fi
-
-  if [ -n "$DISPLAY_FIELDS" ]; then
-    fzf_args+=(--with-nth="$DISPLAY_FIELDS")
-  fi
-
-  if [ -n "$SEARCH_FIELDS" ]; then
-    fzf_args+=(--nth="$SEARCH_FIELDS")
+  if [ "$IS_LIVE" -eq 1 ]; then
+    fzf_args+=(
+      --disabled
+      --bind="change:reload-sync($RAW_SOURCE_CMD)"
+      --bind="load:reload-sync($RAW_SOURCE_CMD)+unbind(load)"
+    )
+  else
+    fzf_args+=(--bind="resize:reload($full_source_cmd)")
+    if [ "$NO_SORT" -eq 1 ]; then
+      fzf_args+=(--no-sort)
+    fi
+    if [ -n "$DISPLAY_FIELDS" ]; then
+      fzf_args+=(--with-nth="$DISPLAY_FIELDS")
+    fi
+    if [ -n "$SEARCH_FIELDS" ]; then
+      fzf_args+=(--nth="$SEARCH_FIELDS")
+    fi
   fi
 
   if [ -n "$PREVIEW_CMD" ]; then
