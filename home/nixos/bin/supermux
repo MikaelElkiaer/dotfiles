@@ -127,9 +127,106 @@ function tmux_new_session {
   tmux switch-client -t "$new_id"
 }
 
+function find_session_by_path {
+  local target_dir="$1"
+  [ -z "$target_dir" ] && return 1
+  target_dir="${target_dir%/}"
+
+  local sess_id sess_name pane_path
+  while IFS=';' read -r sess_id sess_name pane_path; do
+    pane_path="${pane_path%/}"
+    if [ "$pane_path" = "$target_dir" ] || [ "$pane_path" -ef "$target_dir" ]; then
+      echo "$sess_id;$sess_name"
+      return 0
+    fi
+  done < <(tmux list-windows -a -F "#{session_id};#{session_name};#{pane_current_path}" 2>/dev/null || true)
+  return 1
+}
+
+function find_session_by_kube {
+  local target_cluster="$1"
+  [ -z "$target_cluster" ] && return 1
+
+  local sess_id sess_name
+  while IFS=';' read -r sess_id sess_name; do
+    local clean_id="${sess_id#\$}"
+    local cfg="$HOME/.kube/config-tmux-$clean_id"
+    if [ -f "$cfg" ] && grep -q -F "$target_cluster" "$cfg" 2>/dev/null; then
+      echo "$sess_id;$sess_name"
+      return 0
+    fi
+  done < <(tmux list-sessions -F "#{session_id};#{session_name}" 2>/dev/null || true)
+  return 1
+}
+
+function prompt_session_conflict {
+  local existing_id="$1"
+  local existing_name="$2"
+  local type="$3"
+  local value="$4"
+
+  local c_warn=$'\033[38;5;3m'
+  local c_bold=$'\033[1m'
+  local c_cyan=$'\033[38;5;6m'
+  local c_reset=$'\033[0m'
+
+  echo ""
+  echo -e "${c_warn}Warning:${c_reset} An active session already has this ${type}:"
+  echo -e "  ${c_cyan}${value}${c_reset} -> Session ${c_bold}${existing_name}${c_reset} (${existing_id})"
+  echo ""
+  echo -e "Options: [${c_bold}s${c_reset}]witch to existing  [${c_bold}c${c_reset}]reate new anyway  [${c_bold}a${c_reset}]bort"
+
+  local choice
+  read -r -n 1 -p "Choice (s/c/a) [s]: " choice < /dev/tty || choice=""
+  echo ""
+
+  case "${choice:-s}" in
+    s|S|"")
+      tmux switch-client -t "$existing_id"
+      return 1
+      ;;
+    c|C)
+      return 0
+      ;;
+    *)
+      return 2
+      ;;
+  esac
+}
+
+function zoxide_open {
+  local dir="$1"
+  local cmd="${2:-}"
+
+  local conflict
+  if conflict="$(find_session_by_path "$dir")"; then
+    local sess_id="${conflict%%;*}"
+    local sess_name="${conflict#*;}"
+    prompt_session_conflict "$sess_id" "$sess_name" "path" "$dir"
+    local action=$?
+    if [ "$action" -ne 0 ]; then
+      return 0
+    fi
+  fi
+
+  tmux_new_session "$dir" "$cmd"
+}
+
 function ic_connect {
   local cluster="$1"
   local cmd="${2:-}"
+
+  local conflict
+  if conflict="$(find_session_by_kube "$cluster")"; then
+    local sess_id="${conflict%%;*}"
+    local sess_name="${conflict#*;}"
+    prompt_session_conflict "$sess_id" "$sess_name" "kube context" "$cluster"
+    local action=$?
+    if [ "$action" -ne 0 ]; then
+      return 0
+    fi
+  fi
+
   local new_id
   new_id="$(tmux new-session -c "$HOME" -d -e "KUBECACHEDIR=$HOME/.kube/cache" -P -F '#{session_id}' bash -i -c "${cmd:+$cmd; }exec bash")"
   local new_name="${new_id#\$}"
@@ -174,7 +271,18 @@ function github_clone_and_open {
   local base_dir="${HOME}/Repositories/GitHub"
   local target_dir="$base_dir/$subpath"
 
-  if [ ! -d "$target_dir" ]; then
+  if [ -d "$target_dir" ]; then
+    local conflict
+    if conflict="$(find_session_by_path "$target_dir")"; then
+      local sess_id="${conflict%%;*}"
+      local sess_name="${conflict#*;}"
+      prompt_session_conflict "$sess_id" "$sess_name" "path" "$target_dir"
+      local action=$?
+      if [ "$action" -ne 0 ]; then
+        return 0
+      fi
+    fi
+  else
     mkdir -p "$(dirname "$target_dir")"
     gh repo clone "$full_name" "$target_dir"
     if command -v zoxide &>/dev/null; then
@@ -196,7 +304,7 @@ function supermux_github_query {
   ' _ "$query"
 }
 
-export -f shortpath shorten_path format_path get_pad_width get_tmux_sessions get_tmux_windows zoxide_query tmux_new_session ic_connect get_github_user github_clone_and_open supermux_github_query
+export -f shortpath shorten_path format_path get_pad_width get_tmux_sessions get_tmux_windows zoxide_query tmux_new_session find_session_by_path find_session_by_kube prompt_session_conflict zoxide_open ic_connect get_github_user github_clone_and_open supermux_github_query
 
 # -----------------------------------------------------------------------------
 # Mode DSL Configuration Helpers
@@ -325,8 +433,8 @@ function mode_zoxide {
     --no-sort
   mode_preview 'test -f {1}/README.md && nvimpager -c {1}/README.md +"set ft=markdown" || test -f {1}/readme.md && nvimpager -c {1}/readme.md +"set ft=markdown" || tree -a -C -I .git -L 4 {1} 2>/dev/null || ls -la {1}'
 
-  mode_action enter   "nvim"    become "tmux_new_session {1} 'nvim -c \":lua require(\\\"persistence\\\").load()\"'"
-  mode_action tab     "bash"    become "tmux_new_session {1}"
+  mode_action enter   "nvim"    become "zoxide_open {1} 'nvim -c \":lua require(\\\"persistence\\\").load()\"'"
+  mode_action tab     "bash"    become "zoxide_open {1}"
   mode_action ctrl-x  "remove"  reload "zoxide remove {1}"
 
   mode_bind esc         "sessions"  mode:sessions
