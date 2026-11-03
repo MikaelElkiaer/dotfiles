@@ -33,6 +33,7 @@
     casks = [
       "1password-cli"
       "alfred"
+      "bettershot"
       "caffeine"
       "font-noto-nerd-font"
       "font-noto-sans-mono"
