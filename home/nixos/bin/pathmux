@@ -14,10 +14,9 @@ function format_path() {
   if [ "$command" == "ssh" ]; then
     local _host _path
     _host="${title%%:*}"
-    _host="${_host#*@}"
     _path="${title#*:}"
     path="$_path"
-    prefix="${_host} "
+    prefix="${_host}  "
   fi
 
   local bell_opt=()
