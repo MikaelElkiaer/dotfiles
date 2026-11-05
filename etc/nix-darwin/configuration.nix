@@ -18,13 +18,6 @@
     brews = [
       # Needs `brew trust chainguard-dev/tap`
       "chainguard-dev/tap/chainctl"
-      # Needs to be trusted with `brew trust containdk/tap` and fetched manually
-      # `HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew fetch containdk/tap/beagle`
-      "containdk/tap/beagle"
-      # `HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew fetch containdk/tap/conductor`
-      "containdk/tap/conductor"
-      # `HOMEBREW_GITHUB_API_TOKEN=$(gh auth token) brew fetch containdk/tap/solas`
-      "containdk/tap/solas"
       "lastpass-cli"
       "pint"
       "tinyproxy"
@@ -40,12 +33,19 @@
       "kitty"
       "podman-desktop"
     ];
+    extraConfig = ''
+      # INFO: Manage some homebrew outside nix-darwin, e.g.:
+      # ```ruby
+      # tap some-owner/some-repo, trusted: true
+      # brew some-owner/some-repo/some-brew, trusted: true
+      # ```
+      local_brewfile = File.expand_path("~/.Brewfile.local")
+      instance_eval(File.read(local_brewfile)) if File.exist?(local_brewfile)
+    '';
     # Delete undeclared brews and casks
     onActivation.cleanup = "zap";
-    onActivation.extraFlags = [ "--force-cleanup" ];
     taps = [
       "chainguard-dev/tap"
-      "containdk/tap"
     ];
   };
 
