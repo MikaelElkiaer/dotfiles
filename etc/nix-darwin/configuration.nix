@@ -16,7 +16,6 @@
   homebrew = {
     enable = true;
     brews = [
-      # Needs `brew trust chainguard-dev/tap`
       "chainguard-dev/tap/chainctl"
       "lastpass-cli"
       "pint"
@@ -45,7 +44,10 @@
     # Delete undeclared brews and casks
     onActivation.cleanup = "zap";
     taps = [
-      "chainguard-dev/tap"
+      {
+        name = "chainguard-dev/tap";
+        trusted = true;
+      }
     ];
   };
 
