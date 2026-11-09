@@ -10,6 +10,7 @@
     autossh
     aws-iam-authenticator
     awscli2
+    claude-code
     crane
     cilium-cli
     code-review-graph
