@@ -172,6 +172,9 @@
       ".bashrc_extra" = {
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.bashrc";
       };
+      ".claude/settings.json" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.claude/settings.json";
+      };
       ".docker/config.json" = {
         source = config.lib.file.mkOutOfStoreSymlink "${dotfilesHome}/.config/containers/auth.json";
       };
