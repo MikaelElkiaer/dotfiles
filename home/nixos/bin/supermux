@@ -304,7 +304,137 @@ function supermux_github_query {
   ' _ "$query"
 }
 
+# List available commands as: name \t padded-name \t dimmed-origin
+# Builtins come first so resolution order matches bash; first PATH hit wins.
+function get_commands {
+  local dim=$'\033[2m' reset=$'\033[0m'
+  {
+    local b
+    while read -r b; do
+      printf '%s\t%s\n' "$b" "builtin"
+    done < <(compgen -b)
+
+    local dir f
+    local IFS=':'
+    for dir in $PATH; do
+      [ -d "$dir" ] || continue
+      for f in "$dir"/*; do
+        [ -x "$f" ] && [ ! -d "$f" ] && printf '%s\t%s\n' "${f##*/}" "$dir"
+      done
+    done
+  } | awk -F'\t' -v home="${HOME:-}" -v dim="$dim" -v reset="$reset" '
+    !seen[$1]++ {
+      origin = $2
+      if (home != "" && index(origin, home) == 1) origin = "~" substr(origin, length(home) + 1)
+      printf "%s\t%-32s\t%s%s%s\n", $1, $1, dim, origin, reset
+    }'
+}
+
+# First whitespace-separated word of the query
+function supermux_command_word {
+  local q="${1:-}"
+  q="${q#"${q%%[![:space:]]*}"}"
+  echo "${q%%[[:space:]]*}"
+}
+
+# Prints how a command resolves (builtin/keyword/path); fails if not runnable.
+# Functions are ignored, as only supermux internals would show up.
+function supermux_command_kind {
+  local word="$1" kind
+  kind="$(type -t "$word" 2>/dev/null || true)"
+  case "$kind" in
+    builtin|keyword)
+      echo "$kind"
+      return 0
+      ;;
+  esac
+  type -P "$word" 2>/dev/null
+}
+
+# Command line to run: the query if its command is valid, otherwise the
+# selected command with the query's arguments.
+function supermux_command_resolve {
+  local q="${1:-}" sel="${2:-}"
+  q="${q#"${q%%[![:space:]]*}"}"
+  q="${q%"${q##*[![:space:]]}"}"
+  local word="${q%%[[:space:]]*}"
+  local rest=""
+  [[ "$q" == *[[:space:]]* ]] && rest="${q#*[[:space:]]}"
+
+  if [ -z "$word" ]; then
+    echo "$sel"
+  elif [ -z "$sel" ] || supermux_command_kind "$word" >/dev/null; then
+    echo "$q"
+  else
+    echo "$sel${rest:+ $rest}"
+  fi
+}
+
+function supermux_command_complete {
+  local q="${1:-}" sel="${2:-}"
+  [ -z "$sel" ] && { echo "$q"; return 0; }
+  q="${q#"${q%%[![:space:]]*}"}"
+  local rest=""
+  [[ "$q" == *[[:space:]]* ]] && rest="${q#*[[:space:]]}"
+  echo "$sel ${rest}"
+}
+
+function supermux_command_run {
+  local cmd
+  cmd="$(supermux_command_resolve "${1:-}" "${2:-}")"
+  [ -z "$cmd" ] && return 0
+  popupmux launch "$cmd"
+}
+
+function supermux_command_manpage {
+  local word="$1" kind="$2"
+  local dim=$'\033[2m' reset=$'\033[0m'
+  echo
+  if [ "$kind" = "builtin" ] || [ "$kind" = "keyword" ]; then
+    help "$word" 2>/dev/null && return 0
+  fi
+  if man -w "$word" >/dev/null 2>&1; then
+    local page
+    page="$(MANPAGER=cat GROFF_NO_SGR=1 MANWIDTH="${FZF_PREVIEW_COLUMNS:-80}" man "$word" 2>/dev/null | sed $'s/\033\\[[0-9;]*m//g' | col -bx)"
+    if command -v bat >/dev/null 2>&1; then
+      bat --language=man --style=plain --color=always <<<"$page"
+    else
+      echo "$page"
+    fi
+  else
+    echo "${dim}No manual entry for ${word}${reset}"
+  fi
+}
+
+function supermux_command_preview {
+  local q="${1:-}" sel="${2:-}"
+  local green=$'\033[32m' red=$'\033[31m' bold=$'\033[1m' dim=$'\033[2m' reset=$'\033[0m'
+  local word target kind
+  word="$(supermux_command_word "$q")"
+  target="${word:-$sel}"
+  [ -z "$target" ] && return 0
+
+  if ! kind="$(supermux_command_kind "$target")"; then
+    echo "${red}✘${reset} ${bold}${target}${reset}: not a valid command"
+    [ -z "$sel" ] || [ "$sel" = "$target" ] && return 0
+    target="$sel"
+    kind="$(supermux_command_kind "$target")" || return 0
+    echo "${dim}enter runs selection instead${reset}"
+  fi
+
+  local origin="$kind"
+  if [ -e "$kind" ]; then
+    local resolved
+    resolved="$(realpath "$kind" 2>/dev/null || echo "$kind")"
+    [ "$resolved" != "$kind" ] && origin="$kind -> $resolved"
+  fi
+  echo "${green}✔${reset} ${bold}${target}${reset} ${dim}${origin}${reset}"
+
+  supermux_command_manpage "$target" "$kind"
+}
+
 export -f shortpath shorten_path format_path get_pad_width get_tmux_sessions get_tmux_windows zoxide_query tmux_new_session find_session_by_path find_session_by_kube prompt_session_conflict zoxide_open ic_connect get_github_user github_clone_and_open supermux_github_query
+export -f get_commands supermux_command_word supermux_command_kind supermux_command_resolve supermux_command_complete supermux_command_run supermux_command_manpage supermux_command_preview
 
 # -----------------------------------------------------------------------------
 # Mode DSL Configuration Helpers
@@ -398,6 +528,7 @@ function mode_sessions {
   mode_bind ctrl-o      "zoxide"    mode:zoxide
   mode_bind ctrl-i      "inventory" mode:inventory
   mode_bind ctrl-h      "github"    mode:github
+  mode_bind ctrl-r      "command"   mode:command
   mode_bind ctrl-s      "sofka"     "popupmux launch sofka"
   mode_bind ctrl-g      "lazygit"   "popupmux launch lazygit"
   mode_bind esc         "exit"      abort
@@ -420,6 +551,7 @@ function mode_windows {
   mode_bind ctrl-o      "zoxide"    mode:zoxide
   mode_bind ctrl-i      "inventory" mode:inventory
   mode_bind ctrl-h      "github"    mode:github
+  mode_bind ctrl-r      "command"   mode:command
 }
 
 function mode_zoxide {
@@ -441,6 +573,7 @@ function mode_zoxide {
   mode_bind ctrl-w      "windows"   mode:windows
   mode_bind ctrl-i      "inventory" mode:inventory
   mode_bind ctrl-h      "github"    mode:github
+  mode_bind ctrl-r      "command"   mode:command
   mode_bind ctrl-o      "sort"      toggle-sort
 }
 
@@ -460,6 +593,7 @@ function mode_inventory {
   mode_bind ctrl-w      "windows"   mode:windows
   mode_bind ctrl-o      "zoxide"    mode:zoxide
   mode_bind ctrl-h      "github"    mode:github
+  mode_bind ctrl-r      "command"   mode:command
 }
 
 function mode_github {
@@ -474,6 +608,28 @@ function mode_github {
   mode_bind ctrl-w    "windows"   mode:windows
   mode_bind ctrl-o    "zoxide"    mode:zoxide
   mode_bind ctrl-i    "inventory" mode:inventory
+  mode_bind ctrl-r    "command"   mode:command
+}
+
+function mode_command {
+  mode_prompt "command> "
+  mode_source "get_commands" \
+    --delimiter $'\t' \
+    --display 2.. \
+    --search 1 \
+    --order-by 1 \
+    --output 1
+  mode_preview "supermux_command_preview {q} {1}"
+
+  mode_action enter   "run"     become "supermux_command_run {q} {1}"
+
+  # Only match the command name, so arguments typed after it don't filter
+  mode_bind start,change ""         "fzf:transform-search(supermux_command_word {q})"
+  mode_bind tab         "complete"  "fzf:transform-query(supermux_command_complete {q} {1})"
+  mode_bind esc         "sessions"  mode:sessions
+  mode_bind ctrl-w      "windows"   mode:windows
+  mode_bind ctrl-o      "zoxide"    mode:zoxide
+  mode_bind ctrl-h      "github"    mode:github
 }
 
 # -----------------------------------------------------------------------------
