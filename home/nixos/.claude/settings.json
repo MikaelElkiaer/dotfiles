@@ -1,4 +1,22 @@
 {
+  "enabledPlugins": {
+    "i-have-adhd@i-have-adhd": true,
+    "ponytail@ponytail": true
+  },
+  "extraKnownMarketplaces": {
+    "i-have-adhd": {
+      "source": {
+        "source": "github",
+        "repo": "ayghri/i-have-adhd"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
+  },
   "theme": "auto",
   "preferredNotifChannel": "terminal_bell"
 }
