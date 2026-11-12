@@ -109,6 +109,12 @@
           dagger = inputs.dagger.packages.${prev.system}.dagger;
           neovim = nixpkgs_master.legacyPackages.${prev.system}.neovim;
           sofka = inputs.sofka.packages.${prev.system}.sofka;
+          # FIXME: 2026-11-12 Temporary work-around for viddy build failure
+          # on nixpkgs-unstable, remove once the fix reaches nixos-unstable
+          #
+          # https://github.com/NixOS/nixpkgs/pull/585402
+          #
+          viddy = nixpkgs_master.legacyPackages.${prev.system}.viddy;
         };
 
       # Helper for standalone Home Manager configuration
