@@ -30,10 +30,14 @@ pyPkgs.buildPythonApplication (finalAttrs: {
     hash = "sha256-prDngvKn/a4V6iegxqiZMrC+OmO+ywM9yNE/mf8BKN4=";
   };
 
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-fail '"tree-sitter-language-pack>=0.3.0,<1"' '"tree-sitter-language-pack>=0.3.0"'
+  # Upstream bounds are CI-tested floors/ceilings, nixpkgs ships
+  # tree-sitter 0.25 and tree-sitter-language-pack 1.x
+  pythonRelaxDeps = [
+    "tree-sitter"
+    "tree-sitter-language-pack"
+  ];
 
+  postPatch = ''
     substituteInPlace code_review_graph/parser.py \
       --replace-fail 'env=_parser_probe_env(),' 'env=dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path)),'
   '';
