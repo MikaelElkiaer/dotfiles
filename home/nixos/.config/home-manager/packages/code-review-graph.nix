@@ -19,7 +19,7 @@ let
 in
 pyPkgs.buildPythonApplication (finalAttrs: {
   pname = "code-review-graph";
-  version = "2.3.9";
+  version = "2.4.0";
   pyproject = true;
   __structuredAttrs = true;
 
@@ -27,7 +27,7 @@ pyPkgs.buildPythonApplication (finalAttrs: {
     owner = "tirth8205";
     repo = "code-review-graph";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-UiQg1ygebw6PePJVHNNOUsL6buw1/oMzX34jloui9Bg=";
+    hash = "sha256-prDngvKn/a4V6iegxqiZMrC+OmO+ywM9yNE/mf8BKN4=";
   };
 
   postPatch = ''
