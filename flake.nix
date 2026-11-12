@@ -124,6 +124,13 @@
           kubectl-validate = prev.kubectl-validate.override {
             buildGoModule = prev.buildGo126Module;
           };
+          # FIXME: 2026-11-12 gh-stack 0.3.0 added a scripts/test main package
+          # which gets installed as bin/test and collides with coreutils' test,
+          # drop once nixpkgs sets subPackages
+          #
+          gh-stack = prev.gh-stack.overrideAttrs {
+            subPackages = [ "." ];
+          };
         };
 
       # Helper for standalone Home Manager configuration
