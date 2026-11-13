@@ -109,12 +109,6 @@
           dagger = inputs.dagger.packages.${prev.system}.dagger;
           neovim = nixpkgs_master.legacyPackages.${prev.system}.neovim;
           sofka = inputs.sofka.packages.${prev.system}.sofka;
-          # FIXME: 2026-11-12 Temporary work-around for viddy build failure
-          # on nixpkgs-unstable, remove once the fix reaches nixos-unstable
-          #
-          # https://github.com/NixOS/nixpkgs/pull/585402
-          #
-          viddy = nixpkgs_master.legacyPackages.${prev.system}.viddy;
           # FIXME: 2026-11-12 kubectl-validate 0.0.4 hangs under Go 1.27
           # (encoding/json v2 + vendored kube-openapi SemanticError.Is
           # recursion), drop once upstream bumps kube-openapi or nixpkgs fixes it
