@@ -121,7 +121,11 @@ update-package package:
         echo "[INF] No updates found for {{package}}"
         exit 0
     fi
-    
+
+    # The host config may not include this package (e.g. in CI), build it directly
+    echo "[INF] Building {{package}}..."
+    nix build --no-link ".#{{package}}"
+
     echo "[INF] Building and checking for changes..."
     {{build_cmd}}
     
