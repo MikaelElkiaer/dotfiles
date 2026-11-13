@@ -19,6 +19,14 @@ function action_toggle {
 }
 
 function action_launch {
+  # Usage: action_launch [--exec] <command>
+  # --exec runs the command directly instead of inside an interactive bash,
+  # so the popup closes when the command exits.
+  local direct=0
+  if [ "${1:-}" = "--exec" ]; then
+    direct=1
+    shift
+  fi
   local cmd="$1"
   local cur_id cur_win cur_float cur_title
   IFS=';' read -r cur_id cur_win cur_float cur_title < <(tmux display-message -p '#{pane_id};#{window_id};#{pane_floating_flag};#{pane_title}')
@@ -89,10 +97,16 @@ function action_launch {
       tmux set-option -p -t "$cur_id" @initially_popup 1
       tmux set-option -p -t "$cur_id" @popup_cmd "$cmd"
       tmux select-pane -t "$cur_id" -T "$cmd"
+      if [ "$direct" = "1" ]; then
+        eval "exec $cmd"
+      fi
       exec bash -i -c "$cmd; exec bash"
     else
-      local new_pane
-      new_pane="$(tmux new-pane -P -F '#{pane_id}' -t "$cur_id" -c "$PWD" -x 80% -y 80% -T "$cmd" "bash -i -c '$cmd; exec bash'")"
+      local new_pane pane_cmd=(bash -i -c "$cmd; exec bash")
+      if [ "$direct" = "1" ]; then
+        pane_cmd=(bash -c "exec $cmd")
+      fi
+      new_pane="$(tmux new-pane -P -F '#{pane_id}' -t "$cur_id" -c "$PWD" -x 80% -y 80% -T "$cmd" "${pane_cmd[@]}")"
       if [ -n "$new_pane" ]; then
         tmux move-pane -t "$new_pane" -P centre 2>/dev/null || true
         tmux set-option -p -t "$new_pane" @initially_popup 1

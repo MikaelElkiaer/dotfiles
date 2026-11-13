@@ -379,11 +379,22 @@ function supermux_command_complete {
   echo "$sel ${rest}"
 }
 
+# Usage: supermux_command_run <exec|shell> <query> <selection>
+# exec runs the command directly (popup closes on exit); shell wraps it in an
+# interactive bash that stays open. Builtins/keywords always need the shell.
 function supermux_command_run {
-  local cmd
-  cmd="$(supermux_command_resolve "${1:-}" "${2:-}")"
+  local how="$1" cmd word
+  cmd="$(supermux_command_resolve "${2:-}" "${3:-}")"
   [ -z "$cmd" ] && return 0
-  popupmux launch "$cmd"
+  word="$(supermux_command_word "$cmd")"
+  case "$(type -t "$word" 2>/dev/null || true)" in
+    builtin|keyword) how="shell" ;;
+  esac
+  if [ "$how" = "exec" ]; then
+    popupmux launch --exec "$cmd"
+  else
+    popupmux launch "$cmd"
+  fi
 }
 
 function supermux_command_manpage {
@@ -621,7 +632,8 @@ function mode_command {
     --output 1
   mode_preview "supermux_command_preview {q} {1}"
 
-  mode_action enter   "run"     become "supermux_command_run {q} {1}"
+  mode_action enter     "run"   become "supermux_command_run exec {q} {1}"
+  mode_action alt-enter "shell" become "supermux_command_run shell {q} {1}"
 
   # Only match the command name, so arguments typed after it don't filter
   mode_bind start,change ""         "fzf:transform-search(supermux_command_word {q})"
