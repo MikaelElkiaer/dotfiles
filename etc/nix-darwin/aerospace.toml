@@ -90,6 +90,16 @@ esc = ["reload-config", "mode main"]
 t = ["layout tiles horizontal vertical", "mode main"]
 a = ["layout accordion horizontal vertical", "mode main"]
 r = ["flatten-workspace-tree", "mode main"]
+# Kitty must be focused: vertical accordion of everything else on the left, kitty ~60% on the right.
+# 'move right' out of a vertical root creates an implicit horizontal root around it.
+s = [
+  "flatten-workspace-tree",
+  "layout accordion vertical",
+  "move right",
+  "layout tiles horizontal",
+  "resize width +250",
+  "mode main",
+]
 f = ["layout floating tiling", "mode main"]
 "1" = ["workspace 1", "mode main"]
 "2" = ["workspace 2", "mode main"]
