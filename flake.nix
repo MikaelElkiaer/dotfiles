@@ -31,7 +31,7 @@
     };
     dagger = {
       # WARN: Locked to this commit to avoid upgrade to v1.0.0-beta
-      url = "github:dagger/nix/8b9a96f1d7cd8afefb8c13c4f4a092aa5b58c7c1";
+      url = "github:dagger/nix/f01f6dd5264e96540cf0ed21c7fcc8cd743fb97d";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sofka = {
