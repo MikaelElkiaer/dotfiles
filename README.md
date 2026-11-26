@@ -68,3 +68,57 @@ cat <<EOF | xargs nix-shell --packages git gnumake --run
 && home-manager switch -b bak --flake $$PWD/home/nixos/.config/home-manager/"
 EOF
 ```
+
+# GitHub signing key
+
+`.gitconfig` already includes an override file `~/.github.gitconfig` which applies to repositories withing directory `~/Repositories/GitHub`.
+
+In order to set up SSH signing for GitHub, do the following:
+
+1. Generate a new SSH key for signing:
+
+```bash
+ssh-keygen -t ed25519 -C "$(git config get user.email)" -f ~/.ssh/id_ed25519-github
+```
+
+2. Add the private key to the SSH agent:
+
+```bash
+eval "$(ssh-agent -s)"
+# On macOS, when using Apple keychain:
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519-github
+# Otherwise:
+ssh-add ~/.ssh/id_ed25519-github
+```
+
+3. Copy the public key, in order to add it to a GitHub account as a "SSH signing key":
+
+```bash
+pbcopy < ~/.ssh/id_ed25519-github.pub
+```
+
+4. Add the allowed signers file:
+
+```bash
+echo "$(git config get user.email) $(cat ~/.ssh/id_ed25519-github.pub)" > ~/.ssh/allowed_signers
+```
+
+5. Add the following to `~/.github.gitconfig`:
+
+```ini
+# vi:set ft=gitconfig:
+[user]
+  signingkey = ~/.ssh/id_ed25519-github.pub
+[gpg]
+  format = ssh
+[commit]
+  gpgsign = true
+[gpg "ssh"]
+  allowedSignersFile = ~/.ssh/allowed_signers
+```
+
+## Signoff
+
+Not exactly related, but many projects will require signing off commits.
+Be sure to commit using `git commit -s` (or `--signoff`).
+When using `lazygit`, this is already enabled via `git.commit.signOff=true`.
