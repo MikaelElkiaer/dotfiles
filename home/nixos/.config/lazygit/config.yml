@@ -2,7 +2,7 @@
 confirmOnQuit: true
 git:
   commit:
-    signOff: false
+    signOff: true
   overrideGpg: true
   diffRenderers:
     # cycle through pagers with `|`
