@@ -16,7 +16,6 @@
   homebrew = {
     enable = true;
     brews = [
-      "chainguard-dev/tap/chainctl"
       "lastpass-cli"
       "pint"
       "tinyproxy"
@@ -27,6 +26,7 @@
       "alfred"
       "bettershot"
       "caffeine"
+      "chainguard-dev/tap/chainctl"
       "font-noto-nerd-font"
       "font-noto-sans-mono"
       "kitty"
